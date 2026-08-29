@@ -115,17 +115,17 @@
         "sysname LSW1",
         "vlan batch 10 20 30 100",
         "interface GigabitEthernet 0/0/1",
-        " port link-type access",
-        " port default vlan 10",
-        " quit",
+        "port link-type access",
+        "port default vlan 10",
+        "quit",
         "interface GigabitEthernet 0/0/2",
-        " port link-type access",
-        " port default vlan 20",
-        " quit",
+        "port link-type access",
+        "port default vlan 20",
+        "quit",
         "interface GigabitEthernet 0/0/3",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 20 30 100",
-        " quit"
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 20 30 100",
+        "quit"
       ],
       "LSW2 (Core Switch A - Master Gateway)": [
         "system-view",
@@ -133,107 +133,107 @@
         "vlan batch 10 20 30 100",
         "lacp priority 100",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 20 30 100",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit",
+        "mode lacp-static",
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 20 30 100",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit",
         "interface Vlanif 10",
-        " ip address 192.168.10.2 255.255.255.0",
-        " vrrp vrid 10 virtual-ip 192.168.10.254",
-        " vrrp vrid 10 priority 120",
-        " vrrp vrid 10 preempt-mode timer delay 20",
-        " quit",
+        "ip address 192.168.10.2 255.255.255.0",
+        "vrrp vrid 10 virtual-ip 192.168.10.254",
+        "vrrp vrid 10 priority 120",
+        "vrrp vrid 10 preempt-mode timer delay 20",
+        "quit",
         "interface Vlanif 20",
-        " ip address 192.168.20.2 255.255.255.0",
-        " vrrp vrid 20 virtual-ip 192.168.20.254",
-        " vrrp vrid 20 priority 120",
-        " vrrp vrid 20 preempt-mode timer delay 20",
-        " quit",
+        "ip address 192.168.20.2 255.255.255.0",
+        "vrrp vrid 20 virtual-ip 192.168.20.254",
+        "vrrp vrid 20 priority 120",
+        "vrrp vrid 20 preempt-mode timer delay 20",
+        "quit",
         "ospf 1 router-id 2.2.2.2",
-        " area 0.0.0.0",
-        "  network 10.0.12.0 0.0.0.255",
-        "  network 192.168.10.0 0.0.0.255",
-        "  network 192.168.20.0 0.0.0.255",
-        "  quit",
-        " quit"
+        "area 0.0.0.0",
+        "network 10.0.12.0 0.0.0.255",
+        "network 192.168.10.0 0.0.0.255",
+        "network 192.168.20.0 0.0.0.255",
+        "quit",
+        "quit"
       ],
       "LSW3 (Core Switch B - Backup Gateway)": [
         "system-view",
         "sysname LSW3",
         "vlan batch 10 20 30 100",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 20 30 100",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit",
+        "mode lacp-static",
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 20 30 100",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit",
         "interface Vlanif 10",
-        " ip address 192.168.10.3 255.255.255.0",
-        " vrrp vrid 10 virtual-ip 192.168.10.254",
-        " vrrp vrid 10 priority 100",
-        " quit",
+        "ip address 192.168.10.3 255.255.255.0",
+        "vrrp vrid 10 virtual-ip 192.168.10.254",
+        "vrrp vrid 10 priority 100",
+        "quit",
         "interface Vlanif 20",
-        " ip address 192.168.20.3 255.255.255.0",
-        " vrrp vrid 20 virtual-ip 192.168.20.254",
-        " vrrp vrid 20 priority 100",
-        " quit",
+        "ip address 192.168.20.3 255.255.255.0",
+        "vrrp vrid 20 virtual-ip 192.168.20.254",
+        "vrrp vrid 20 priority 100",
+        "quit",
         "ospf 1 router-id 3.3.3.3",
-        " area 0.0.0.0",
-        "  network 10.0.13.0 0.0.0.255",
-        "  network 192.168.10.0 0.0.0.255",
-        "  network 192.168.20.0 0.0.0.255",
-        "  quit",
-        " quit"
+        "area 0.0.0.0",
+        "network 10.0.13.0 0.0.0.255",
+        "network 192.168.10.0 0.0.0.255",
+        "network 192.168.20.0 0.0.0.255",
+        "quit",
+        "quit"
       ],
       "AR1 (Edge WAN Gateway Router)": [
         "system-view",
         "sysname AR1",
         "interface GigabitEthernet 0/0/0",
-        " ip address 203.0.113.1 255.255.255.252",
-        " quit",
+        "ip address 203.0.113.1 255.255.255.252",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 10.0.12.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.1 255.255.255.0",
+        "quit",
         "ospf 1 router-id 1.1.1.1",
-        " default-route-advertise always",
-        " area 0.0.0.0",
-        "  network 10.0.12.0 0.0.0.255",
-        "  quit",
-        " quit",
+        "default-route-advertise always",
+        "area 0.0.0.0",
+        "network 10.0.12.0 0.0.0.255",
+        "quit",
+        "quit",
         "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2"
       ],
       "FW1 (USG6000 Next-Gen Firewall)": [
         "system-view",
         "sysname FW1",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.100.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.100.1 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/0",
-        " ip address 198.51.100.1 255.255.255.0",
-        " quit",
+        "ip address 198.51.100.1 255.255.255.0",
+        "quit",
         "firewall zone trust",
-        " add interface GigabitEthernet 0/0/1",
-        " quit",
+        "add interface GigabitEthernet 0/0/1",
+        "quit",
         "firewall zone untrust",
-        " add interface GigabitEthernet 0/0/0",
-        " quit",
+        "add interface GigabitEthernet 0/0/0",
+        "quit",
         "security-policy",
-        " default action deny",
-        " rule name Trust_to_Untrust",
-        "  source-zone trust",
-        "  destination-zone untrust",
-        "  source-address 192.168.0.0 mask 255.255.0.0",
-        "  action permit",
-        "  quit",
-        " quit",
+        "default action deny",
+        "rule name Trust_to_Untrust",
+        "source-zone trust",
+        "destination-zone untrust",
+        "source-address 192.168.0.0 mask 255.255.0.0",
+        "action permit",
+        "quit",
+        "quit",
         "nat-policy",
-        " rule name Easy_IP_NAT",
-        "  source-zone trust",
-        "  destination-zone untrust",
-        "  action source-nat easy-ip",
-        "  quit",
-        " quit"
+        "rule name Easy_IP_NAT",
+        "source-zone trust",
+        "destination-zone untrust",
+        "action source-nat easy-ip",
+        "quit",
+        "quit"
       ]
     },
     "verif": [
@@ -250,7 +250,7 @@
         "substeps": [
           {
             "device": "LSW1 (Access Switch)",
-            "code": "system-view\nsysname LSW1\nvlan batch 10 20 30 100\ninterface GigabitEthernet 0/0/1\n port link-type access\n port default vlan 10\n quit\ninterface GigabitEthernet 0/0/2\n port link-type access\n port default vlan 20\n quit\ninterface GigabitEthernet 0/0/3\n port link-type trunk\n port trunk allow-pass vlan 10 20 30 100\n quit",
+            "code": "system-view\nsysname LSW1\nvlan batch 10 20 30 100\ninterface GigabitEthernet 0/0/1\nport link-type access\nport default vlan 10\nquit\ninterface GigabitEthernet 0/0/2\nport link-type access\nport default vlan 20\nquit\ninterface GigabitEthernet 0/0/3\nport link-type trunk\nport trunk allow-pass vlan 10 20 30 100\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -267,7 +267,7 @@
         "substeps": [
           {
             "device": "LSW2 (Core Switch A - Master Gateway)",
-            "code": "system-view\nsysname LSW2\nvlan batch 10 20 30 100\nlacp priority 100\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30 100\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit\ninterface Vlanif 10\n ip address 192.168.10.2 255.255.255.0\n vrrp vrid 10 virtual-ip 192.168.10.254\n vrrp vrid 10 priority 120\n vrrp vrid 10 preempt-mode timer delay 20\n quit\ninterface Vlanif 20\n ip address 192.168.20.2 255.255.255.0\n vrrp vrid 20 virtual-ip 192.168.20.254\n vrrp vrid 20 priority 120\n vrrp vrid 20 preempt-mode timer delay 20\n quit\nospf 1 router-id 2.2.2.2\n area 0.0.0.0\n  network 10.0.12.0 0.0.0.255\n  network 192.168.10.0 0.0.0.255\n  network 192.168.20.0 0.0.0.255\n  quit\n quit",
+            "code": "system-view\nsysname LSW2\nvlan batch 10 20 30 100\nlacp priority 100\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 10 20 30 100\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit\ninterface Vlanif 10\nip address 192.168.10.2 255.255.255.0\nvrrp vrid 10 virtual-ip 192.168.10.254\nvrrp vrid 10 priority 120\nvrrp vrid 10 preempt-mode timer delay 20\nquit\ninterface Vlanif 20\nip address 192.168.20.2 255.255.255.0\nvrrp vrid 20 virtual-ip 192.168.20.254\nvrrp vrid 20 priority 120\nvrrp vrid 20 preempt-mode timer delay 20\nquit\nospf 1 router-id 2.2.2.2\narea 0.0.0.0\nnetwork 10.0.12.0 0.0.0.255\nnetwork 192.168.10.0 0.0.0.255\nnetwork 192.168.20.0 0.0.0.255\nquit\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -284,7 +284,7 @@
         "substeps": [
           {
             "device": "LSW3 (Core Switch B - Backup Gateway)",
-            "code": "system-view\nsysname LSW3\nvlan batch 10 20 30 100\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30 100\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit\ninterface Vlanif 10\n ip address 192.168.10.3 255.255.255.0\n vrrp vrid 10 virtual-ip 192.168.10.254\n vrrp vrid 10 priority 100\n quit\ninterface Vlanif 20\n ip address 192.168.20.3 255.255.255.0\n vrrp vrid 20 virtual-ip 192.168.20.254\n vrrp vrid 20 priority 100\n quit\nospf 1 router-id 3.3.3.3\n area 0.0.0.0\n  network 10.0.13.0 0.0.0.255\n  network 192.168.10.0 0.0.0.255\n  network 192.168.20.0 0.0.0.255\n  quit\n quit",
+            "code": "system-view\nsysname LSW3\nvlan batch 10 20 30 100\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 10 20 30 100\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit\ninterface Vlanif 10\nip address 192.168.10.3 255.255.255.0\nvrrp vrid 10 virtual-ip 192.168.10.254\nvrrp vrid 10 priority 100\nquit\ninterface Vlanif 20\nip address 192.168.20.3 255.255.255.0\nvrrp vrid 20 virtual-ip 192.168.20.254\nvrrp vrid 20 priority 100\nquit\nospf 1 router-id 3.3.3.3\narea 0.0.0.0\nnetwork 10.0.13.0 0.0.0.255\nnetwork 192.168.10.0 0.0.0.255\nnetwork 192.168.20.0 0.0.0.255\nquit\nquit",
             "explanation": "Instantiates VRRP group with virtual IP 192.168.1.254, sets election priority, enables preempt delay for link stabilization, and configures interface tracking to trigger automatic priority reduction upon uplink failure."
           }
         ],
@@ -301,7 +301,7 @@
         "substeps": [
           {
             "device": "AR1 (Edge WAN Gateway Router)",
-            "code": "system-view\nsysname AR1\ninterface GigabitEthernet 0/0/0\n ip address 203.0.113.1 255.255.255.252\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.12.1 255.255.255.0\n quit\nospf 1 router-id 1.1.1.1\n default-route-advertise always\n area 0.0.0.0\n  network 10.0.12.0 0.0.0.255\n  quit\n quit\nip route-static 0.0.0.0 0.0.0.0 203.0.113.2",
+            "code": "system-view\nsysname AR1\ninterface GigabitEthernet 0/0/0\nip address 203.0.113.1 255.255.255.252\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.12.1 255.255.255.0\nquit\nospf 1 router-id 1.1.1.1\ndefault-route-advertise always\narea 0.0.0.0\nnetwork 10.0.12.0 0.0.0.255\nquit\nquit\nip route-static 0.0.0.0 0.0.0.0 203.0.113.2",
             "explanation": "Initializes OSPF process with a manual 32-bit Router-ID, binds physical interfaces to the appropriate OSPF area, and configures cryptographic MD5 authentication on the inter-router link."
           }
         ],
@@ -318,7 +318,7 @@
         "substeps": [
           {
             "device": "FW1 (USG6000 Next-Gen Firewall)",
-            "code": "system-view\nsysname FW1\ninterface GigabitEthernet 0/0/1\n ip address 192.168.100.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/0\n ip address 198.51.100.1 255.255.255.0\n quit\nfirewall zone trust\n add interface GigabitEthernet 0/0/1\n quit\nfirewall zone untrust\n add interface GigabitEthernet 0/0/0\n quit\nsecurity-policy\n default action deny\n rule name Trust_to_Untrust\n  source-zone trust\n  destination-zone untrust\n  source-address 192.168.0.0 mask 255.255.0.0\n  action permit\n  quit\n quit\nnat-policy\n rule name Easy_IP_NAT\n  source-zone trust\n  destination-zone untrust\n  action source-nat easy-ip\n  quit\n quit",
+            "code": "system-view\nsysname FW1\ninterface GigabitEthernet 0/0/1\nip address 192.168.100.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/0\nip address 198.51.100.1 255.255.255.0\nquit\nfirewall zone trust\nadd interface GigabitEthernet 0/0/1\nquit\nfirewall zone untrust\nadd interface GigabitEthernet 0/0/0\nquit\nsecurity-policy\ndefault action deny\nrule name Trust_to_Untrust\nsource-zone trust\ndestination-zone untrust\nsource-address 192.168.0.0 mask 255.255.0.0\naction permit\nquit\nquit\nnat-policy\nrule name Easy_IP_NAT\nsource-zone trust\ndestination-zone untrust\naction source-nat easy-ip\nquit\nquit",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -834,40 +834,40 @@
         "sysname R1-GW",
         "dhcp enable",
         "ip pool POOL_LAN1",
-        " network 192.168.10.0 mask 255.255.255.0",
-        " gateway-list 192.168.10.1",
-        " dns-list 8.8.8.8",
-        " lease day 1 hour 0 minute 0",
-        " quit",
+        "network 192.168.10.0 mask 255.255.255.0",
+        "gateway-list 192.168.10.1",
+        "dns-list 8.8.8.8",
+        "lease day 1 hour 0 minute 0",
+        "quit",
         "ip pool POOL_LAN2",
-        " network 192.168.20.0 mask 255.255.255.0",
-        " gateway-list 192.168.20.1",
-        " dns-list 8.8.8.8",
-        " quit",
+        "network 192.168.20.0 mask 255.255.255.0",
+        "gateway-list 192.168.20.1",
+        "dns-list 8.8.8.8",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.10.1 255.255.255.0",
-        " dhcp select global",
-        " quit",
+        "ip address 192.168.10.1 255.255.255.0",
+        "dhcp select global",
+        "quit",
         "interface GigabitEthernet 0/0/2",
-        " ip address 192.168.20.1 255.255.255.0",
-        " dhcp select global",
-        " quit",
+        "ip address 192.168.20.1 255.255.255.0",
+        "dhcp select global",
+        "quit",
         "interface GigabitEthernet 0/0/0",
-        " ip address 203.0.113.1 255.255.255.0",
-        " nat outbound 2000",
-        " quit",
+        "ip address 203.0.113.1 255.255.255.0",
+        "nat outbound 2000",
+        "quit",
         "acl number 2000",
-        " rule 5 permit source 192.168.10.0 0.0.0.255",
-        " rule 10 permit source 192.168.20.0 0.0.0.255",
-        " quit",
+        "rule 5 permit source 192.168.10.0 0.0.0.255",
+        "rule 10 permit source 192.168.20.0 0.0.0.255",
+        "quit",
         "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2"
       ],
       "ISP-Router": [
         "system-view",
         "sysname ISP-Router",
         "interface GigabitEthernet 0/0/0",
-        " ip address 203.0.113.2 255.255.255.0",
-        " quit"
+        "ip address 203.0.113.2 255.255.255.0",
+        "quit"
       ],
       "Endpoints (VPCS)": [
         "PC1> dhcp",
@@ -890,7 +890,7 @@
         "substeps": [
           {
             "device": "R1-GW",
-            "code": "system-view\nsysname R1-GW\ndhcp enable\nip pool POOL_LAN1\n network 192.168.10.0 mask 255.255.255.0\n gateway-list 192.168.10.1\n dns-list 8.8.8.8\n lease day 1 hour 0 minute 0\n quit\nip pool POOL_LAN2\n network 192.168.20.0 mask 255.255.255.0\n gateway-list 192.168.20.1\n dns-list 8.8.8.8\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n dhcp select global\n quit\ninterface GigabitEthernet 0/0/2\n ip address 192.168.20.1 255.255.255.0\n dhcp select global\n quit\ninterface GigabitEthernet 0/0/0\n ip address 203.0.113.1 255.255.255.0\n nat outbound 2000\n quit\nacl number 2000\n rule 5 permit source 192.168.10.0 0.0.0.255\n rule 10 permit source 192.168.20.0 0.0.0.255\n quit\nip route-static 0.0.0.0 0.0.0.0 203.0.113.2",
+            "code": "system-view\nsysname R1-GW\ndhcp enable\nip pool POOL_LAN1\nnetwork 192.168.10.0 mask 255.255.255.0\ngateway-list 192.168.10.1\ndns-list 8.8.8.8\nlease day 1 hour 0 minute 0\nquit\nip pool POOL_LAN2\nnetwork 192.168.20.0 mask 255.255.255.0\ngateway-list 192.168.20.1\ndns-list 8.8.8.8\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\ndhcp select global\nquit\ninterface GigabitEthernet 0/0/2\nip address 192.168.20.1 255.255.255.0\ndhcp select global\nquit\ninterface GigabitEthernet 0/0/0\nip address 203.0.113.1 255.255.255.0\nnat outbound 2000\nquit\nacl number 2000\nrule 5 permit source 192.168.10.0 0.0.0.255\nrule 10 permit source 192.168.20.0 0.0.0.255\nquit\nip route-static 0.0.0.0 0.0.0.0 203.0.113.2",
             "explanation": "Enters global configuration mode on R1-GW, configures the system name, provisions the local user database in AAA mode with encrypted passwords, and enables AAA authentication on VTY remote management lines."
           }
         ],
@@ -907,7 +907,7 @@
         "substeps": [
           {
             "device": "ISP-Router",
-            "code": "system-view\nsysname ISP-Router\ninterface GigabitEthernet 0/0/0\n ip address 203.0.113.2 255.255.255.0\n quit",
+            "code": "system-view\nsysname ISP-Router\ninterface GigabitEthernet 0/0/0\nip address 203.0.113.2 255.255.255.0\nquit",
             "explanation": "Enables the global DHCP daemon, declares the IP pool scope with gateway and DNS parameters, and activates global address distribution on interface GigabitEthernet 0/0/1."
           }
         ],
@@ -941,7 +941,7 @@
         "substeps": [
           {
             "device": "R1-GW",
-            "code": "system-view\nsysname R1-GW\ndhcp enable\nip pool POOL_LAN1\n network 192.168.10.0 mask 255.255.255.0\n gateway-list 192.168.10.1\n dns-list 8.8.8.8\n lease day 1 hour 0 minute 0\n quit\nip pool POOL_LAN2\n network 192.168.20.0 mask 255.255.255.0\n gateway-list 192.168.20.1\n dns-list 8.8.8.8\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n dhcp select global\n quit\ninterface GigabitEthernet 0/0/2\n ip address 192.168.20.1 255.255.255.0\n dhcp select global\n quit\ninterface GigabitEthernet 0/0/0\n ip address 203.0.113.1 255.255.255.0\n nat outbound 2000\n quit\nacl number 2000\n rule 5 permit source 192.168.10.0 0.0.0.255\n rule 10 permit source 192.168.20.0 0.0.0.255\n quit\nip route-static 0.0.0.0 0.0.0.0 203.0.113.2",
+            "code": "system-view\nsysname R1-GW\ndhcp enable\nip pool POOL_LAN1\nnetwork 192.168.10.0 mask 255.255.255.0\ngateway-list 192.168.10.1\ndns-list 8.8.8.8\nlease day 1 hour 0 minute 0\nquit\nip pool POOL_LAN2\nnetwork 192.168.20.0 mask 255.255.255.0\ngateway-list 192.168.20.1\ndns-list 8.8.8.8\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\ndhcp select global\nquit\ninterface GigabitEthernet 0/0/2\nip address 192.168.20.1 255.255.255.0\ndhcp select global\nquit\ninterface GigabitEthernet 0/0/0\nip address 203.0.113.1 255.255.255.0\nnat outbound 2000\nquit\nacl number 2000\nrule 5 permit source 192.168.10.0 0.0.0.255\nrule 10 permit source 192.168.20.0 0.0.0.255\nquit\nip route-static 0.0.0.0 0.0.0.0 203.0.113.2",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -958,7 +958,7 @@
         "substeps": [
           {
             "device": "ISP-Router",
-            "code": "system-view\nsysname ISP-Router\ninterface GigabitEthernet 0/0/0\n ip address 203.0.113.2 255.255.255.0\n quit",
+            "code": "system-view\nsysname ISP-Router\ninterface GigabitEthernet 0/0/0\nip address 203.0.113.2 255.255.255.0\nquit",
             "explanation": "Enables the global DHCP daemon, declares the IP pool scope with gateway and DNS parameters, and activates global address distribution on interface GigabitEthernet 0/0/1."
           }
         ],
@@ -1257,42 +1257,42 @@
         "system-view",
         "sysname Master-GW1",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.13.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.13.1 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.1.1 255.255.255.0",
-        " vrrp vrid 1 virtual-ip 192.168.1.254",
-        " vrrp vrid 1 priority 120",
-        " vrrp vrid 1 preempt-mode timer delay 20",
-        " vrrp vrid 1 track interface GigabitEthernet 0/0/0 reduced 30",
-        " quit",
+        "ip address 192.168.1.1 255.255.255.0",
+        "vrrp vrid 1 virtual-ip 192.168.1.254",
+        "vrrp vrid 1 priority 120",
+        "vrrp vrid 1 preempt-mode timer delay 20",
+        "vrrp vrid 1 track interface GigabitEthernet 0/0/0 reduced 30",
+        "quit",
         "ip route-static 0.0.0.0 0.0.0.0 10.0.13.3"
       ],
       "Backup-GW2": [
         "system-view",
         "sysname Backup-GW2",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.23.2 255.255.255.0",
-        " quit",
+        "ip address 10.0.23.2 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.1.2 255.255.255.0",
-        " vrrp vrid 1 virtual-ip 192.168.1.254",
-        " vrrp vrid 1 priority 100",
-        " quit",
+        "ip address 192.168.1.2 255.255.255.0",
+        "vrrp vrid 1 virtual-ip 192.168.1.254",
+        "vrrp vrid 1 priority 100",
+        "quit",
         "ip route-static 0.0.0.0 0.0.0.0 10.0.23.3"
       ],
       "Core-R3": [
         "system-view",
         "sysname Core-R3",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.13.3 255.255.255.0",
-        " quit",
+        "ip address 10.0.13.3 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 10.0.23.3 255.255.255.0",
-        " quit",
+        "ip address 10.0.23.3 255.255.255.0",
+        "quit",
         "interface LoopBack 0",
-        " ip address 3.3.3.3 255.255.255.255",
-        " quit",
+        "ip address 3.3.3.3 255.255.255.255",
+        "quit",
         "ip route-static 192.168.1.0 255.255.255.0 10.0.13.1",
         "ip route-static 192.168.1.0 255.255.255.0 10.0.23.2 preference 70"
       ],
@@ -1314,7 +1314,7 @@
         "substeps": [
           {
             "device": "Master-GW1",
-            "code": "system-view\nsysname Master-GW1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.13.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.1.1 255.255.255.0\n vrrp vrid 1 virtual-ip 192.168.1.254\n vrrp vrid 1 priority 120\n vrrp vrid 1 preempt-mode timer delay 20\n vrrp vrid 1 track interface GigabitEthernet 0/0/0 reduced 30\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.13.3",
+            "code": "system-view\nsysname Master-GW1\ninterface GigabitEthernet 0/0/0\nip address 10.0.13.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.1.1 255.255.255.0\nvrrp vrid 1 virtual-ip 192.168.1.254\nvrrp vrid 1 priority 120\nvrrp vrid 1 preempt-mode timer delay 20\nvrrp vrid 1 track interface GigabitEthernet 0/0/0 reduced 30\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.13.3",
             "explanation": "Instantiates VRRP group with virtual IP 192.168.1.254, sets election priority, enables preempt delay for link stabilization, and configures interface tracking to trigger automatic priority reduction upon uplink failure."
           }
         ],
@@ -1331,7 +1331,7 @@
         "substeps": [
           {
             "device": "Backup-GW2",
-            "code": "system-view\nsysname Backup-GW2\ninterface GigabitEthernet 0/0/0\n ip address 10.0.23.2 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.1.2 255.255.255.0\n vrrp vrid 1 virtual-ip 192.168.1.254\n vrrp vrid 1 priority 100\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.23.3",
+            "code": "system-view\nsysname Backup-GW2\ninterface GigabitEthernet 0/0/0\nip address 10.0.23.2 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.1.2 255.255.255.0\nvrrp vrid 1 virtual-ip 192.168.1.254\nvrrp vrid 1 priority 100\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.23.3",
             "explanation": "Instantiates VRRP group with virtual IP 192.168.1.254, sets election priority, enables preempt delay for link stabilization, and configures interface tracking to trigger automatic priority reduction upon uplink failure."
           }
         ],
@@ -1348,7 +1348,7 @@
         "substeps": [
           {
             "device": "Core-R3",
-            "code": "system-view\nsysname Core-R3\ninterface GigabitEthernet 0/0/0\n ip address 10.0.13.3 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.23.3 255.255.255.0\n quit\ninterface LoopBack 0\n ip address 3.3.3.3 255.255.255.255\n quit\nip route-static 192.168.1.0 255.255.255.0 10.0.13.1\nip route-static 192.168.1.0 255.255.255.0 10.0.23.2 preference 70",
+            "code": "system-view\nsysname Core-R3\ninterface GigabitEthernet 0/0/0\nip address 10.0.13.3 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.23.3 255.255.255.0\nquit\ninterface LoopBack 0\nip address 3.3.3.3 255.255.255.255\nquit\nip route-static 192.168.1.0 255.255.255.0 10.0.13.1\nip route-static 192.168.1.0 255.255.255.0 10.0.23.2 preference 70",
             "explanation": "Instantiates VRRP group with virtual IP 192.168.1.254, sets election priority, enables preempt delay for link stabilization, and configures interface tracking to trigger automatic priority reduction upon uplink failure."
           }
         ],
@@ -1382,7 +1382,7 @@
         "substeps": [
           {
             "device": "Master-GW1",
-            "code": "system-view\nsysname Master-GW1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.13.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.1.1 255.255.255.0\n vrrp vrid 1 virtual-ip 192.168.1.254\n vrrp vrid 1 priority 120\n vrrp vrid 1 preempt-mode timer delay 20\n vrrp vrid 1 track interface GigabitEthernet 0/0/0 reduced 30\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.13.3",
+            "code": "system-view\nsysname Master-GW1\ninterface GigabitEthernet 0/0/0\nip address 10.0.13.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.1.1 255.255.255.0\nvrrp vrid 1 virtual-ip 192.168.1.254\nvrrp vrid 1 priority 120\nvrrp vrid 1 preempt-mode timer delay 20\nvrrp vrid 1 track interface GigabitEthernet 0/0/0 reduced 30\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.13.3",
             "explanation": "Applies configuration commands on Master-GW1 matching the topology requirements."
           }
         ],
@@ -1646,22 +1646,22 @@
         "system-view",
         "sysname Branch-R1",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.1 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.10.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.10.1 255.255.255.0",
+        "quit",
         "ip route-static 0.0.0.0 0.0.0.0 10.0.12.2"
       ],
       "HQ-R2": [
         "system-view",
         "sysname HQ-R2",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.2 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.2 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 10.0.23.2 255.255.255.0",
-        " quit",
+        "ip address 10.0.23.2 255.255.255.0",
+        "quit",
         "ip route-static 192.168.10.0 255.255.255.0 10.0.12.1",
         "ip route-static 192.168.30.0 255.255.255.0 10.0.23.3"
       ],
@@ -1669,11 +1669,11 @@
         "system-view",
         "sysname Cloud-R3",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.23.3 255.255.255.0",
-        " quit",
+        "ip address 10.0.23.3 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.30.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.30.1 255.255.255.0",
+        "quit",
         "ip route-static 0.0.0.0 0.0.0.0 10.0.23.2"
       ],
       "Endpoints (VPCS)": [
@@ -1694,7 +1694,7 @@
         "substeps": [
           {
             "device": "Branch-R1",
-            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2",
+            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -1711,7 +1711,7 @@
         "substeps": [
           {
             "device": "HQ-R2",
-            "code": "system-view\nsysname HQ-R2\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.23.2 255.255.255.0\n quit\nip route-static 192.168.10.0 255.255.255.0 10.0.12.1\nip route-static 192.168.30.0 255.255.255.0 10.0.23.3",
+            "code": "system-view\nsysname HQ-R2\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.23.2 255.255.255.0\nquit\nip route-static 192.168.10.0 255.255.255.0 10.0.12.1\nip route-static 192.168.30.0 255.255.255.0 10.0.23.3",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -1728,7 +1728,7 @@
         "substeps": [
           {
             "device": "Cloud-R3",
-            "code": "system-view\nsysname Cloud-R3\ninterface GigabitEthernet 0/0/0\n ip address 10.0.23.3 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.30.1 255.255.255.0\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.23.2",
+            "code": "system-view\nsysname Cloud-R3\ninterface GigabitEthernet 0/0/0\nip address 10.0.23.3 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.30.1 255.255.255.0\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.23.2",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -1762,7 +1762,7 @@
         "substeps": [
           {
             "device": "Branch-R1",
-            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2",
+            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2",
             "explanation": "Applies configuration commands on Branch-R1 matching the topology requirements."
           }
         ],
@@ -1969,53 +1969,53 @@
         "system-view",
         "sysname Area1-R1",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.1 255.255.255.0",
+        "quit",
         "interface LoopBack 0",
-        " ip address 192.168.10.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.10.1 255.255.255.0",
+        "quit",
         "ospf 1 router-id 1.1.1.1",
-        " area 0.0.0.1",
-        "  network 10.0.12.0 0.0.0.255",
-        "  network 192.168.10.0 0.0.0.255",
-        "  quit",
-        " quit"
+        "area 0.0.0.1",
+        "network 10.0.12.0 0.0.0.255",
+        "network 192.168.10.0 0.0.0.255",
+        "quit",
+        "quit"
       ],
       "ABR-R2": [
         "system-view",
         "sysname ABR-R2",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.2 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.2 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 10.0.23.2 255.255.255.0",
-        " quit",
+        "ip address 10.0.23.2 255.255.255.0",
+        "quit",
         "ospf 1 router-id 2.2.2.2",
-        " area 0.0.0.1",
-        "  network 10.0.12.0 0.0.0.255",
-        "  quit",
-        " area 0.0.0.0",
-        "  network 10.0.23.0 0.0.0.255",
-        "  authentication-mode md5 1 cipher Huawei@123",
-        "  quit",
-        " quit"
+        "area 0.0.0.1",
+        "network 10.0.12.0 0.0.0.255",
+        "quit",
+        "area 0.0.0.0",
+        "network 10.0.23.0 0.0.0.255",
+        "authentication-mode md5 1 cipher Huawei@123",
+        "quit",
+        "quit"
       ],
       "Backbone-R3": [
         "system-view",
         "sysname Backbone-R3",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.23.3 255.255.255.0",
-        " quit",
+        "ip address 10.0.23.3 255.255.255.0",
+        "quit",
         "interface LoopBack 0",
-        " ip address 192.168.30.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.30.1 255.255.255.0",
+        "quit",
         "ospf 1 router-id 3.3.3.3",
-        " area 0.0.0.0",
-        "  network 10.0.23.0 0.0.0.255",
-        "  network 192.168.30.0 0.0.0.255",
-        "  authentication-mode md5 1 cipher Huawei@123",
-        "  quit",
-        " quit"
+        "area 0.0.0.0",
+        "network 10.0.23.0 0.0.0.255",
+        "network 192.168.30.0 0.0.0.255",
+        "authentication-mode md5 1 cipher Huawei@123",
+        "quit",
+        "quit"
       ]
     },
     "verif": [
@@ -2031,7 +2031,7 @@
         "substeps": [
           {
             "device": "Area1-R1",
-            "code": "system-view\nsysname Area1-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface LoopBack 0\n ip address 192.168.10.1 255.255.255.0\n quit\nospf 1 router-id 1.1.1.1\n area 0.0.0.1\n  network 10.0.12.0 0.0.0.255\n  network 192.168.10.0 0.0.0.255\n  quit\n quit",
+            "code": "system-view\nsysname Area1-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface LoopBack 0\nip address 192.168.10.1 255.255.255.0\nquit\nospf 1 router-id 1.1.1.1\narea 0.0.0.1\nnetwork 10.0.12.0 0.0.0.255\nnetwork 192.168.10.0 0.0.0.255\nquit\nquit",
             "explanation": "Enters global configuration mode on Area1-R1, configures the system name, provisions the local user database in AAA mode with encrypted passwords, and enables AAA authentication on VTY remote management lines."
           }
         ],
@@ -2048,7 +2048,7 @@
         "substeps": [
           {
             "device": "ABR-R2",
-            "code": "system-view\nsysname ABR-R2\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.23.2 255.255.255.0\n quit\nospf 1 router-id 2.2.2.2\n area 0.0.0.1\n  network 10.0.12.0 0.0.0.255\n  quit\n area 0.0.0.0\n  network 10.0.23.0 0.0.0.255\n  authentication-mode md5 1 cipher Huawei@123\n  quit\n quit",
+            "code": "system-view\nsysname ABR-R2\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.23.2 255.255.255.0\nquit\nospf 1 router-id 2.2.2.2\narea 0.0.0.1\nnetwork 10.0.12.0 0.0.0.255\nquit\narea 0.0.0.0\nnetwork 10.0.23.0 0.0.0.255\nauthentication-mode md5 1 cipher Huawei@123\nquit\nquit",
             "explanation": "Applies configuration commands on ABR-R2 matching the topology requirements."
           }
         ],
@@ -2065,7 +2065,7 @@
         "substeps": [
           {
             "device": "Backbone-R3",
-            "code": "system-view\nsysname Backbone-R3\ninterface GigabitEthernet 0/0/0\n ip address 10.0.23.3 255.255.255.0\n quit\ninterface LoopBack 0\n ip address 192.168.30.1 255.255.255.0\n quit\nospf 1 router-id 3.3.3.3\n area 0.0.0.0\n  network 10.0.23.0 0.0.0.255\n  network 192.168.30.0 0.0.0.255\n  authentication-mode md5 1 cipher Huawei@123\n  quit\n quit",
+            "code": "system-view\nsysname Backbone-R3\ninterface GigabitEthernet 0/0/0\nip address 10.0.23.3 255.255.255.0\nquit\ninterface LoopBack 0\nip address 192.168.30.1 255.255.255.0\nquit\nospf 1 router-id 3.3.3.3\narea 0.0.0.0\nnetwork 10.0.23.0 0.0.0.255\nnetwork 192.168.30.0 0.0.0.255\nauthentication-mode md5 1 cipher Huawei@123\nquit\nquit",
             "explanation": "Applies configuration commands on Backbone-R3 matching the topology requirements."
           }
         ],
@@ -2082,7 +2082,7 @@
         "substeps": [
           {
             "device": "Area1-R1",
-            "code": "system-view\nsysname Area1-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface LoopBack 0\n ip address 192.168.10.1 255.255.255.0\n quit\nospf 1 router-id 1.1.1.1\n area 0.0.0.1\n  network 10.0.12.0 0.0.0.255\n  network 192.168.10.0 0.0.0.255\n  quit\n quit",
+            "code": "system-view\nsysname Area1-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface LoopBack 0\nip address 192.168.10.1 255.255.255.0\nquit\nospf 1 router-id 1.1.1.1\narea 0.0.0.1\nnetwork 10.0.12.0 0.0.0.255\nnetwork 192.168.10.0 0.0.0.255\nquit\nquit",
             "explanation": "Applies configuration commands on Area1-R1 matching the topology requirements."
           }
         ],
@@ -2099,7 +2099,7 @@
         "substeps": [
           {
             "device": "ABR-R2",
-            "code": "system-view\nsysname ABR-R2\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.23.2 255.255.255.0\n quit\nospf 1 router-id 2.2.2.2\n area 0.0.0.1\n  network 10.0.12.0 0.0.0.255\n  quit\n area 0.0.0.0\n  network 10.0.23.0 0.0.0.255\n  authentication-mode md5 1 cipher Huawei@123\n  quit\n quit",
+            "code": "system-view\nsysname ABR-R2\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.23.2 255.255.255.0\nquit\nospf 1 router-id 2.2.2.2\narea 0.0.0.1\nnetwork 10.0.12.0 0.0.0.255\nquit\narea 0.0.0.0\nnetwork 10.0.23.0 0.0.0.255\nauthentication-mode md5 1 cipher Huawei@123\nquit\nquit",
             "explanation": "Applies configuration commands on ABR-R2 matching the topology requirements."
           }
         ],
@@ -2321,22 +2321,22 @@
         "vlan batch 10 20 30",
         "lacp priority 100",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 20 30",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit"
+        "mode lacp-static",
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 20 30",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit"
       ],
       "Dist-SW2": [
         "system-view",
         "sysname Dist-SW2",
         "vlan batch 10 20 30",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 20 30",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit"
+        "mode lacp-static",
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 20 30",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit"
       ]
     },
     "verif": [
@@ -2351,7 +2351,7 @@
         "substeps": [
           {
             "device": "Core-SW1",
-            "code": "system-view\nsysname Core-SW1\nvlan batch 10 20 30\nlacp priority 100\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-SW1\nvlan batch 10 20 30\nlacp priority 100\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 10 20 30\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -2368,7 +2368,7 @@
         "substeps": [
           {
             "device": "Dist-SW2",
-            "code": "system-view\nsysname Dist-SW2\nvlan batch 10 20 30\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Dist-SW2\nvlan batch 10 20 30\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 10 20 30\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -2385,7 +2385,7 @@
         "substeps": [
           {
             "device": "Core-SW1",
-            "code": "system-view\nsysname Core-SW1\nvlan batch 10 20 30\nlacp priority 100\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-SW1\nvlan batch 10 20 30\nlacp priority 100\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 10 20 30\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -2402,7 +2402,7 @@
         "substeps": [
           {
             "device": "Dist-SW2",
-            "code": "system-view\nsysname Dist-SW2\nvlan batch 10 20 30\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Dist-SW2\nvlan batch 10 20 30\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 10 20 30\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -2419,7 +2419,7 @@
         "substeps": [
           {
             "device": "Core-SW1",
-            "code": "system-view\nsysname Core-SW1\nvlan batch 10 20 30\nlacp priority 100\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-SW1\nvlan batch 10 20 30\nlacp priority 100\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 10 20 30\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -2549,18 +2549,18 @@
         "vlan batch 10 100",
         "voice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000",
         "interface GigabitEthernet 0/0/1",
-        " port link-type hybrid",
-        " voice-vlan 100 enable",
-        " voice-vlan mode manual",
-        " port hybrid pvid vlan 10",
-        " port hybrid untagged vlan 10",
-        " port hybrid tagged vlan 100",
-        " qos trust 8021p",
-        " quit",
+        "port link-type hybrid",
+        "voice-vlan 100 enable",
+        "voice-vlan mode manual",
+        "port hybrid pvid vlan 10",
+        "port hybrid untagged vlan 10",
+        "port hybrid tagged vlan 100",
+        "qos trust 8021p",
+        "quit",
         "interface GigabitEthernet 0/0/24",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 100",
-        " quit"
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 100",
+        "quit"
       ]
     },
     "verif": [
@@ -2575,7 +2575,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n voice-vlan mode manual\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n port hybrid tagged vlan 100\n qos trust 8021p\n quit\ninterface GigabitEthernet 0/0/24\n port link-type trunk\n port trunk allow-pass vlan 10 100\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nvoice-vlan mode manual\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nport hybrid tagged vlan 100\nqos trust 8021p\nquit\ninterface GigabitEthernet 0/0/24\nport link-type trunk\nport trunk allow-pass vlan 10 100\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -2592,7 +2592,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n voice-vlan mode manual\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n port hybrid tagged vlan 100\n qos trust 8021p\n quit\ninterface GigabitEthernet 0/0/24\n port link-type trunk\n port trunk allow-pass vlan 10 100\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nvoice-vlan mode manual\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nport hybrid tagged vlan 100\nqos trust 8021p\nquit\ninterface GigabitEthernet 0/0/24\nport link-type trunk\nport trunk allow-pass vlan 10 100\nquit",
             "explanation": "Applies configuration commands on Access-SW1 matching the topology requirements."
           }
         ],
@@ -2609,7 +2609,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n voice-vlan mode manual\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n port hybrid tagged vlan 100\n qos trust 8021p\n quit\ninterface GigabitEthernet 0/0/24\n port link-type trunk\n port trunk allow-pass vlan 10 100\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nvoice-vlan mode manual\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nport hybrid tagged vlan 100\nqos trust 8021p\nquit\ninterface GigabitEthernet 0/0/24\nport link-type trunk\nport trunk allow-pass vlan 10 100\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -2626,7 +2626,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n voice-vlan mode manual\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n port hybrid tagged vlan 100\n qos trust 8021p\n quit\ninterface GigabitEthernet 0/0/24\n port link-type trunk\n port trunk allow-pass vlan 10 100\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nvoice-vlan mode manual\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nport hybrid tagged vlan 100\nqos trust 8021p\nquit\ninterface GigabitEthernet 0/0/24\nport link-type trunk\nport trunk allow-pass vlan 10 100\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -2643,7 +2643,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n voice-vlan mode manual\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n port hybrid tagged vlan 100\n qos trust 8021p\n quit\ninterface GigabitEthernet 0/0/24\n port link-type trunk\n port trunk allow-pass vlan 10 100\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan batch 10 100\nvoice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nvoice-vlan mode manual\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nport hybrid tagged vlan 100\nqos trust 8021p\nquit\ninterface GigabitEthernet 0/0/24\nport link-type trunk\nport trunk allow-pass vlan 10 100\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -2815,20 +2815,20 @@
         "sysname SW1",
         "vlan batch 10 20 30",
         "interface GigabitEthernet 0/0/1",
-        " port link-type hybrid",
-        " port hybrid pvid vlan 10",
-        " port hybrid untagged vlan 10 30",
-        " quit",
+        "port link-type hybrid",
+        "port hybrid pvid vlan 10",
+        "port hybrid untagged vlan 10 30",
+        "quit",
         "interface GigabitEthernet 0/0/2",
-        " port link-type hybrid",
-        " port hybrid pvid vlan 20",
-        " port hybrid untagged vlan 20 30",
-        " quit",
+        "port link-type hybrid",
+        "port hybrid pvid vlan 20",
+        "port hybrid untagged vlan 20 30",
+        "quit",
         "interface GigabitEthernet 0/0/3",
-        " port link-type hybrid",
-        " port hybrid pvid vlan 30",
-        " port hybrid untagged vlan 10 20 30",
-        " quit"
+        "port link-type hybrid",
+        "port hybrid pvid vlan 30",
+        "port hybrid untagged vlan 10 20 30",
+        "quit"
       ],
       "Endpoints (VPCS)": [
         "PC-HR> ip 192.168.1.10/24",
@@ -2851,7 +2851,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10 30\n quit\ninterface GigabitEthernet 0/0/2\n port link-type hybrid\n port hybrid pvid vlan 20\n port hybrid untagged vlan 20 30\n quit\ninterface GigabitEthernet 0/0/3\n port link-type hybrid\n port hybrid pvid vlan 30\n port hybrid untagged vlan 10 20 30\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10 30\nquit\ninterface GigabitEthernet 0/0/2\nport link-type hybrid\nport hybrid pvid vlan 20\nport hybrid untagged vlan 20 30\nquit\ninterface GigabitEthernet 0/0/3\nport link-type hybrid\nport hybrid pvid vlan 30\nport hybrid untagged vlan 10 20 30\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -2885,7 +2885,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10 30\n quit\ninterface GigabitEthernet 0/0/2\n port link-type hybrid\n port hybrid pvid vlan 20\n port hybrid untagged vlan 20 30\n quit\ninterface GigabitEthernet 0/0/3\n port link-type hybrid\n port hybrid pvid vlan 30\n port hybrid untagged vlan 10 20 30\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10 30\nquit\ninterface GigabitEthernet 0/0/2\nport link-type hybrid\nport hybrid pvid vlan 20\nport hybrid untagged vlan 20 30\nquit\ninterface GigabitEthernet 0/0/3\nport link-type hybrid\nport hybrid pvid vlan 30\nport hybrid untagged vlan 10 20 30\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -2919,7 +2919,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10 30\n quit\ninterface GigabitEthernet 0/0/2\n port link-type hybrid\n port hybrid pvid vlan 20\n port hybrid untagged vlan 20 30\n quit\ninterface GigabitEthernet 0/0/3\n port link-type hybrid\n port hybrid pvid vlan 30\n port hybrid untagged vlan 10 20 30\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10 30\nquit\ninterface GigabitEthernet 0/0/2\nport link-type hybrid\nport hybrid pvid vlan 20\nport hybrid untagged vlan 20 30\nquit\ninterface GigabitEthernet 0/0/3\nport link-type hybrid\nport hybrid pvid vlan 30\nport hybrid untagged vlan 10 20 30\nquit",
             "explanation": "Applies configuration commands on SW1 matching the topology requirements."
           }
         ],
@@ -3119,16 +3119,16 @@
         "sysname R1-DualStack",
         "ipv6",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.1 255.255.255.0",
-        " ipv6 enable",
-        " ipv6 address 2001:DB8:12::1 64",
-        " quit",
+        "ip address 10.0.12.1 255.255.255.0",
+        "ipv6 enable",
+        "ipv6 address 2001:DB8:12::1 64",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.1.1 255.255.255.0",
-        " ipv6 enable",
-        " ipv6 address 2001:DB8:1::1 64",
-        " undo ipv6 nd ra halt",
-        " quit",
+        "ip address 192.168.1.1 255.255.255.0",
+        "ipv6 enable",
+        "ipv6 address 2001:DB8:1::1 64",
+        "undo ipv6 nd ra halt",
+        "quit",
         "ipv6 route-static 2001:DB8:2:: 64 2001:DB8:12::2",
         "ip route-static 192.168.2.0 255.255.255.0 10.0.12.2"
       ],
@@ -3137,16 +3137,16 @@
         "sysname R2-DualStack",
         "ipv6",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.2 255.255.255.0",
-        " ipv6 enable",
-        " ipv6 address 2001:DB8:12::2 64",
-        " quit",
+        "ip address 10.0.12.2 255.255.255.0",
+        "ipv6 enable",
+        "ipv6 address 2001:DB8:12::2 64",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.2.1 255.255.255.0",
-        " ipv6 enable",
-        " ipv6 address 2001:DB8:2::1 64",
-        " undo ipv6 nd ra halt",
-        " quit",
+        "ip address 192.168.2.1 255.255.255.0",
+        "ipv6 enable",
+        "ipv6 address 2001:DB8:2::1 64",
+        "undo ipv6 nd ra halt",
+        "quit",
         "ipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1",
         "ip route-static 192.168.1.0 255.255.255.0 10.0.12.1"
       ]
@@ -3163,7 +3163,7 @@
         "substeps": [
           {
             "device": "R1-DualStack",
-            "code": "system-view\nsysname R1-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:12::1 64\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.1.1 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:1::1 64\n undo ipv6 nd ra halt\n quit\nipv6 route-static 2001:DB8:2:: 64 2001:DB8:12::2\nip route-static 192.168.2.0 255.255.255.0 10.0.12.2",
+            "code": "system-view\nsysname R1-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:12::1 64\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.1.1 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:1::1 64\nundo ipv6 nd ra halt\nquit\nipv6 route-static 2001:DB8:2:: 64 2001:DB8:12::2\nip route-static 192.168.2.0 255.255.255.0 10.0.12.2",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -3180,7 +3180,7 @@
         "substeps": [
           {
             "device": "R2-DualStack",
-            "code": "system-view\nsysname R2-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:12::2 64\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.2.1 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:2::1 64\n undo ipv6 nd ra halt\n quit\nipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1\nip route-static 192.168.1.0 255.255.255.0 10.0.12.1",
+            "code": "system-view\nsysname R2-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:12::2 64\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.2.1 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:2::1 64\nundo ipv6 nd ra halt\nquit\nipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1\nip route-static 192.168.1.0 255.255.255.0 10.0.12.1",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -3197,7 +3197,7 @@
         "substeps": [
           {
             "device": "R1-DualStack",
-            "code": "system-view\nsysname R1-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:12::1 64\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.1.1 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:1::1 64\n undo ipv6 nd ra halt\n quit\nipv6 route-static 2001:DB8:2:: 64 2001:DB8:12::2\nip route-static 192.168.2.0 255.255.255.0 10.0.12.2",
+            "code": "system-view\nsysname R1-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:12::1 64\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.1.1 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:1::1 64\nundo ipv6 nd ra halt\nquit\nipv6 route-static 2001:DB8:2:: 64 2001:DB8:12::2\nip route-static 192.168.2.0 255.255.255.0 10.0.12.2",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -3214,7 +3214,7 @@
         "substeps": [
           {
             "device": "R2-DualStack",
-            "code": "system-view\nsysname R2-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:12::2 64\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.2.1 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:2::1 64\n undo ipv6 nd ra halt\n quit\nipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1\nip route-static 192.168.1.0 255.255.255.0 10.0.12.1",
+            "code": "system-view\nsysname R2-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:12::2 64\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.2.1 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:2::1 64\nundo ipv6 nd ra halt\nquit\nipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1\nip route-static 192.168.1.0 255.255.255.0 10.0.12.1",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -3231,7 +3231,7 @@
         "substeps": [
           {
             "device": "R1-DualStack",
-            "code": "system-view\nsysname R1-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:12::1 64\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.1.1 255.255.255.0\n ipv6 enable\n ipv6 address 2001:DB8:1::1 64\n undo ipv6 nd ra halt\n quit\nipv6 route-static 2001:DB8:2:: 64 2001:DB8:12::2\nip route-static 192.168.2.0 255.255.255.0 10.0.12.2",
+            "code": "system-view\nsysname R1-DualStack\nipv6\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:12::1 64\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.1.1 255.255.255.0\nipv6 enable\nipv6 address 2001:DB8:1::1 64\nundo ipv6 nd ra halt\nquit\nipv6 route-static 2001:DB8:2:: 64 2001:DB8:12::2\nip route-static 192.168.2.0 255.255.255.0 10.0.12.2",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -3430,28 +3430,28 @@
         "system-view",
         "sysname Access-SW1",
         "vlan 10",
-        " quit",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " port link-type access",
-        " port default vlan 10",
-        " port-security enable",
-        " port-security max-mac-num 1",
-        " port-security protect-type restrict",
-        " port-security mac-address aging-time 10",
-        " quit"
+        "port link-type access",
+        "port default vlan 10",
+        "port-security enable",
+        "port-security max-mac-num 1",
+        "port-security protect-type restrict",
+        "port-security mac-address aging-time 10",
+        "quit"
       ],
       "GW-R1": [
         "system-view",
         "sysname GW-R1",
         "acl number 3000",
-        " rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 80",
-        " rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 23",
-        " rule 15 permit ip",
-        " quit",
+        "rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 80",
+        "rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 23",
+        "rule 15 permit ip",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.10.1 255.255.255.0",
-        " traffic-filter inbound acl 3000",
-        " quit"
+        "ip address 192.168.10.1 255.255.255.0",
+        "traffic-filter inbound acl 3000",
+        "quit"
       ]
     },
     "verif": [
@@ -3466,7 +3466,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan 10\n quit\ninterface GigabitEthernet 0/0/1\n port link-type access\n port default vlan 10\n port-security enable\n port-security max-mac-num 1\n port-security protect-type restrict\n port-security mac-address aging-time 10\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan 10\nquit\ninterface GigabitEthernet 0/0/1\nport link-type access\nport default vlan 10\nport-security enable\nport-security max-mac-num 1\nport-security protect-type restrict\nport-security mac-address aging-time 10\nquit",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -3483,7 +3483,7 @@
         "substeps": [
           {
             "device": "GW-R1",
-            "code": "system-view\nsysname GW-R1\nacl number 3000\n rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 80\n rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 23\n rule 15 permit ip\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n traffic-filter inbound acl 3000\n quit",
+            "code": "system-view\nsysname GW-R1\nacl number 3000\nrule 5 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 80\nrule 10 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 23\nrule 15 permit ip\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\ntraffic-filter inbound acl 3000\nquit",
             "explanation": "Applies configuration commands on GW-R1 matching the topology requirements."
           }
         ],
@@ -3500,7 +3500,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan 10\n quit\ninterface GigabitEthernet 0/0/1\n port link-type access\n port default vlan 10\n port-security enable\n port-security max-mac-num 1\n port-security protect-type restrict\n port-security mac-address aging-time 10\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan 10\nquit\ninterface GigabitEthernet 0/0/1\nport link-type access\nport default vlan 10\nport-security enable\nport-security max-mac-num 1\nport-security protect-type restrict\nport-security mac-address aging-time 10\nquit",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -3517,7 +3517,7 @@
         "substeps": [
           {
             "device": "GW-R1",
-            "code": "system-view\nsysname GW-R1\nacl number 3000\n rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 80\n rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 23\n rule 15 permit ip\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n traffic-filter inbound acl 3000\n quit",
+            "code": "system-view\nsysname GW-R1\nacl number 3000\nrule 5 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 80\nrule 10 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 23\nrule 15 permit ip\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\ntraffic-filter inbound acl 3000\nquit",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -3534,7 +3534,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan 10\n quit\ninterface GigabitEthernet 0/0/1\n port link-type access\n port default vlan 10\n port-security enable\n port-security max-mac-num 1\n port-security protect-type restrict\n port-security mac-address aging-time 10\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan 10\nquit\ninterface GigabitEthernet 0/0/1\nport link-type access\nport default vlan 10\nport-security enable\nport-security max-mac-num 1\nport-security protect-type restrict\nport-security mac-address aging-time 10\nquit",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -3713,12 +3713,12 @@
         "dhcp enable",
         "dhcp snooping enable",
         "interface GigabitEthernet 0/0/24",
-        " dhcp snooping trusted",
-        " quit",
+        "dhcp snooping trusted",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " dhcp snooping enable",
-        " ip source check user-bind enable",
-        " quit"
+        "dhcp snooping enable",
+        "ip source check user-bind enable",
+        "quit"
       ]
     },
     "verif": [
@@ -3733,7 +3733,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\n dhcp snooping trusted\n quit\ninterface GigabitEthernet 0/0/1\n dhcp snooping enable\n ip source check user-bind enable\n quit",
+            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\ndhcp snooping trusted\nquit\ninterface GigabitEthernet 0/0/1\ndhcp snooping enable\nip source check user-bind enable\nquit",
             "explanation": "Enables the global DHCP daemon, declares the IP pool scope with gateway and DNS parameters, and activates global address distribution on interface GigabitEthernet 0/0/1."
           }
         ],
@@ -3750,7 +3750,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\n dhcp snooping trusted\n quit\ninterface GigabitEthernet 0/0/1\n dhcp snooping enable\n ip source check user-bind enable\n quit",
+            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\ndhcp snooping trusted\nquit\ninterface GigabitEthernet 0/0/1\ndhcp snooping enable\nip source check user-bind enable\nquit",
             "explanation": "Enables the global DHCP daemon, declares the IP pool scope with gateway and DNS parameters, and activates global address distribution on interface GigabitEthernet 0/0/1."
           }
         ],
@@ -3767,7 +3767,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\n dhcp snooping trusted\n quit\ninterface GigabitEthernet 0/0/1\n dhcp snooping enable\n ip source check user-bind enable\n quit",
+            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\ndhcp snooping trusted\nquit\ninterface GigabitEthernet 0/0/1\ndhcp snooping enable\nip source check user-bind enable\nquit",
             "explanation": "Enables the global DHCP daemon, declares the IP pool scope with gateway and DNS parameters, and activates global address distribution on interface GigabitEthernet 0/0/1."
           }
         ],
@@ -3784,7 +3784,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\n dhcp snooping trusted\n quit\ninterface GigabitEthernet 0/0/1\n dhcp snooping enable\n ip source check user-bind enable\n quit",
+            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\ndhcp snooping trusted\nquit\ninterface GigabitEthernet 0/0/1\ndhcp snooping enable\nip source check user-bind enable\nquit",
             "explanation": "Applies configuration commands on Access-SW1 matching the topology requirements."
           }
         ],
@@ -3801,7 +3801,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\n dhcp snooping trusted\n quit\ninterface GigabitEthernet 0/0/1\n dhcp snooping enable\n ip source check user-bind enable\n quit",
+            "code": "system-view\nsysname Access-SW1\ndhcp enable\ndhcp snooping enable\ninterface GigabitEthernet 0/0/24\ndhcp snooping trusted\nquit\ninterface GigabitEthernet 0/0/1\ndhcp snooping enable\nip source check user-bind enable\nquit",
             "explanation": "Enables the global DHCP daemon, declares the IP pool scope with gateway and DNS parameters, and activates global address distribution on interface GigabitEthernet 0/0/1."
           }
         ],
@@ -4105,22 +4105,22 @@
         "system-view",
         "sysname HQ-Core",
         "interface GigabitEthernet 0/0/0",
-        " ip address 172.16.0.1 255.255.255.252",
-        " quit",
+        "ip address 172.16.0.1 255.255.255.252",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 172.16.1.1 255.255.255.0",
-        " quit",
+        "ip address 172.16.1.1 255.255.255.0",
+        "quit",
         "ip route-static 172.16.2.0 255.255.255.0 172.16.0.2"
       ],
       "Branch-R1": [
         "system-view",
         "sysname Branch-R1",
         "interface GigabitEthernet 0/0/0",
-        " ip address 172.16.0.2 255.255.255.252",
-        " quit",
+        "ip address 172.16.0.2 255.255.255.252",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 172.16.2.1 255.255.255.0",
-        " quit",
+        "ip address 172.16.2.1 255.255.255.0",
+        "quit",
         "ip route-static 172.16.1.0 255.255.255.0 172.16.0.1"
       ]
     },
@@ -4138,7 +4138,7 @@
         "substeps": [
           {
             "device": "HQ-Core",
-            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\n ip address 172.16.0.1 255.255.255.252\n quit\ninterface GigabitEthernet 0/0/1\n ip address 172.16.1.1 255.255.255.0\n quit\nip route-static 172.16.2.0 255.255.255.0 172.16.0.2",
+            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\nip address 172.16.0.1 255.255.255.252\nquit\ninterface GigabitEthernet 0/0/1\nip address 172.16.1.1 255.255.255.0\nquit\nip route-static 172.16.2.0 255.255.255.0 172.16.0.2",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -4155,7 +4155,7 @@
         "substeps": [
           {
             "device": "Branch-R1",
-            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\n ip address 172.16.0.2 255.255.255.252\n quit\ninterface GigabitEthernet 0/0/1\n ip address 172.16.2.1 255.255.255.0\n quit\nip route-static 172.16.1.0 255.255.255.0 172.16.0.1",
+            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\nip address 172.16.0.2 255.255.255.252\nquit\ninterface GigabitEthernet 0/0/1\nip address 172.16.2.1 255.255.255.0\nquit\nip route-static 172.16.1.0 255.255.255.0 172.16.0.1",
             "explanation": "Applies configuration commands on Branch-R1 matching the topology requirements."
           }
         ],
@@ -4172,7 +4172,7 @@
         "substeps": [
           {
             "device": "HQ-Core",
-            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\n ip address 172.16.0.1 255.255.255.252\n quit\ninterface GigabitEthernet 0/0/1\n ip address 172.16.1.1 255.255.255.0\n quit\nip route-static 172.16.2.0 255.255.255.0 172.16.0.2",
+            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\nip address 172.16.0.1 255.255.255.252\nquit\ninterface GigabitEthernet 0/0/1\nip address 172.16.1.1 255.255.255.0\nquit\nip route-static 172.16.2.0 255.255.255.0 172.16.0.2",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -4189,7 +4189,7 @@
         "substeps": [
           {
             "device": "Branch-R1",
-            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\n ip address 172.16.0.2 255.255.255.252\n quit\ninterface GigabitEthernet 0/0/1\n ip address 172.16.2.1 255.255.255.0\n quit\nip route-static 172.16.1.0 255.255.255.0 172.16.0.1",
+            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\nip address 172.16.0.2 255.255.255.252\nquit\ninterface GigabitEthernet 0/0/1\nip address 172.16.2.1 255.255.255.0\nquit\nip route-static 172.16.1.0 255.255.255.0 172.16.0.1",
             "explanation": "Applies configuration commands on Branch-R1 matching the topology requirements."
           }
         ],
@@ -4323,11 +4323,11 @@
         "system-view",
         "sysname Branch-R1",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.1 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 10.0.13.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.13.1 255.255.255.0",
+        "quit",
         "ip route-static 0.0.0.0 0.0.0.0 10.0.12.2",
         "ip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100"
       ]
@@ -4347,7 +4347,7 @@
         "substeps": [
           {
             "device": "Branch-R1",
-            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.13.1 255.255.255.0\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2\nip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100",
+            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.13.1 255.255.255.0\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2\nip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -4364,7 +4364,7 @@
         "substeps": [
           {
             "device": "Branch-R1",
-            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.13.1 255.255.255.0\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2\nip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100",
+            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.13.1 255.255.255.0\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2\nip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -4381,7 +4381,7 @@
         "substeps": [
           {
             "device": "Branch-R1",
-            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.13.1 255.255.255.0\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2\nip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100",
+            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.13.1 255.255.255.0\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2\nip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -4398,7 +4398,7 @@
         "substeps": [
           {
             "device": "Branch-R1",
-            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.13.1 255.255.255.0\n quit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2\nip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100",
+            "code": "system-view\nsysname Branch-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.13.1 255.255.255.0\nquit\nip route-static 0.0.0.0 0.0.0.0 10.0.12.2\nip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -4512,28 +4512,28 @@
         "system-view",
         "sysname HQ-Core",
         "interface LoopBack 0",
-        " ip address 192.168.0.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.0.1 255.255.255.0",
+        "quit",
         "interface LoopBack 1",
-        " ip address 192.168.1.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.1.1 255.255.255.0",
+        "quit",
         "interface LoopBack 2",
-        " ip address 192.168.2.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.2.1 255.255.255.0",
+        "quit",
         "interface LoopBack 3",
-        " ip address 192.168.3.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.3.1 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.1 255.255.255.0",
+        "quit",
         "ip route-static 192.168.0.0 255.255.252.0 NULL0"
       ],
       "Branch-R2": [
         "system-view",
         "sysname Branch-R2",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.2 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.2 255.255.255.0",
+        "quit",
         "ip route-static 192.168.0.0 255.255.252.0 10.0.12.1"
       ]
     },
@@ -4551,7 +4551,7 @@
         "substeps": [
           {
             "device": "HQ-Core",
-            "code": "system-view\nsysname HQ-Core\ninterface LoopBack 0\n ip address 192.168.0.1 255.255.255.0\n quit\ninterface LoopBack 1\n ip address 192.168.1.1 255.255.255.0\n quit\ninterface LoopBack 2\n ip address 192.168.2.1 255.255.255.0\n quit\ninterface LoopBack 3\n ip address 192.168.3.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\nip route-static 192.168.0.0 255.255.252.0 NULL0",
+            "code": "system-view\nsysname HQ-Core\ninterface LoopBack 0\nip address 192.168.0.1 255.255.255.0\nquit\ninterface LoopBack 1\nip address 192.168.1.1 255.255.255.0\nquit\ninterface LoopBack 2\nip address 192.168.2.1 255.255.255.0\nquit\ninterface LoopBack 3\nip address 192.168.3.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\nip route-static 192.168.0.0 255.255.252.0 NULL0",
             "explanation": "Applies configuration commands on HQ-Core matching the topology requirements."
           }
         ],
@@ -4568,7 +4568,7 @@
         "substeps": [
           {
             "device": "Branch-R2",
-            "code": "system-view\nsysname Branch-R2\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n quit\nip route-static 192.168.0.0 255.255.252.0 10.0.12.1",
+            "code": "system-view\nsysname Branch-R2\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nquit\nip route-static 192.168.0.0 255.255.252.0 10.0.12.1",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -4585,7 +4585,7 @@
         "substeps": [
           {
             "device": "HQ-Core",
-            "code": "system-view\nsysname HQ-Core\ninterface LoopBack 0\n ip address 192.168.0.1 255.255.255.0\n quit\ninterface LoopBack 1\n ip address 192.168.1.1 255.255.255.0\n quit\ninterface LoopBack 2\n ip address 192.168.2.1 255.255.255.0\n quit\ninterface LoopBack 3\n ip address 192.168.3.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\nip route-static 192.168.0.0 255.255.252.0 NULL0",
+            "code": "system-view\nsysname HQ-Core\ninterface LoopBack 0\nip address 192.168.0.1 255.255.255.0\nquit\ninterface LoopBack 1\nip address 192.168.1.1 255.255.255.0\nquit\ninterface LoopBack 2\nip address 192.168.2.1 255.255.255.0\nquit\ninterface LoopBack 3\nip address 192.168.3.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\nip route-static 192.168.0.0 255.255.252.0 NULL0",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -4602,7 +4602,7 @@
         "substeps": [
           {
             "device": "Branch-R2",
-            "code": "system-view\nsysname Branch-R2\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n quit\nip route-static 192.168.0.0 255.255.252.0 10.0.12.1",
+            "code": "system-view\nsysname Branch-R2\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nquit\nip route-static 192.168.0.0 255.255.252.0 10.0.12.1",
             "explanation": "Applies configuration commands on Branch-R2 matching the topology requirements."
           }
         ],
@@ -4949,12 +4949,12 @@
         "sysname Access-SW1",
         "lldp enable",
         "interface GigabitEthernet 0/0/1",
-        " undo lldp tlv-enable basic-tlv sys-desc",
-        " undo lldp tlv-enable basic-tlv sys-cap",
-        " quit",
+        "undo lldp tlv-enable basic-tlv sys-desc",
+        "undo lldp tlv-enable basic-tlv sys-cap",
+        "quit",
         "interface GigabitEthernet 0/0/24",
-        " lldp tlv-enable basic-tlv all",
-        " quit"
+        "lldp tlv-enable basic-tlv all",
+        "quit"
       ]
     },
     "verif": [
@@ -4971,7 +4971,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nlldp enable\ninterface GigabitEthernet 0/0/1\n undo lldp tlv-enable basic-tlv sys-desc\n undo lldp tlv-enable basic-tlv sys-cap\n quit\ninterface GigabitEthernet 0/0/24\n lldp tlv-enable basic-tlv all\n quit",
+            "code": "system-view\nsysname Access-SW1\nlldp enable\ninterface GigabitEthernet 0/0/1\nundo lldp tlv-enable basic-tlv sys-desc\nundo lldp tlv-enable basic-tlv sys-cap\nquit\ninterface GigabitEthernet 0/0/24\nlldp tlv-enable basic-tlv all\nquit",
             "explanation": "Applies configuration commands on Access-SW1 matching the topology requirements."
           }
         ],
@@ -4988,7 +4988,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nlldp enable\ninterface GigabitEthernet 0/0/1\n undo lldp tlv-enable basic-tlv sys-desc\n undo lldp tlv-enable basic-tlv sys-cap\n quit\ninterface GigabitEthernet 0/0/24\n lldp tlv-enable basic-tlv all\n quit",
+            "code": "system-view\nsysname Access-SW1\nlldp enable\ninterface GigabitEthernet 0/0/1\nundo lldp tlv-enable basic-tlv sys-desc\nundo lldp tlv-enable basic-tlv sys-cap\nquit\ninterface GigabitEthernet 0/0/24\nlldp tlv-enable basic-tlv all\nquit",
             "explanation": "Applies configuration commands on Access-SW1 matching the topology requirements."
           }
         ],
@@ -5005,7 +5005,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nlldp enable\ninterface GigabitEthernet 0/0/1\n undo lldp tlv-enable basic-tlv sys-desc\n undo lldp tlv-enable basic-tlv sys-cap\n quit\ninterface GigabitEthernet 0/0/24\n lldp tlv-enable basic-tlv all\n quit",
+            "code": "system-view\nsysname Access-SW1\nlldp enable\ninterface GigabitEthernet 0/0/1\nundo lldp tlv-enable basic-tlv sys-desc\nundo lldp tlv-enable basic-tlv sys-cap\nquit\ninterface GigabitEthernet 0/0/24\nlldp tlv-enable basic-tlv all\nquit",
             "explanation": "Applies configuration commands on Access-SW1 matching the topology requirements."
           }
         ],
@@ -5022,7 +5022,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nlldp enable\ninterface GigabitEthernet 0/0/1\n undo lldp tlv-enable basic-tlv sys-desc\n undo lldp tlv-enable basic-tlv sys-cap\n quit\ninterface GigabitEthernet 0/0/24\n lldp tlv-enable basic-tlv all\n quit",
+            "code": "system-view\nsysname Access-SW1\nlldp enable\ninterface GigabitEthernet 0/0/1\nundo lldp tlv-enable basic-tlv sys-desc\nundo lldp tlv-enable basic-tlv sys-cap\nquit\ninterface GigabitEthernet 0/0/24\nlldp tlv-enable basic-tlv all\nquit",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -5137,10 +5137,10 @@
         "sysname R1",
         "ipv6",
         "interface GigabitEthernet 0/0/0",
-        " ipv6 enable",
-        " ipv6 address 2001:DB8:12::1 64",
-        " ipv6 address FE80::1 link-local",
-        " quit",
+        "ipv6 enable",
+        "ipv6 address 2001:DB8:12::1 64",
+        "ipv6 address FE80::1 link-local",
+        "quit",
         "ipv6 route-static 2001:DB8:2:: 64 GigabitEthernet 0/0/0 FE80::2"
       ],
       "R2": [
@@ -5148,10 +5148,10 @@
         "sysname R2",
         "ipv6",
         "interface GigabitEthernet 0/0/0",
-        " ipv6 enable",
-        " ipv6 address 2001:DB8:12::2 64",
-        " ipv6 address FE80::2 link-local",
-        " quit",
+        "ipv6 enable",
+        "ipv6 address 2001:DB8:12::2 64",
+        "ipv6 address FE80::2 link-local",
+        "quit",
         "ipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1"
       ]
     },
@@ -5169,7 +5169,7 @@
         "substeps": [
           {
             "device": "R1",
-            "code": "system-view\nsysname R1\nipv6\ninterface GigabitEthernet 0/0/0\n ipv6 enable\n ipv6 address 2001:DB8:12::1 64\n ipv6 address FE80::1 link-local\n quit\nipv6 route-static 2001:DB8:2:: 64 GigabitEthernet 0/0/0 FE80::2",
+            "code": "system-view\nsysname R1\nipv6\ninterface GigabitEthernet 0/0/0\nipv6 enable\nipv6 address 2001:DB8:12::1 64\nipv6 address FE80::1 link-local\nquit\nipv6 route-static 2001:DB8:2:: 64 GigabitEthernet 0/0/0 FE80::2",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -5186,7 +5186,7 @@
         "substeps": [
           {
             "device": "R2",
-            "code": "system-view\nsysname R2\nipv6\ninterface GigabitEthernet 0/0/0\n ipv6 enable\n ipv6 address 2001:DB8:12::2 64\n ipv6 address FE80::2 link-local\n quit\nipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1",
+            "code": "system-view\nsysname R2\nipv6\ninterface GigabitEthernet 0/0/0\nipv6 enable\nipv6 address 2001:DB8:12::2 64\nipv6 address FE80::2 link-local\nquit\nipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -5203,7 +5203,7 @@
         "substeps": [
           {
             "device": "R1",
-            "code": "system-view\nsysname R1\nipv6\ninterface GigabitEthernet 0/0/0\n ipv6 enable\n ipv6 address 2001:DB8:12::1 64\n ipv6 address FE80::1 link-local\n quit\nipv6 route-static 2001:DB8:2:: 64 GigabitEthernet 0/0/0 FE80::2",
+            "code": "system-view\nsysname R1\nipv6\ninterface GigabitEthernet 0/0/0\nipv6 enable\nipv6 address 2001:DB8:12::1 64\nipv6 address FE80::1 link-local\nquit\nipv6 route-static 2001:DB8:2:: 64 GigabitEthernet 0/0/0 FE80::2",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -5220,7 +5220,7 @@
         "substeps": [
           {
             "device": "R2",
-            "code": "system-view\nsysname R2\nipv6\ninterface GigabitEthernet 0/0/0\n ipv6 enable\n ipv6 address 2001:DB8:12::2 64\n ipv6 address FE80::2 link-local\n quit\nipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1",
+            "code": "system-view\nsysname R2\nipv6\ninterface GigabitEthernet 0/0/0\nipv6 enable\nipv6 address 2001:DB8:12::2 64\nipv6 address FE80::2 link-local\nquit\nipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -5338,8 +5338,36 @@
       [
         "SW1",
         "GigabitEthernet 0/0/1",
-        "Hybrid (Auto Voice VLAN)",
-        "Connected to IP Phone",
+        "VLAN 100/10",
+        "VoIP Phone & Workstation PC",
+        "Normal"
+      ],
+      [
+        "SW1",
+        "GigabitEthernet 0/0/2",
+        "VLAN 100/10",
+        "VoIP Phone (Polycom OUI)",
+        "Normal"
+      ],
+      [
+        "SW1",
+        "GigabitEthernet 0/0/24",
+        "Trunk (VLAN 10,100)",
+        "Core Switch Uplink",
+        "Normal"
+      ],
+      [
+        "Core-SW",
+        "Vlanif 10",
+        "192.168.10.1/24",
+        "Data VLAN Gateway",
+        "Normal"
+      ],
+      [
+        "Core-SW",
+        "Vlanif 100",
+        "192.168.100.1/24",
+        "Voice VLAN Gateway (QoS CoS 6)",
         "Normal"
       ]
     ],
@@ -5356,12 +5384,12 @@
         "voice-vlan mac-address 00e0-fc00-0000 mask ffff-ff00-0000 description Huawei_Phone",
         "voice-vlan mac-address 0003-6b00-0000 mask ffff-ff00-0000 description Cisco_Phone",
         "interface GigabitEthernet 0/0/1",
-        " port link-type hybrid",
-        " voice-vlan 100 enable",
-        " voice-vlan mode auto",
-        " port hybrid pvid vlan 10",
-        " port hybrid untagged vlan 10",
-        " quit"
+        "port link-type hybrid",
+        "voice-vlan 100 enable",
+        "voice-vlan mode auto",
+        "port hybrid pvid vlan 10",
+        "port hybrid untagged vlan 10",
+        "quit"
       ]
     },
     "verif": [
@@ -5378,7 +5406,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 100\nvoice-vlan mac-address 00e0-fc00-0000 mask ffff-ff00-0000 description Huawei_Phone\nvoice-vlan mac-address 0003-6b00-0000 mask ffff-ff00-0000 description Cisco_Phone\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n voice-vlan mode auto\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 100\nvoice-vlan mac-address 00e0-fc00-0000 mask ffff-ff00-0000 description Huawei_Phone\nvoice-vlan mac-address 0003-6b00-0000 mask ffff-ff00-0000 description Cisco_Phone\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nvoice-vlan mode auto\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -5395,7 +5423,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 100\nvoice-vlan mac-address 00e0-fc00-0000 mask ffff-ff00-0000 description Huawei_Phone\nvoice-vlan mac-address 0003-6b00-0000 mask ffff-ff00-0000 description Cisco_Phone\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n voice-vlan mode auto\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 100\nvoice-vlan mac-address 00e0-fc00-0000 mask ffff-ff00-0000 description Huawei_Phone\nvoice-vlan mac-address 0003-6b00-0000 mask ffff-ff00-0000 description Cisco_Phone\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nvoice-vlan mode auto\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -5412,7 +5440,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 100\nvoice-vlan mac-address 00e0-fc00-0000 mask ffff-ff00-0000 description Huawei_Phone\nvoice-vlan mac-address 0003-6b00-0000 mask ffff-ff00-0000 description Cisco_Phone\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n voice-vlan mode auto\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 100\nvoice-vlan mac-address 00e0-fc00-0000 mask ffff-ff00-0000 description Huawei_Phone\nvoice-vlan mac-address 0003-6b00-0000 mask ffff-ff00-0000 description Cisco_Phone\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nvoice-vlan mode auto\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -5521,10 +5549,38 @@
     ],
     "table": [
       [
-        "Gateway-R1",
+        "Core-R1",
         "GigabitEthernet 0/0/1",
         "192.168.10.1/24",
-        "LAN Gateway with Traffic Filters",
+        "Branch-A LAN (Restricted)",
+        "Normal"
+      ],
+      [
+        "Core-R1",
+        "GigabitEthernet 0/0/2",
+        "192.168.20.1/24",
+        "Finance Secure Server Subnet",
+        "Normal"
+      ],
+      [
+        "Core-R1",
+        "GigabitEthernet 0/0/0",
+        "203.0.113.1/30",
+        "WAN Gateway Link",
+        "Normal"
+      ],
+      [
+        "Branch-PC",
+        "NIC 1",
+        "192.168.10.10/24",
+        "Workstation Client",
+        "Normal"
+      ],
+      [
+        "Finance-Server",
+        "NIC 1",
+        "192.168.20.100/24",
+        "Secure Web/Database Server",
         "Normal"
       ]
     ],
@@ -5539,14 +5595,14 @@
         "system-view",
         "sysname Gateway-R1",
         "acl number 3000",
-        " rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306",
-        " rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433",
-        " rule 15 permit ip",
-        " quit",
+        "rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306",
+        "rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433",
+        "rule 15 permit ip",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 192.168.10.1 255.255.255.0",
-        " traffic-filter inbound acl 3000",
-        " quit"
+        "ip address 192.168.10.1 255.255.255.0",
+        "traffic-filter inbound acl 3000",
+        "quit"
       ]
     },
     "verif": [
@@ -5563,7 +5619,7 @@
         "substeps": [
           {
             "device": "Gateway-R1",
-            "code": "system-view\nsysname Gateway-R1\nacl number 3000\n rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306\n rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433\n rule 15 permit ip\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n traffic-filter inbound acl 3000\n quit",
+            "code": "system-view\nsysname Gateway-R1\nacl number 3000\nrule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306\nrule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433\nrule 15 permit ip\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\ntraffic-filter inbound acl 3000\nquit",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -5580,7 +5636,7 @@
         "substeps": [
           {
             "device": "Gateway-R1",
-            "code": "system-view\nsysname Gateway-R1\nacl number 3000\n rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306\n rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433\n rule 15 permit ip\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n traffic-filter inbound acl 3000\n quit",
+            "code": "system-view\nsysname Gateway-R1\nacl number 3000\nrule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306\nrule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433\nrule 15 permit ip\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\ntraffic-filter inbound acl 3000\nquit",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -5597,7 +5653,7 @@
         "substeps": [
           {
             "device": "Gateway-R1",
-            "code": "system-view\nsysname Gateway-R1\nacl number 3000\n rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306\n rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433\n rule 15 permit ip\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n traffic-filter inbound acl 3000\n quit",
+            "code": "system-view\nsysname Gateway-R1\nacl number 3000\nrule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306\nrule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433\nrule 15 permit ip\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\ntraffic-filter inbound acl 3000\nquit",
             "explanation": "Defines classification rules, applies inbound/outbound traffic filtering, configures trusted DHCP snooping uplinks, and enforces MAC address limits on client-facing ports."
           }
         ],
@@ -5614,7 +5670,7 @@
         "substeps": [
           {
             "device": "Gateway-R1",
-            "code": "system-view\nsysname Gateway-R1\nacl number 3000\n rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306\n rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433\n rule 15 permit ip\n quit\ninterface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n traffic-filter inbound acl 3000\n quit",
+            "code": "system-view\nsysname Gateway-R1\nacl number 3000\nrule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306\nrule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433\nrule 15 permit ip\nquit\ninterface GigabitEthernet 0/0/1\nip address 192.168.10.1 255.255.255.0\ntraffic-filter inbound acl 3000\nquit",
             "explanation": "Applies configuration commands on Gateway-R1 matching the topology requirements."
           }
         ],
@@ -5711,8 +5767,29 @@
       [
         "Access-SW1",
         "GigabitEthernet 0/0/1",
-        "Trunk/Hybrid",
-        "LLDP-MED Voice Policy Enabled",
+        "VLAN 100/10",
+        "LLDP-MED IP Phone (Auto-Policy)",
+        "Normal"
+      ],
+      [
+        "Access-SW1",
+        "GigabitEthernet 0/0/2",
+        "VLAN 100/10",
+        "Executive VoIP Handset",
+        "Normal"
+      ],
+      [
+        "Access-SW1",
+        "GigabitEthernet 0/0/24",
+        "Trunk (VLAN 10,100)",
+        "Distribution Switch Uplink",
+        "Normal"
+      ],
+      [
+        "Dist-SW",
+        "Vlanif 100",
+        "192.168.100.1/24",
+        "Voice VLAN Gateway (DSCP 46)",
         "Normal"
       ]
     ],
@@ -5727,11 +5804,11 @@
         "system-view",
         "sysname Access-SW1",
         "vlan 100",
-        " quit",
+        "quit",
         "lldp enable",
         "interface GigabitEthernet 0/0/1",
-        " lldp tlv-enable med-tlv network-policy",
-        " quit"
+        "lldp tlv-enable med-tlv network-policy",
+        "quit"
       ]
     },
     "verif": [
@@ -5748,7 +5825,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan 100\n quit\nlldp enable\ninterface GigabitEthernet 0/0/1\n lldp tlv-enable med-tlv network-policy\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan 100\nquit\nlldp enable\ninterface GigabitEthernet 0/0/1\nlldp tlv-enable med-tlv network-policy\nquit",
             "explanation": "Applies configuration commands on Access-SW1 matching the topology requirements."
           }
         ],
@@ -5765,7 +5842,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan 100\n quit\nlldp enable\ninterface GigabitEthernet 0/0/1\n lldp tlv-enable med-tlv network-policy\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan 100\nquit\nlldp enable\ninterface GigabitEthernet 0/0/1\nlldp tlv-enable med-tlv network-policy\nquit",
             "explanation": "Applies configuration commands on Access-SW1 matching the topology requirements."
           }
         ],
@@ -5782,7 +5859,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan 100\n quit\nlldp enable\ninterface GigabitEthernet 0/0/1\n lldp tlv-enable med-tlv network-policy\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan 100\nquit\nlldp enable\ninterface GigabitEthernet 0/0/1\nlldp tlv-enable med-tlv network-policy\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -5799,7 +5876,7 @@
         "substeps": [
           {
             "device": "Access-SW1",
-            "code": "system-view\nsysname Access-SW1\nvlan 100\n quit\nlldp enable\ninterface GigabitEthernet 0/0/1\n lldp tlv-enable med-tlv network-policy\n quit",
+            "code": "system-view\nsysname Access-SW1\nvlan 100\nquit\nlldp enable\ninterface GigabitEthernet 0/0/1\nlldp tlv-enable med-tlv network-policy\nquit",
             "explanation": "Applies configuration commands on Access-SW1 matching the topology requirements."
           }
         ],
@@ -5901,24 +5978,24 @@
         "sysname SW1",
         "vlan batch 10 20 99",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " port link-type trunk",
-        " port trunk pvid vlan 99",
-        " port trunk allow-pass vlan 10 20 99",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit"
+        "mode lacp-static",
+        "port link-type trunk",
+        "port trunk pvid vlan 99",
+        "port trunk allow-pass vlan 10 20 99",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit"
       ],
       "SW2": [
         "system-view",
         "sysname SW2",
         "vlan batch 10 20 99",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " port link-type trunk",
-        " port trunk pvid vlan 99",
-        " port trunk allow-pass vlan 10 20 99",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit"
+        "mode lacp-static",
+        "port link-type trunk",
+        "port trunk pvid vlan 99",
+        "port trunk allow-pass vlan 10 20 99",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit"
       ]
     },
     "verif": [
@@ -5935,7 +6012,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 20 99\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk pvid vlan 99\n port trunk allow-pass vlan 10 20 99\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 20 99\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk pvid vlan 99\nport trunk allow-pass vlan 10 20 99\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -5952,7 +6029,7 @@
         "substeps": [
           {
             "device": "SW2",
-            "code": "system-view\nsysname SW2\nvlan batch 10 20 99\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk pvid vlan 99\n port trunk allow-pass vlan 10 20 99\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname SW2\nvlan batch 10 20 99\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk pvid vlan 99\nport trunk allow-pass vlan 10 20 99\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -5969,7 +6046,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 20 99\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk pvid vlan 99\n port trunk allow-pass vlan 10 20 99\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 20 99\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk pvid vlan 99\nport trunk allow-pass vlan 10 20 99\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -5986,7 +6063,7 @@
         "substeps": [
           {
             "device": "SW2",
-            "code": "system-view\nsysname SW2\nvlan batch 10 20 99\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk pvid vlan 99\n port trunk allow-pass vlan 10 20 99\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname SW2\nvlan batch 10 20 99\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk pvid vlan 99\nport trunk allow-pass vlan 10 20 99\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -6003,7 +6080,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 20 99\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk pvid vlan 99\n port trunk allow-pass vlan 10 20 99\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 20 99\ninterface Eth-Trunk 1\nmode lacp-static\nport link-type trunk\nport trunk pvid vlan 99\nport trunk allow-pass vlan 10 20 99\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -6131,20 +6208,20 @@
         "sysname SW1",
         "vlan batch 10 20 30",
         "interface GigabitEthernet 0/0/1",
-        " port link-type trunk",
-        " undo port trunk allow-pass vlan 1",
-        " port trunk allow-pass vlan 10",
-        " quit"
+        "port link-type trunk",
+        "undo port trunk allow-pass vlan 1",
+        "port trunk allow-pass vlan 10",
+        "quit"
       ],
       "SW2": [
         "system-view",
         "sysname SW2",
         "vlan batch 10 20 30",
         "interface GigabitEthernet 0/0/1",
-        " port link-type trunk",
-        " undo port trunk allow-pass vlan 1",
-        " port trunk allow-pass vlan 10",
-        " quit"
+        "port link-type trunk",
+        "undo port trunk allow-pass vlan 1",
+        "port trunk allow-pass vlan 10",
+        "quit"
       ]
     },
     "verif": [
@@ -6161,7 +6238,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n undo port trunk allow-pass vlan 1\n port trunk allow-pass vlan 10\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\nport link-type trunk\nundo port trunk allow-pass vlan 1\nport trunk allow-pass vlan 10\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -6178,7 +6255,7 @@
         "substeps": [
           {
             "device": "SW2",
-            "code": "system-view\nsysname SW2\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n undo port trunk allow-pass vlan 1\n port trunk allow-pass vlan 10\n quit",
+            "code": "system-view\nsysname SW2\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\nport link-type trunk\nundo port trunk allow-pass vlan 1\nport trunk allow-pass vlan 10\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -6195,7 +6272,7 @@
         "substeps": [
           {
             "device": "SW1",
-            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n undo port trunk allow-pass vlan 1\n port trunk allow-pass vlan 10\n quit",
+            "code": "system-view\nsysname SW1\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\nport link-type trunk\nundo port trunk allow-pass vlan 1\nport trunk allow-pass vlan 10\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -6309,11 +6386,11 @@
         "system-view",
         "sysname Core-R1",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.1 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 10.0.13.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.13.1 255.255.255.0",
+        "quit",
         "ip route-static 192.168.20.0 255.255.255.0 10.0.12.2",
         "ip route-static 192.168.20.0 255.255.255.0 10.0.13.2"
       ],
@@ -6321,14 +6398,14 @@
         "system-view",
         "sysname Edge-R2",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.2 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.2 255.255.255.0",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " ip address 10.0.13.2 255.255.255.0",
-        " quit",
+        "ip address 10.0.13.2 255.255.255.0",
+        "quit",
         "interface LoopBack 0",
-        " ip address 192.168.20.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.20.1 255.255.255.0",
+        "quit",
         "ip route-static 192.168.10.0 255.255.255.0 10.0.12.1",
         "ip route-static 192.168.10.0 255.255.255.0 10.0.13.1"
       ]
@@ -6348,7 +6425,7 @@
         "substeps": [
           {
             "device": "Core-R1",
-            "code": "system-view\nsysname Core-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.13.1 255.255.255.0\n quit\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2\nip route-static 192.168.20.0 255.255.255.0 10.0.13.2",
+            "code": "system-view\nsysname Core-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.13.1 255.255.255.0\nquit\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2\nip route-static 192.168.20.0 255.255.255.0 10.0.13.2",
             "explanation": "Applies configuration commands on Core-R1 matching the topology requirements."
           }
         ],
@@ -6365,7 +6442,7 @@
         "substeps": [
           {
             "device": "Edge-R2",
-            "code": "system-view\nsysname Edge-R2\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.13.2 255.255.255.0\n quit\ninterface LoopBack 0\n ip address 192.168.20.1 255.255.255.0\n quit\nip route-static 192.168.10.0 255.255.255.0 10.0.12.1\nip route-static 192.168.10.0 255.255.255.0 10.0.13.1",
+            "code": "system-view\nsysname Edge-R2\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.13.2 255.255.255.0\nquit\ninterface LoopBack 0\nip address 192.168.20.1 255.255.255.0\nquit\nip route-static 192.168.10.0 255.255.255.0 10.0.12.1\nip route-static 192.168.10.0 255.255.255.0 10.0.13.1",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -6382,7 +6459,7 @@
         "substeps": [
           {
             "device": "Core-R1",
-            "code": "system-view\nsysname Core-R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.13.1 255.255.255.0\n quit\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2\nip route-static 192.168.20.0 255.255.255.0 10.0.13.2",
+            "code": "system-view\nsysname Core-R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.13.1 255.255.255.0\nquit\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2\nip route-static 192.168.20.0 255.255.255.0 10.0.13.2",
             "explanation": "Applies configuration commands on Core-R1 matching the topology requirements."
           }
         ],
@@ -6399,7 +6476,7 @@
         "substeps": [
           {
             "device": "Edge-R2",
-            "code": "system-view\nsysname Edge-R2\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n quit\ninterface GigabitEthernet 0/0/1\n ip address 10.0.13.2 255.255.255.0\n quit\ninterface LoopBack 0\n ip address 192.168.20.1 255.255.255.0\n quit\nip route-static 192.168.10.0 255.255.255.0 10.0.12.1\nip route-static 192.168.10.0 255.255.255.0 10.0.13.1",
+            "code": "system-view\nsysname Edge-R2\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nquit\ninterface GigabitEthernet 0/0/1\nip address 10.0.13.2 255.255.255.0\nquit\ninterface LoopBack 0\nip address 192.168.20.1 255.255.255.0\nquit\nip route-static 192.168.10.0 255.255.255.0 10.0.12.1\nip route-static 192.168.10.0 255.255.255.0 10.0.13.1",
             "explanation": "Applies configuration commands on Edge-R2 matching the topology requirements."
           }
         ],
@@ -6538,8 +6615,29 @@
       [
         "Gateway-R1",
         "GigabitEthernet 0/0/1",
-        "2001:DB8:ACAD:1::1/64",
-        "SLAAC + DHCPv6 Server",
+        "192.168.1.1/24 | 2001:DB8:1::1/64",
+        "Dual-Stack Client LAN (SLAAC)",
+        "Normal"
+      ],
+      [
+        "Gateway-R1",
+        "GigabitEthernet 0/0/2",
+        "192.168.2.1/24 | 2001:DB8:2::1/64",
+        "DHCPv6 Stateful Server Subnet",
+        "Normal"
+      ],
+      [
+        "Gateway-R1",
+        "GigabitEthernet 0/0/0",
+        "203.0.113.1/30 | 2001:DB8:WAN::1/64",
+        "Dual-Stack WAN Upstream Link",
+        "Normal"
+      ],
+      [
+        "Host-PC1",
+        "Ethernet 0/0/1",
+        "DHCPv4 & SLAAC EUI-64",
+        "LAN Host Workstation",
         "Normal"
       ]
     ],
@@ -6556,11 +6654,11 @@
         "ipv6",
         "dhcp enable",
         "interface GigabitEthernet 0/0/1",
-        " ipv6 enable",
-        " ipv6 address 2001:DB8:ACAD:1::1 64",
-        " undo ipv6 nd ra halt",
-        " ipv6 nd autoconfig other-flag",
-        " quit"
+        "ipv6 enable",
+        "ipv6 address 2001:DB8:ACAD:1::1 64",
+        "undo ipv6 nd ra halt",
+        "ipv6 nd autoconfig other-flag",
+        "quit"
       ]
     },
     "verif": [
@@ -6577,7 +6675,7 @@
         "substeps": [
           {
             "device": "Gateway-R1",
-            "code": "system-view\nsysname Gateway-R1\nipv6\ndhcp enable\ninterface GigabitEthernet 0/0/1\n ipv6 enable\n ipv6 address 2001:DB8:ACAD:1::1 64\n undo ipv6 nd ra halt\n ipv6 nd autoconfig other-flag\n quit",
+            "code": "system-view\nsysname Gateway-R1\nipv6\ndhcp enable\ninterface GigabitEthernet 0/0/1\nipv6 enable\nipv6 address 2001:DB8:ACAD:1::1 64\nundo ipv6 nd ra halt\nipv6 nd autoconfig other-flag\nquit",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -6594,7 +6692,7 @@
         "substeps": [
           {
             "device": "Gateway-R1",
-            "code": "system-view\nsysname Gateway-R1\nipv6\ndhcp enable\ninterface GigabitEthernet 0/0/1\n ipv6 enable\n ipv6 address 2001:DB8:ACAD:1::1 64\n undo ipv6 nd ra halt\n ipv6 nd autoconfig other-flag\n quit",
+            "code": "system-view\nsysname Gateway-R1\nipv6\ndhcp enable\ninterface GigabitEthernet 0/0/1\nipv6 enable\nipv6 address 2001:DB8:ACAD:1::1 64\nundo ipv6 nd ra halt\nipv6 nd autoconfig other-flag\nquit",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -6611,7 +6709,7 @@
         "substeps": [
           {
             "device": "Gateway-R1",
-            "code": "system-view\nsysname Gateway-R1\nipv6\ndhcp enable\ninterface GigabitEthernet 0/0/1\n ipv6 enable\n ipv6 address 2001:DB8:ACAD:1::1 64\n undo ipv6 nd ra halt\n ipv6 nd autoconfig other-flag\n quit",
+            "code": "system-view\nsysname Gateway-R1\nipv6\ndhcp enable\ninterface GigabitEthernet 0/0/1\nipv6 enable\nipv6 address 2001:DB8:ACAD:1::1 64\nundo ipv6 nd ra halt\nipv6 nd autoconfig other-flag\nquit",
             "explanation": "Enables the global DHCP daemon, declares the IP pool scope with gateway and DNS parameters, and activates global address distribution on interface GigabitEthernet 0/0/1."
           }
         ],
@@ -6628,7 +6726,7 @@
         "substeps": [
           {
             "device": "Gateway-R1",
-            "code": "system-view\nsysname Gateway-R1\nipv6\ndhcp enable\ninterface GigabitEthernet 0/0/1\n ipv6 enable\n ipv6 address 2001:DB8:ACAD:1::1 64\n undo ipv6 nd ra halt\n ipv6 nd autoconfig other-flag\n quit",
+            "code": "system-view\nsysname Gateway-R1\nipv6\ndhcp enable\ninterface GigabitEthernet 0/0/1\nipv6 enable\nipv6 address 2001:DB8:ACAD:1::1 64\nundo ipv6 nd ra halt\nipv6 nd autoconfig other-flag\nquit",
             "explanation": "Enables IPv6 processing globally and on interfaces, configures 64-bit global unicast addresses, unhalts Router Advertisements, and installs IPv6 static forwarding routes."
           }
         ],
@@ -6749,22 +6847,22 @@
         "sysname Core-A",
         "vlan batch 100 200",
         "interface Eth-Trunk 10",
-        " mode lacp-static",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 100 200",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit"
+        "mode lacp-static",
+        "port link-type trunk",
+        "port trunk allow-pass vlan 100 200",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit"
       ],
       "Core-B": [
         "system-view",
         "sysname Core-B",
         "vlan batch 100 200",
         "interface Eth-Trunk 10",
-        " mode lacp-static",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 100 200",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit"
+        "mode lacp-static",
+        "port link-type trunk",
+        "port trunk allow-pass vlan 100 200",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit"
       ]
     },
     "verif": [
@@ -6781,7 +6879,7 @@
         "substeps": [
           {
             "device": "Core-A",
-            "code": "system-view\nsysname Core-A\nvlan batch 100 200\ninterface Eth-Trunk 10\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 100 200\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-A\nvlan batch 100 200\ninterface Eth-Trunk 10\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 100 200\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -6798,7 +6896,7 @@
         "substeps": [
           {
             "device": "Core-B",
-            "code": "system-view\nsysname Core-B\nvlan batch 100 200\ninterface Eth-Trunk 10\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 100 200\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-B\nvlan batch 100 200\ninterface Eth-Trunk 10\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 100 200\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -6815,7 +6913,7 @@
         "substeps": [
           {
             "device": "Core-A",
-            "code": "system-view\nsysname Core-A\nvlan batch 100 200\ninterface Eth-Trunk 10\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 100 200\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-A\nvlan batch 100 200\ninterface Eth-Trunk 10\nmode lacp-static\nport link-type trunk\nport trunk allow-pass vlan 100 200\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -6910,10 +7008,31 @@
     ],
     "table": [
       [
-        "HQ-Core",
-        "GigabitEthernet 0/0/0",
-        "10.0.1.1/30",
-        "WAN Link to Regional Core",
+        "Core-R1",
+        "GigabitEthernet 0/0/1",
+        "10.10.0.1/30",
+        "HQ Core to Dist-1 P2P Link",
+        "Normal"
+      ],
+      [
+        "Core-R1",
+        "GigabitEthernet 0/0/2",
+        "10.10.0.5/30",
+        "HQ Core to Dist-2 P2P Link",
+        "Normal"
+      ],
+      [
+        "Dist-R1",
+        "GigabitEthernet 0/0/1",
+        "10.20.1.1/24",
+        "Branch-1 Access Subnet",
+        "Normal"
+      ],
+      [
+        "Dist-R2",
+        "GigabitEthernet 0/0/1",
+        "10.30.1.1/24",
+        "Branch-2 Access Subnet",
         "Normal"
       ]
     ],
@@ -6927,8 +7046,8 @@
         "system-view",
         "sysname HQ-Core",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.1.1 255.255.255.252",
-        " quit",
+        "ip address 10.0.1.1 255.255.255.252",
+        "quit",
         "ip route-static 10.10.0.0 255.255.0.0 10.0.1.2",
         "ip route-static 10.20.0.0 255.255.0.0 10.0.2.2"
       ]
@@ -6947,7 +7066,7 @@
         "substeps": [
           {
             "device": "HQ-Core",
-            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\n ip address 10.0.1.1 255.255.255.252\n quit\nip route-static 10.10.0.0 255.255.0.0 10.0.1.2\nip route-static 10.20.0.0 255.255.0.0 10.0.2.2",
+            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\nip address 10.0.1.1 255.255.255.252\nquit\nip route-static 10.10.0.0 255.255.0.0 10.0.1.2\nip route-static 10.20.0.0 255.255.0.0 10.0.2.2",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -6964,7 +7083,7 @@
         "substeps": [
           {
             "device": "HQ-Core",
-            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\n ip address 10.0.1.1 255.255.255.252\n quit\nip route-static 10.10.0.0 255.255.0.0 10.0.1.2\nip route-static 10.20.0.0 255.255.0.0 10.0.2.2",
+            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\nip address 10.0.1.1 255.255.255.252\nquit\nip route-static 10.10.0.0 255.255.0.0 10.0.1.2\nip route-static 10.20.0.0 255.255.0.0 10.0.2.2",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -6981,7 +7100,7 @@
         "substeps": [
           {
             "device": "HQ-Core",
-            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\n ip address 10.0.1.1 255.255.255.252\n quit\nip route-static 10.10.0.0 255.255.0.0 10.0.1.2\nip route-static 10.20.0.0 255.255.0.0 10.0.2.2",
+            "code": "system-view\nsysname HQ-Core\ninterface GigabitEthernet 0/0/0\nip address 10.0.1.1 255.255.255.252\nquit\nip route-static 10.10.0.0 255.255.0.0 10.0.1.2\nip route-static 10.20.0.0 255.255.0.0 10.0.2.2",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -7082,28 +7201,28 @@
         "sysname Master-SW1",
         "lacp priority 100",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " max active-linknumber 2",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/3",
-        " quit",
+        "mode lacp-static",
+        "max active-linknumber 2",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/3",
+        "quit",
         "interface GigabitEthernet 0/0/1",
-        " lacp priority 10",
-        " quit",
+        "lacp priority 10",
+        "quit",
         "interface GigabitEthernet 0/0/2",
-        " lacp priority 10",
-        " quit",
+        "lacp priority 10",
+        "quit",
         "interface GigabitEthernet 0/0/3",
-        " lacp priority 100",
-        " quit"
+        "lacp priority 100",
+        "quit"
       ],
       "Slave-SW2": [
         "system-view",
         "sysname Slave-SW2",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " max active-linknumber 2",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/3",
-        " quit"
+        "mode lacp-static",
+        "max active-linknumber 2",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/3",
+        "quit"
       ]
     },
     "verif": [
@@ -7121,7 +7240,7 @@
         "substeps": [
           {
             "device": "Master-SW1",
-            "code": "system-view\nsysname Master-SW1\nlacp priority 100\ninterface Eth-Trunk 1\n mode lacp-static\n max active-linknumber 2\n trunkport GigabitEthernet 0/0/1 to 0/0/3\n quit\ninterface GigabitEthernet 0/0/1\n lacp priority 10\n quit\ninterface GigabitEthernet 0/0/2\n lacp priority 10\n quit\ninterface GigabitEthernet 0/0/3\n lacp priority 100\n quit",
+            "code": "system-view\nsysname Master-SW1\nlacp priority 100\ninterface Eth-Trunk 1\nmode lacp-static\nmax active-linknumber 2\ntrunkport GigabitEthernet 0/0/1 to 0/0/3\nquit\ninterface GigabitEthernet 0/0/1\nlacp priority 10\nquit\ninterface GigabitEthernet 0/0/2\nlacp priority 10\nquit\ninterface GigabitEthernet 0/0/3\nlacp priority 100\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -7138,7 +7257,7 @@
         "substeps": [
           {
             "device": "Slave-SW2",
-            "code": "system-view\nsysname Slave-SW2\ninterface Eth-Trunk 1\n mode lacp-static\n max active-linknumber 2\n trunkport GigabitEthernet 0/0/1 to 0/0/3\n quit",
+            "code": "system-view\nsysname Slave-SW2\ninterface Eth-Trunk 1\nmode lacp-static\nmax active-linknumber 2\ntrunkport GigabitEthernet 0/0/1 to 0/0/3\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -7155,7 +7274,7 @@
         "substeps": [
           {
             "device": "Master-SW1",
-            "code": "system-view\nsysname Master-SW1\nlacp priority 100\ninterface Eth-Trunk 1\n mode lacp-static\n max active-linknumber 2\n trunkport GigabitEthernet 0/0/1 to 0/0/3\n quit\ninterface GigabitEthernet 0/0/1\n lacp priority 10\n quit\ninterface GigabitEthernet 0/0/2\n lacp priority 10\n quit\ninterface GigabitEthernet 0/0/3\n lacp priority 100\n quit",
+            "code": "system-view\nsysname Master-SW1\nlacp priority 100\ninterface Eth-Trunk 1\nmode lacp-static\nmax active-linknumber 2\ntrunkport GigabitEthernet 0/0/1 to 0/0/3\nquit\ninterface GigabitEthernet 0/0/1\nlacp priority 10\nquit\ninterface GigabitEthernet 0/0/2\nlacp priority 10\nquit\ninterface GigabitEthernet 0/0/3\nlacp priority 100\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -7172,7 +7291,7 @@
         "substeps": [
           {
             "device": "Slave-SW2",
-            "code": "system-view\nsysname Slave-SW2\ninterface Eth-Trunk 1\n mode lacp-static\n max active-linknumber 2\n trunkport GigabitEthernet 0/0/1 to 0/0/3\n quit",
+            "code": "system-view\nsysname Slave-SW2\ninterface Eth-Trunk 1\nmode lacp-static\nmax active-linknumber 2\ntrunkport GigabitEthernet 0/0/1 to 0/0/3\nquit",
             "explanation": "Applies configuration commands on Slave-SW2 matching the topology requirements."
           }
         ],
@@ -7312,8 +7431,8 @@
         "system-view",
         "sysname R1",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.1 255.255.255.0",
+        "quit",
         "ip route-static 3.3.3.3 255.255.255.255 10.0.12.2",
         "ip route-static 192.168.30.0 255.255.255.0 3.3.3.3"
       ]
@@ -7332,7 +7451,7 @@
         "substeps": [
           {
             "device": "R1",
-            "code": "system-view\nsysname R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\nip route-static 3.3.3.3 255.255.255.255 10.0.12.2\nip route-static 192.168.30.0 255.255.255.0 3.3.3.3",
+            "code": "system-view\nsysname R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\nip route-static 3.3.3.3 255.255.255.255 10.0.12.2\nip route-static 192.168.30.0 255.255.255.0 3.3.3.3",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -7349,7 +7468,7 @@
         "substeps": [
           {
             "device": "R1",
-            "code": "system-view\nsysname R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\nip route-static 3.3.3.3 255.255.255.255 10.0.12.2\nip route-static 192.168.30.0 255.255.255.0 3.3.3.3",
+            "code": "system-view\nsysname R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\nip route-static 3.3.3.3 255.255.255.255 10.0.12.2\nip route-static 192.168.30.0 255.255.255.0 3.3.3.3",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -7366,7 +7485,7 @@
         "substeps": [
           {
             "device": "R1",
-            "code": "system-view\nsysname R1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\nip route-static 3.3.3.3 255.255.255.255 10.0.12.2\nip route-static 192.168.30.0 255.255.255.0 3.3.3.3",
+            "code": "system-view\nsysname R1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\nip route-static 3.3.3.3 255.255.255.255 10.0.12.2\nip route-static 192.168.30.0 255.255.255.0 3.3.3.3",
             "explanation": "Applies configuration commands on R1 matching the topology requirements."
           }
         ],
@@ -7466,26 +7585,26 @@
         "system-view",
         "sysname NE40E-Core",
         "interface GigabitEthernet 0/1/0",
-        " undo shutdown",
-        " ip address 10.0.12.1 255.255.255.0",
-        " quit",
+        "undo shutdown",
+        "ip address 10.0.12.1 255.255.255.0",
+        "quit",
         "ospf 1 router-id 1.1.1.1",
-        " area 0.0.0.0",
-        "  network 10.0.12.0 0.0.0.255",
-        "  quit",
-        " quit"
+        "area 0.0.0.0",
+        "network 10.0.12.0 0.0.0.255",
+        "quit",
+        "quit"
       ],
       "AR1000v-Edge": [
         "system-view",
         "sysname AR1000v-Edge",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.2 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.2 255.255.255.0",
+        "quit",
         "ospf 1 router-id 2.2.2.2",
-        " area 0.0.0.0",
-        "  network 10.0.12.0 0.0.0.255",
-        "  quit",
-        " quit"
+        "area 0.0.0.0",
+        "network 10.0.12.0 0.0.0.255",
+        "quit",
+        "quit"
       ]
     },
     "verif": [
@@ -7500,7 +7619,7 @@
         "substeps": [
           {
             "device": "NE40E-Core",
-            "code": "system-view\nsysname NE40E-Core\ninterface GigabitEthernet 0/1/0\n undo shutdown\n ip address 10.0.12.1 255.255.255.0\n quit\nospf 1 router-id 1.1.1.1\n area 0.0.0.0\n  network 10.0.12.0 0.0.0.255\n  quit\n quit",
+            "code": "system-view\nsysname NE40E-Core\ninterface GigabitEthernet 0/1/0\nundo shutdown\nip address 10.0.12.1 255.255.255.0\nquit\nospf 1 router-id 1.1.1.1\narea 0.0.0.0\nnetwork 10.0.12.0 0.0.0.255\nquit\nquit",
             "explanation": "Enters global configuration mode on NE40E-Core, configures the system name, provisions the local user database in AAA mode with encrypted passwords, and enables AAA authentication on VTY remote management lines."
           }
         ],
@@ -7517,7 +7636,7 @@
         "substeps": [
           {
             "device": "AR1000v-Edge",
-            "code": "system-view\nsysname AR1000v-Edge\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n quit\nospf 1 router-id 2.2.2.2\n area 0.0.0.0\n  network 10.0.12.0 0.0.0.255\n  quit\n quit",
+            "code": "system-view\nsysname AR1000v-Edge\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nquit\nospf 1 router-id 2.2.2.2\narea 0.0.0.0\nnetwork 10.0.12.0 0.0.0.255\nquit\nquit",
             "explanation": "Applies configuration commands on AR1000v-Edge matching the topology requirements."
           }
         ],
@@ -7534,7 +7653,7 @@
         "substeps": [
           {
             "device": "NE40E-Core",
-            "code": "system-view\nsysname NE40E-Core\ninterface GigabitEthernet 0/1/0\n undo shutdown\n ip address 10.0.12.1 255.255.255.0\n quit\nospf 1 router-id 1.1.1.1\n area 0.0.0.0\n  network 10.0.12.0 0.0.0.255\n  quit\n quit",
+            "code": "system-view\nsysname NE40E-Core\ninterface GigabitEthernet 0/1/0\nundo shutdown\nip address 10.0.12.1 255.255.255.0\nquit\nospf 1 router-id 1.1.1.1\narea 0.0.0.0\nnetwork 10.0.12.0 0.0.0.255\nquit\nquit",
             "explanation": "Initializes OSPF process with a manual 32-bit Router-ID, binds physical interfaces to the appropriate OSPF area, and configures cryptographic MD5 authentication on the inter-router link."
           }
         ],
@@ -7551,7 +7670,7 @@
         "substeps": [
           {
             "device": "AR1000v-Edge",
-            "code": "system-view\nsysname AR1000v-Edge\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.2 255.255.255.0\n quit\nospf 1 router-id 2.2.2.2\n area 0.0.0.0\n  network 10.0.12.0 0.0.0.255\n  quit\n quit",
+            "code": "system-view\nsysname AR1000v-Edge\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.2 255.255.255.0\nquit\nospf 1 router-id 2.2.2.2\narea 0.0.0.0\nnetwork 10.0.12.0 0.0.0.255\nquit\nquit",
             "explanation": "Initializes OSPF process with a manual 32-bit Router-ID, binds physical interfaces to the appropriate OSPF area, and configures cryptographic MD5 authentication on the inter-router link."
           }
         ],
@@ -7692,16 +7811,16 @@
         "system-view",
         "sysname Core-SW1",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.12.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.12.1 255.255.255.0",
+        "quit",
         "ip route-static 192.168.0.0 255.255.0.0 10.0.12.2"
       ],
       "Core-SW2": [
         "system-view",
         "sysname Core-SW2",
         "interface GigabitEthernet 0/0/0",
-        " ip address 10.0.13.1 255.255.255.0",
-        " quit",
+        "ip address 10.0.13.1 255.255.255.0",
+        "quit",
         "ip route-static 192.168.0.0 255.255.0.0 10.0.13.2 preference 70"
       ]
     },
@@ -7720,7 +7839,7 @@
         "substeps": [
           {
             "device": "Core-SW1",
-            "code": "system-view\nsysname Core-SW1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\nip route-static 192.168.0.0 255.255.0.0 10.0.12.2",
+            "code": "system-view\nsysname Core-SW1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\nip route-static 192.168.0.0 255.255.0.0 10.0.12.2",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -7737,7 +7856,7 @@
         "substeps": [
           {
             "device": "Core-SW2",
-            "code": "system-view\nsysname Core-SW2\ninterface GigabitEthernet 0/0/0\n ip address 10.0.13.1 255.255.255.0\n quit\nip route-static 192.168.0.0 255.255.0.0 10.0.13.2 preference 70",
+            "code": "system-view\nsysname Core-SW2\ninterface GigabitEthernet 0/0/0\nip address 10.0.13.1 255.255.255.0\nquit\nip route-static 192.168.0.0 255.255.0.0 10.0.13.2 preference 70",
             "explanation": "Installs IPv4 static routing entries in the FIB pointing to specific next-hop router IP addresses, verifying bidirectional return paths."
           }
         ],
@@ -7754,7 +7873,7 @@
         "substeps": [
           {
             "device": "Core-SW1",
-            "code": "system-view\nsysname Core-SW1\ninterface GigabitEthernet 0/0/0\n ip address 10.0.12.1 255.255.255.0\n quit\nip route-static 192.168.0.0 255.255.0.0 10.0.12.2",
+            "code": "system-view\nsysname Core-SW1\ninterface GigabitEthernet 0/0/0\nip address 10.0.12.1 255.255.255.0\nquit\nip route-static 192.168.0.0 255.255.0.0 10.0.12.2",
             "explanation": "Applies configuration commands on Core-SW1 matching the topology requirements."
           }
         ],
@@ -7876,31 +7995,31 @@
         "sysname Access-SW",
         "vlan batch 10 100",
         "interface GigabitEthernet 0/0/1",
-        " port link-type hybrid",
-        " voice-vlan 100 enable",
-        " port hybrid pvid vlan 10",
-        " port hybrid untagged vlan 10",
-        " port hybrid tagged vlan 100",
-        " quit",
+        "port link-type hybrid",
+        "voice-vlan 100 enable",
+        "port hybrid pvid vlan 10",
+        "port hybrid untagged vlan 10",
+        "port hybrid tagged vlan 100",
+        "quit",
         "interface GigabitEthernet 0/0/24",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 100",
-        " quit"
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 100",
+        "quit"
       ],
       "Core-SW": [
         "system-view",
         "sysname Core-SW",
         "vlan batch 10 100",
         "interface GigabitEthernet 0/0/24",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 100",
-        " quit",
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 100",
+        "quit",
         "interface Vlanif 10",
-        " ip address 192.168.10.1 255.255.255.0",
-        " quit",
+        "ip address 192.168.10.1 255.255.255.0",
+        "quit",
         "interface Vlanif 100",
-        " ip address 192.168.100.1 255.255.255.0",
-        " quit"
+        "ip address 192.168.100.1 255.255.255.0",
+        "quit"
       ]
     },
     "verif": [
@@ -7915,7 +8034,7 @@
         "substeps": [
           {
             "device": "Access-SW",
-            "code": "system-view\nsysname Access-SW\nvlan batch 10 100\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n port hybrid tagged vlan 100\n quit\ninterface GigabitEthernet 0/0/24\n port link-type trunk\n port trunk allow-pass vlan 10 100\n quit",
+            "code": "system-view\nsysname Access-SW\nvlan batch 10 100\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nport hybrid tagged vlan 100\nquit\ninterface GigabitEthernet 0/0/24\nport link-type trunk\nport trunk allow-pass vlan 10 100\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -7932,7 +8051,7 @@
         "substeps": [
           {
             "device": "Core-SW",
-            "code": "system-view\nsysname Core-SW\nvlan batch 10 100\ninterface GigabitEthernet 0/0/24\n port link-type trunk\n port trunk allow-pass vlan 10 100\n quit\ninterface Vlanif 10\n ip address 192.168.10.1 255.255.255.0\n quit\ninterface Vlanif 100\n ip address 192.168.100.1 255.255.255.0\n quit",
+            "code": "system-view\nsysname Core-SW\nvlan batch 10 100\ninterface GigabitEthernet 0/0/24\nport link-type trunk\nport trunk allow-pass vlan 10 100\nquit\ninterface Vlanif 10\nip address 192.168.10.1 255.255.255.0\nquit\ninterface Vlanif 100\nip address 192.168.100.1 255.255.255.0\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -7949,7 +8068,7 @@
         "substeps": [
           {
             "device": "Access-SW",
-            "code": "system-view\nsysname Access-SW\nvlan batch 10 100\ninterface GigabitEthernet 0/0/1\n port link-type hybrid\n voice-vlan 100 enable\n port hybrid pvid vlan 10\n port hybrid untagged vlan 10\n port hybrid tagged vlan 100\n quit\ninterface GigabitEthernet 0/0/24\n port link-type trunk\n port trunk allow-pass vlan 10 100\n quit",
+            "code": "system-view\nsysname Access-SW\nvlan batch 10 100\ninterface GigabitEthernet 0/0/1\nport link-type hybrid\nvoice-vlan 100 enable\nport hybrid pvid vlan 10\nport hybrid untagged vlan 10\nport hybrid tagged vlan 100\nquit\ninterface GigabitEthernet 0/0/24\nport link-type trunk\nport trunk allow-pass vlan 10 100\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -7966,7 +8085,7 @@
         "substeps": [
           {
             "device": "Core-SW",
-            "code": "system-view\nsysname Core-SW\nvlan batch 10 100\ninterface GigabitEthernet 0/0/24\n port link-type trunk\n port trunk allow-pass vlan 10 100\n quit\ninterface Vlanif 10\n ip address 192.168.10.1 255.255.255.0\n quit\ninterface Vlanif 100\n ip address 192.168.100.1 255.255.255.0\n quit",
+            "code": "system-view\nsysname Core-SW\nvlan batch 10 100\ninterface GigabitEthernet 0/0/24\nport link-type trunk\nport trunk allow-pass vlan 10 100\nquit\ninterface Vlanif 10\nip address 192.168.10.1 255.255.255.0\nquit\ninterface Vlanif 100\nip address 192.168.100.1 255.255.255.0\nquit",
             "explanation": "Provisions VLANs in batch, configures switchport link types (Access/Trunk/Hybrid), and specifies allowed/untagged VLAN lists on member interfaces."
           }
         ],
@@ -8144,24 +8263,24 @@
         "sysname Core-A",
         "vlan batch 10 20 30",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " max active-linknumber 1",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 20 30",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit"
+        "mode lacp-static",
+        "max active-linknumber 1",
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 20 30",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit"
       ],
       "Core-B": [
         "system-view",
         "sysname Core-B",
         "vlan batch 10 20 30",
         "interface Eth-Trunk 1",
-        " mode lacp-static",
-        " max active-linknumber 1",
-        " port link-type trunk",
-        " port trunk allow-pass vlan 10 20 30",
-        " trunkport GigabitEthernet 0/0/1 to 0/0/2",
-        " quit"
+        "mode lacp-static",
+        "max active-linknumber 1",
+        "port link-type trunk",
+        "port trunk allow-pass vlan 10 20 30",
+        "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "quit"
       ]
     },
     "verif": [
@@ -8176,7 +8295,7 @@
         "substeps": [
           {
             "device": "Core-A",
-            "code": "system-view\nsysname Core-A\nvlan batch 10 20 30\ninterface Eth-Trunk 1\n mode lacp-static\n max active-linknumber 1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-A\nvlan batch 10 20 30\ninterface Eth-Trunk 1\nmode lacp-static\nmax active-linknumber 1\nport link-type trunk\nport trunk allow-pass vlan 10 20 30\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Creates Eth-Trunk in LACP Static mode, configures 802.1Q trunk encapsulation with permitted VLANs, and binds physical member interfaces to the channel bundle."
           }
         ],
@@ -8193,7 +8312,7 @@
         "substeps": [
           {
             "device": "Core-B",
-            "code": "system-view\nsysname Core-B\nvlan batch 10 20 30\ninterface Eth-Trunk 1\n mode lacp-static\n max active-linknumber 1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-B\nvlan batch 10 20 30\ninterface Eth-Trunk 1\nmode lacp-static\nmax active-linknumber 1\nport link-type trunk\nport trunk allow-pass vlan 10 20 30\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Applies configuration commands on Core-B matching the topology requirements."
           }
         ],
@@ -8210,7 +8329,7 @@
         "substeps": [
           {
             "device": "Core-A",
-            "code": "system-view\nsysname Core-A\nvlan batch 10 20 30\ninterface Eth-Trunk 1\n mode lacp-static\n max active-linknumber 1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-A\nvlan batch 10 20 30\ninterface Eth-Trunk 1\nmode lacp-static\nmax active-linknumber 1\nport link-type trunk\nport trunk allow-pass vlan 10 20 30\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Applies configuration commands on Core-A matching the topology requirements."
           }
         ],
@@ -8227,7 +8346,7 @@
         "substeps": [
           {
             "device": "Core-B",
-            "code": "system-view\nsysname Core-B\nvlan batch 10 20 30\ninterface Eth-Trunk 1\n mode lacp-static\n max active-linknumber 1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n trunkport GigabitEthernet 0/0/1 to 0/0/2\n quit",
+            "code": "system-view\nsysname Core-B\nvlan batch 10 20 30\ninterface Eth-Trunk 1\nmode lacp-static\nmax active-linknumber 1\nport link-type trunk\nport trunk allow-pass vlan 10 20 30\ntrunkport GigabitEthernet 0/0/1 to 0/0/2\nquit",
             "explanation": "Applies configuration commands on Core-B matching the topology requirements."
           }
         ],
