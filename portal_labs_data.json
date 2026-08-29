@@ -3927,8 +3927,10 @@
       ]
     },
     "verif": [
-      "display lldp neighbor brief (View discovered neighbor devices and local/remote port pairs)",
-      "display lldp local (View local chassis and port capabilities)"
+      "display lldp local - Inspects local chassis ID, system name, and LLDP timer parameters.",
+      "display lldp neighbor brief - Summarizes all active neighbor links, remote ports, and system names.",
+      "display lldp neighbor interface GigabitEthernet 0/0/1 - Displays deep TLV details including neighbor management IP and capabilities.",
+      "display current-configuration | include lldp - Confirms global and per-interface LLDP activation."
     ],
     "guided_walkthrough": [
       {
@@ -4123,8 +4125,10 @@
       ]
     },
     "verif": [
-      "display ip routing-table 172.16.0.0 (Verify VLSM subnets and masks)",
-      "ping -a 172.16.1.1 172.16.2.1 (Verify end-to-end connectivity)"
+      "display ip interface brief - Verifies all subnet interfaces (WAN, LAN1, LAN2) are Up/Up with exact VLSM prefix lengths.",
+      "display ip routing-table - Verifies connected route entries for /26, /27, and /30 subnets in the FIB.",
+      "ping -c 4 192.168.10.1 - Tests gateway reachability from edge hosts across the VLSM hierarchy.",
+      "display current-configuration interface GigabitEthernet 0/0/1 - Confirms exact IP mask configuration."
     ],
     "guided_walkthrough": [
       {
@@ -4329,8 +4333,11 @@
       ]
     },
     "verif": [
-      "display ip routing-table protocol static (Only 10.0.12.2 active)",
-      "From Branch-R1: 'interface GE0/0/0' -> 'shutdown' -> 'display ip routing-table' (10.0.13.2 activates)"
+      "display ip routing-table 0.0.0.0 - Confirms primary default route (Preference 60) is active in FIB via GigabitEthernet 0/0/1.",
+      "display ip routing-table protocol static - Confirms backup route (Preference 100) is present in RIB but dormant.",
+      "interface GigabitEthernet 0/0/1 -> shutdown - Simulates primary link failure.",
+      "display ip routing-table 0.0.0.0 - Verifies instant failover to backup path (Preference 100 via GigabitEthernet 0/0/2).",
+      "undo shutdown - Restores primary path and verifies preemption back to Preference 60."
     ],
     "guided_walkthrough": [
       {
@@ -4531,8 +4538,10 @@
       ]
     },
     "verif": [
-      "display ip routing-table 192.168.0.0 255.255.252.0 (Verify summarized prefix)",
-      "ping 192.168.1.1 (Success) and ping unallocated 192.168.3.250 (Dropped cleanly by NULL0)"
+      "display ip routing-table - Confirms consolidated summary route 172.16.0.0/22 exists in the FIB.",
+      "display ip routing-table 172.16.0.0 255.255.252.0 - Verifies Null0 blackhole route (Preference 60) exists to drop unallocated subnet traffic.",
+      "ping -c 4 172.16.1.1 - Validates forwarding to active allocated subnet Branch-1.",
+      "tracert 172.16.3.254 - Validates non-existent subnet traffic is instantly dropped locally by Null0 without routing loops."
     ],
     "guided_walkthrough": [
       {
@@ -4786,8 +4795,10 @@
       ]
     },
     "verif": [
-      "display lldp neighbor brief (Verify complete 3-switch topology ring)",
-      "display lldp neighbor (Inspect remote management IP addresses)"
+      "display lldp neighbor brief - Verifies all interconnecting links across Core, Aggregation, and Access switches.",
+      "display lldp neighbor - Detailed chassis and port ID inspection for multi-switch audit.",
+      "display mac-address - Correlates LLDP neighbor ports with learned Layer 2 MAC address tables.",
+      "display lldp local - Verifies consistent LLDP management parameters across the switching domain."
     ],
     "guided_walkthrough": [
       {
@@ -4947,7 +4958,10 @@
       ]
     },
     "verif": [
-      "display lldp local interface GigabitEthernet 0/0/1 (Check advertised TLV blacklist)"
+      "display lldp local - Verifies sensitive TLVs (Management Address, System Capabilities) are filtered out.",
+      "display lldp neighbor brief - Confirms standard neighbor visibility is maintained without exposing infrastructure IP details.",
+      "display current-configuration interface GigabitEthernet 0/0/1 | include tlv - Audits TLV enable/disable rules per port.",
+      "display lldp statistics - Confirms transmitted and received frame counters without security drops."
     ],
     "guided_walkthrough": [
       {
@@ -5142,8 +5156,10 @@
       ]
     },
     "verif": [
-      "display ipv6 routing-table (Verify Link-Local vs Global next-hop installation)",
-      "ping ipv6 2001:DB8:2::1"
+      "display ipv6 interface brief - Confirms all IPv6 interfaces are Up with link-local (FE80::) and global unicast (2001:DB8::) addresses.",
+      "display ipv6 routing-table - Verifies static routes using both global next-hop and interface link-local specifications.",
+      "ping ipv6 2001:DB8:3::1 - Validates end-to-end IPv6 reachability across dual-hop topology.",
+      "display ipv6 neighbors - Confirms Neighbor Discovery (ND) resolution across interconnecting links."
     ],
     "guided_walkthrough": [
       {
@@ -5349,8 +5365,10 @@
       ]
     },
     "verif": [
-      "display voice-vlan oui (Check configured hardware manufacturer OUI entries)",
-      "display voice-vlan 100 status"
+      "display voice-vlan 100 status - Verifies OUI table entries and auto Voice VLAN operating state.",
+      "display voice-vlan 100 rule - Confirms OUI hex mask patterns (e.g., 0021-a000-0000) for automatic VoIP hardware detection.",
+      "display port vlan - Confirms access ports dynamically add Voice VLAN 100 upon detecting voice traffic.",
+      "display qos vlan 100 - Verifies 802.1p CoS priority 6 remarking on voice packets."
     ],
     "guided_walkthrough": [
       {
@@ -5532,8 +5550,10 @@
       ]
     },
     "verif": [
-      "display traffic-filter applied-record (Verify applied interfaces and ACL numbers)",
-      "display acl 3000 (View matched rule hits)"
+      "display acl 3000 - Verifies advanced ACL rule ordering and matching counters.",
+      "display traffic-filter applied-record - Audits inbound and outbound traffic-filter associations per interface.",
+      "ping -c 4 192.168.20.100 - Tests TCP/ICMP packet filtering according to security policy.",
+      "display current-configuration | include traffic-filter - Confirms hardware filtering attachment points."
     ],
     "guided_walkthrough": [
       {
@@ -5715,7 +5735,10 @@
       ]
     },
     "verif": [
-      "display lldp local interface GigabitEthernet 0/0/1 (Check advertised MED TLVs)"
+      "display lldp neighbor brief - Confirms LLDP-MED enabled endpoints are detected.",
+      "display lldp neighbor interface GigabitEthernet 0/0/1 - Inspects MED TLV extensions, Application Policy, and VLAN assignment.",
+      "display voice-vlan 100 status - Verifies LLDP-MED negotiated Voice VLAN tagging.",
+      "display current-configuration | include lldp - Audits LLDP-MED configuration parameters."
     ],
     "guided_walkthrough": [
       {
@@ -5899,7 +5922,10 @@
       ]
     },
     "verif": [
-      "display port vlan Eth-Trunk 1 (Verify PVID is 99 and allowed VLANs 10, 20, 99)"
+      "display eth-trunk 1 - Verifies trunk aggregation status, member port states, and active links.",
+      "display port vlan interface Eth-Trunk 1 - Confirms native PVID and allowed trunk VLAN list.",
+      "display vlan 10 - Verifies VLAN membership across physical and aggregated trunk links.",
+      "ping -c 4 192.168.10.2 - Validates inter-switch Layer 2 trunk forwarding."
     ],
     "guided_walkthrough": [
       {
@@ -6122,7 +6148,10 @@
       ]
     },
     "verif": [
-      "display port vlan GigabitEthernet 0/0/1 (Check allowed list contains strictly VLAN 10)"
+      "display port vlan brief - Audits trunk interfaces to confirm unneeded VLANs are pruned.",
+      "display lldp neighbor brief - Validates neighbor topology consistency.",
+      "display mac-address vlan 20 - Confirms no broadcast flooding on pruned switches.",
+      "ping -c 4 192.168.10.1 - Confirms authorized VLANs maintain seamless connectivity."
     ],
     "guided_walkthrough": [
       {
@@ -6305,7 +6334,11 @@
       ]
     },
     "verif": [
-      "display ip routing-table 192.168.20.0 (Verify two next-hops 10.0.12.2 and 10.0.13.2 with equal cost)"
+      "display ip routing-table 192.168.30.0 - Verifies two equal-cost paths (Cost 0, Pref 60) installed in FIB simultaneously.",
+      "tracert 192.168.30.1 - Confirms per-flow load balancing across GE0/0/1 and GE0/0/2 next hops.",
+      "interface GigabitEthernet 0/0/1 -> shutdown - Simulates single link failure.",
+      "ping -c 4 192.168.30.1 - Confirms sub-second convergence with zero packet loss over surviving path.",
+      "undo shutdown - Re-establishes dual-path ECMP load distribution."
     ],
     "guided_walkthrough": [
       {
@@ -6531,7 +6564,10 @@
       ]
     },
     "verif": [
-      "display ipv6 interface GigabitEthernet 0/0/1 (Check RA status and Flags: O=1, M=0)"
+      "display ipv6 interface GigabitEthernet 0/0/1 - Confirms RA transmission (undo ipv6 nd ra halt) and M/O flags.",
+      "display dhcpv6 pool - Verifies stateless/stateful IPv6 address prefixes and DNS server parameters.",
+      "display ipv6 neighbors - Confirms SLAAC autoconfigured host addresses in Neighbor Cache.",
+      "ping ipv6 2001:DB8:1::100 - Tests dual-stack client reachability."
     ],
     "guided_walkthrough": [
       {
@@ -6732,7 +6768,10 @@
       ]
     },
     "verif": [
-      "display eth-trunk 10 (Check active state and 2 Gbps bandwidth)"
+      "display eth-trunk 1 - Verifies 802.1Q encapsulation and member port distribution.",
+      "display port vlan - Confirms tagged frame forwarding for all campus VLANs.",
+      "display interface Eth-Trunk 1 - Checks bandwidth multiplication (2 Gbps) and error counters.",
+      "ping -c 4 192.168.20.1 - Validates Layer 2 trunk throughput across aggregated links."
     ],
     "guided_walkthrough": [
       {
@@ -6895,7 +6934,10 @@
       ]
     },
     "verif": [
-      "display ip routing-table (Check clean regional summary routes)"
+      "display ip routing-table - Verifies hierarchical routes across Core, Distribution, and Access layers.",
+      "display ip interface brief - Checks all WAN point-to-point /30 links and branch /24 subnets.",
+      "tracert 10.20.0.1 - Confirms strict hierarchical next-hop routing without sub-optimal detours.",
+      "ping -c 4 10.30.0.1 - Tests cross-branch end-to-end communication."
     ],
     "guided_walkthrough": [
       {
@@ -7065,7 +7107,11 @@
       ]
     },
     "verif": [
-      "display eth-trunk 1 (Verify Ports 1 & 2 are 'Selected', Port 3 is 'Unselected' standby)"
+      "display eth-trunk 1 - Confirms LACP system priority, Actor priority, and designated Active vs Backup ports.",
+      "display lacp internal - Checks port partner operational keys and priority numbers.",
+      "interface GigabitEthernet 0/0/1 -> shutdown - Simulates active member port failure.",
+      "display eth-trunk 1 - Confirms backup port immediately transitions to Selected state.",
+      "undo shutdown - Verifies reversion to primary active port."
     ],
     "guided_walkthrough": [
       {
@@ -7273,7 +7319,10 @@
       ]
     },
     "verif": [
-      "display ip routing-table 192.168.30.0 verbose (Inspect recursive next-hop resolution)"
+      "display ip routing-table - Verifies recursive static route resolution through intermediate next-hop gateways.",
+      "display fib - Confirms hardware FIB resolves recursive destination to physical egress interface.",
+      "tracert 192.168.40.1 - Observes complete hop-by-hop forwarding path.",
+      "ping -c 4 192.168.40.1 - Confirms end-to-end connectivity."
     ],
     "guided_walkthrough": [
       {
@@ -7657,7 +7706,11 @@
       ]
     },
     "verif": [
-      "display ip routing-table protocol static (Verify primary route active)"
+      "display ip routing-table - Verifies redundant static routes across dual Core switches.",
+      "display vlan brief - Checks Core SVI interfaces and Layer 2 inter-chassis links.",
+      "interface GigabitEthernet 0/0/1 -> shutdown - Simulates Core-1 failure.",
+      "ping -c 4 192.168.10.1 - Confirms seamless failover to Core-2 backup gateway.",
+      "undo shutdown - Re-establishes primary Core path."
     ],
     "guided_walkthrough": [
       {
