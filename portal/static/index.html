@@ -402,10 +402,19 @@
     .ensp-workbench::-webkit-scrollbar { width: 5px; }
     .ensp-workbench::-webkit-scrollbar-thumb { background: var(--hw-border-dark); border-radius: 2px; }
 
-    .ensp-header-panel {
+    /* Pinned Header & Sticky Tabs Navigation Bar */
+    .ensp-sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
       background: var(--hw-bg-card);
       border-bottom: 1px solid var(--hw-border-main);
-      padding: 16px 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .ensp-header-panel {
+      padding: 14px 24px 10px 24px;
+      background: var(--hw-bg-card);
     }
     .ensp-headline-title {
       font-size: 18px;
@@ -417,7 +426,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      margin-top: 6px;
+      margin-top: 5px;
     }
     .ensp-badge {
       font-size: 11px;
@@ -439,17 +448,17 @@
       background: #f0fdf4;
     }
 
-    /* 6 Tabs Navigation Bar */
+    /* 6 Numbered Tabs Bar */
     .ensp-tabs-bar {
       display: flex;
       background: var(--hw-bg-card);
-      border-bottom: 1px solid var(--hw-border-main);
+      border-top: 1px solid var(--hw-border-subtle);
       padding: 0 24px;
       overflow-x: auto;
     }
     .ensp-tabs-bar::-webkit-scrollbar { height: 2px; }
     .ensp-tab-btn {
-      padding: 9px 12px;
+      padding: 9px 13px;
       font-size: 12px;
       font-weight: 600;
       color: var(--hw-text-secondary);
@@ -459,16 +468,18 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       white-space: nowrap;
       transition: all 0.1s;
     }
     .ensp-tab-btn:hover {
       color: var(--hw-text-title);
+      background: var(--hw-bg-hover);
     }
     .ensp-tab-btn.active {
       color: var(--ensp-blue);
       border-bottom-color: var(--ensp-blue);
+      font-weight: 700;
     }
     .ensp-tab-btn svg {
       width: 13px;
@@ -480,7 +491,7 @@
 
     .ensp-content-body {
       padding: 20px 24px;
-      max-width: 1200px;
+      max-width: 1250px;
     }
     .ensp-tab-view { display: none; }
     .ensp-tab-view.active { display: block; }
@@ -529,6 +540,14 @@
     .ensp-table tbody tr:nth-child(even) {
       background: var(--hw-table-even);
     }
+    .ensp-table td.col-idx {
+      font-family: var(--hw-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--hw-text-muted);
+      text-align: center;
+      width: 38px;
+    }
     .ensp-table td.col-name {
       font-weight: 600;
       color: var(--ensp-blue);
@@ -547,15 +566,14 @@
       font-family: var(--hw-mono);
       color: var(--ensp-blue);
       font-weight: 600;
-      white-space: nowrap;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      padding: 9px 10px;
     }
     .ensp-table td.col-expl {
       color: var(--hw-text-main);
       line-height: 1.55;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding: 9px 12px;
     }
     .ensp-table td.col-status-normal {
       color: var(--ensp-green);
@@ -1030,22 +1048,28 @@
         }
       }
 
-      // 5. Line-by-Line Command Syntax Breakdown Table (Tab 5)
+      // 5. Line-by-Line Command Syntax Breakdown Table (Tab 5) with numbered rows and inline copy buttons
       let syntaxTableRows = '';
       if (lab.syntax_breakdown && lab.syntax_breakdown.length > 0) {
-        syntaxTableRows = lab.syntax_breakdown.map(s => `
+        syntaxTableRows = lab.syntax_breakdown.map((s, idx) => `
           <tr>
-            <td class="col-cmd"><code>${escapeHtml(s.cmd)}</code></td>
+            <td class="col-idx">${idx + 1}</td>
+            <td class="col-cmd">
+              <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:6px;">
+                <code>${escapeHtml(s.cmd)}</code>
+                <button class="ensp-copy-btn" style="padding:2px 6px; font-size:10px;" onclick="copyDirectText(this, '${escapeHtml(s.cmd).replace(/'/g, "\\'")}')">Copy</button>
+              </div>
+            </td>
             <td class="col-expl">
-              <div style="font-weight:600; color:var(--hw-text-title); margin-bottom:3px;">${s.desc}</div>
+              <div style="font-weight:600; color:var(--hw-text-title); margin-bottom:4px;">${s.desc}</div>
               <div style="font-size:11px; color:var(--hw-text-secondary);"><span style="color:var(--ensp-blue); font-weight:600;">Parameters &amp; Mechanism:</span> ${s.param}</div>
             </td>
             <td style="font-family:var(--hw-mono); font-size:11.5px; color:#c026d3;"><code>${escapeHtml(s.cisco_eq || 'N/A')}</code></td>
-            <td style="font-weight:600; color:var(--hw-text-secondary);">${s.device || 'VRP'}</td>
+            <td style="font-weight:600; color:var(--hw-text-secondary); font-size:11.5px;">${s.device || 'VRP'}</td>
           </tr>
         `).join('');
       } else {
-        syntaxTableRows = `<tr><td colspan="4" style="padding:12px;">Syntax breakdown loaded.</td></tr>`;
+        syntaxTableRows = `<tr><td colspan="5" style="padding:12px;">Syntax breakdown loaded.</td></tr>`;
       }
 
       // 6. Verification Runbook (Tab 6)
@@ -1057,46 +1081,45 @@
       }
 
       wb.innerHTML = `
-        <div class="ensp-header-panel">
-          <div class="ensp-headline-row">
-            <div>
-              <h1 class="ensp-headline-title">${idLabel}: ${cleanTitle}</h1>
-              <div class="ensp-badge-strip">
-                <span class="ensp-badge ensp-badge-blue">${lab.module || 'Enterprise Module'}</span>
-                <span class="ensp-badge ensp-badge-green">${nodeCount} Pre-Wired Nodes</span>
-                <span class="ensp-badge">Status: Ready in eNSP</span>
-              </div>
+        <!-- Sticky Pinned Header + 6 Tabs Container -->
+        <div class="ensp-sticky-header">
+          <div class="ensp-header-panel">
+            <h1 class="ensp-headline-title">${idLabel}: ${cleanTitle}</h1>
+            <div class="ensp-badge-strip">
+              <span class="ensp-badge ensp-badge-blue">${lab.module || 'Enterprise Module'}</span>
+              <span class="ensp-badge ensp-badge-green">${nodeCount} Pre-Wired Nodes</span>
+              <span class="ensp-badge">Status: Ready in eNSP</span>
             </div>
           </div>
-        </div>
 
-        <!-- 6 Distinct Numbered Tabs -->
-        <nav class="ensp-tabs-bar">
-          <button class="ensp-tab-btn active" onclick="switchTab(this, 'tab-sec-overview')">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            1. Overview & Setup
-          </button>
-          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-cabling')">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
-            2. Interface & IP Matrix
-          </button>
-          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-tasks')">
-            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            3. Task Objectives
-          </button>
-          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-cli')">
-            <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            4. Step-by-Step Solution (CCNA Standard)
-          </button>
-          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-syntax')">
-            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
-            5. Command Syntax Breakdown Table
-          </button>
-          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-verif')">
-            <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            6. Verification Runbook
-          </button>
-        </nav>
+          <!-- Permanently Pinned 6 Tabs -->
+          <nav class="ensp-tabs-bar">
+            <button class="ensp-tab-btn active" onclick="switchTab(this, 'tab-sec-overview')">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              1. Overview & Setup
+            </button>
+            <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-cabling')">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+              2. Interface & IP Matrix
+            </button>
+            <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-tasks')">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              3. Task Objectives
+            </button>
+            <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-cli')">
+              <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              4. Step-by-Step Solution (CCNA Standard)
+            </button>
+            <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-syntax')">
+              <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
+              5. Command Syntax Breakdown Table
+            </button>
+            <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-verif')">
+              <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              6. Verification Runbook
+            </button>
+          </nav>
+        </div>
 
         <div class="ensp-content-body">
           <!-- 1. Overview -->
@@ -1205,9 +1228,10 @@
                 <table class="ensp-table">
                   <thead>
                     <tr>
+                      <th style="width: 4%;">#</th>
                       <th style="width: 28%;">Huawei VRP Command Syntax</th>
-                      <th style="width: 44%;">Operational Description &amp; Parameter Mechanism</th>
-                      <th style="width: 18%;">Cisco IOS Equivalent</th>
+                      <th style="width: 42%;">Operational Description &amp; Parameter Mechanism</th>
+                      <th style="width: 16%;">Cisco IOS Equivalent</th>
                       <th style="width: 10%;">Device</th>
                     </tr>
                   </thead>
@@ -1270,6 +1294,18 @@
           btn.innerHTML = orig;
           btn.classList.remove('copied');
         }, 2000);
+      });
+    }
+
+    function copyDirectText(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.classList.remove('copied');
+        }, 1800);
       });
     }
 
