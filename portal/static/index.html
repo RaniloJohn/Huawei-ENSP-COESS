@@ -6,7 +6,6 @@
   <title>Huawei Enterprise Lab Center | COESS Datacom Portal</title>
   <style>
     :root {
-      /* Official Huawei eNSP Color Palette */
       --ensp-nav-bg: #24292e;
       --ensp-red: #e50012;
       --ensp-red-hover: #c7000b;
@@ -16,7 +15,6 @@
       --ensp-green: #22c55e;
       --ensp-amber: #eab308;
       
-      /* Light Theme (eNSP Standard) */
       --hw-bg-page: #f4f6f9;
       --hw-bg-card: #ffffff;
       --hw-bg-sidebar: #ffffff;
@@ -46,7 +44,6 @@
     }
 
     html.dark {
-      /* Dark Theme (eNSP Dark Console) */
       --ensp-nav-bg: #1a1e22;
       --ensp-red: #e50012;
       --ensp-red-hover: #ff2d3b;
@@ -92,7 +89,6 @@
       transition: background-color 0.15s, color 0.15s;
     }
 
-    /* 1. Official eNSP Top Navigation Bar */
     .ensp-topbar {
       height: 48px;
       min-height: 48px;
@@ -127,7 +123,6 @@
       background: #3e4651;
     }
 
-    /* COESS Brand Section */
     .coess-brand-box {
       display: flex;
       align-items: center;
@@ -221,7 +216,6 @@
       background: var(--ensp-blue-hover);
     }
 
-    /* 2. Secondary Subnav */
     .ensp-subnav {
       height: 38px;
       background: var(--hw-bg-subnav);
@@ -262,7 +256,6 @@
       background: var(--ensp-blue-hover);
     }
 
-    /* 3. Workspace Layout */
     .ensp-layout {
       display: flex;
       flex: 1;
@@ -396,7 +389,6 @@
       font-weight: 600;
     }
 
-    /* Right Workbench Area */
     .ensp-workbench {
       flex: 1;
       display: flex;
@@ -446,7 +438,6 @@
       background: #f0fdf4;
     }
 
-    /* Tab Navigation */
     .ensp-tabs-bar {
       display: flex;
       background: var(--hw-bg-card);
@@ -489,7 +480,6 @@
     .ensp-tab-view { display: none; }
     .ensp-tab-view.active { display: block; }
 
-    /* Section Cards */
     .ensp-card {
       background: var(--hw-bg-card);
       border: 1px solid var(--hw-border-main);
@@ -512,7 +502,6 @@
       padding: 14px;
     }
 
-    /* Tables */
     .ensp-table {
       width: 100%;
       border-collapse: collapse;
@@ -549,26 +538,11 @@
       color: #16a34a;
       font-weight: 600;
     }
-    .ensp-table td.col-cmd {
-      font-family: var(--hw-mono);
-      color: var(--ensp-blue);
-      font-weight: 600;
-      white-space: nowrap;
-      padding-top: 10px;
-      padding-bottom: 10px;
-    }
-    .ensp-table td.col-expl {
-      color: var(--hw-text-main);
-      line-height: 1.55;
-      padding-top: 10px;
-      padding-bottom: 10px;
-    }
     .ensp-table td.col-status-normal {
       color: var(--ensp-green);
       font-weight: 600;
     }
 
-    /* Tasks Checklist */
     .ensp-task-list { list-style: none; }
     .ensp-task-row {
       display: flex;
@@ -593,9 +567,7 @@
       line-height: 1.5;
     }
 
-    /* ==========================================================================
-       CCNA-Style Pedagogical Guided Walkthrough Components
-       ========================================================================== */
+    /* CCNA-Style Guided Solution Components */
     .ccna-task-card {
       background: var(--hw-bg-card);
       border: 1px solid var(--hw-border-main);
@@ -714,7 +686,6 @@
       gap: 5px;
     }
 
-    /* Verification Runbook */
     .ensp-verif-step {
       padding: 9px 14px;
       background: var(--hw-bg-card);
@@ -735,15 +706,10 @@
   <!-- 1. Official eNSP Top Navigation Bar -->
   <header class="ensp-topbar">
     <div class="ensp-brand-group">
-      
-      <!-- Official Extracted Huawei eNSP Logo Asset -->
       <a href="http://10.10.10.137/" class="ensp-logo-link" title="Huawei eNSP Lab Portal">
         <img src="/huawei_logo.png" alt="Huawei eNSP" class="ensp-logo-img">
       </a>
-
       <div class="ensp-nav-divider"></div>
-
-      <!-- COESS Branding & Attribution (with lowered opacity) -->
       <div class="coess-brand-box">
         <img src="/coess_logo.png" alt="COESS Logo" class="coess-logo-pic">
         <div class="coess-title-meta">
@@ -751,12 +717,10 @@
           <span class="coess-author-sub">Made by Ranilo John Delos Angeles</span>
         </div>
       </div>
-
     </div>
 
     <!-- Right Controls -->
     <div class="ensp-top-actions">
-      
       <button id="theme-btn" class="theme-switch-btn" title="Toggle Light/Dark Mode" onclick="toggleTheme()">
         <svg id="theme-icon" viewBox="0 0 24 24">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -776,7 +740,6 @@
         </svg>
         <span>Open Simulation Console</span>
       </a>
-
     </div>
   </header>
 
@@ -797,8 +760,6 @@
 
   <!-- 3. Workspace Layout -->
   <div class="ensp-layout">
-    
-    <!-- Left Syllabus Tree -->
     <aside class="ensp-sidebar">
       <div class="ensp-search-panel">
         <div class="ensp-search-field">
@@ -809,22 +770,15 @@
           <input type="text" id="ensp-search" placeholder="Filter practice labs...">
         </div>
       </div>
-      <div class="ensp-syllabus-tree" id="syllabus-tree-box">
-        <!-- Injected via JS -->
-      </div>
+      <div class="ensp-syllabus-tree" id="syllabus-tree-box"></div>
     </aside>
 
-    <!-- Right Workbench Content -->
-    <main class="ensp-workbench" id="ensp-workbench">
-      <!-- Injected via JS -->
-    </main>
-
+    <main class="ensp-workbench" id="ensp-workbench"></main>
   </div>
 
   <script>
     let labs = [];
-    let currentId = 99; // Default to Enterprise HQ
-    let viewMode = 'walkthrough'; // 'walkthrough' or 'raw'
+    let currentId = 99;
 
     function initTheme() {
       const saved = localStorage.getItem('ensp-portal-theme') || 'light';
@@ -865,7 +819,8 @@
 
     async function loadData() {
       try {
-        const resp = await fetch('/api/labs');
+        // Cache-busting query parameter
+        const resp = await fetch('/api/labs?v=' + Date.now(), { cache: 'no-store' });
         labs = await resp.json();
         renderTree(labs);
         renderLab(currentId);
@@ -935,6 +890,40 @@
       renderLab(id);
     }
 
+    // Dynamic builder if guided_walkthrough is ever absent
+    function buildFallbackWalkthrough(lab) {
+      const steps = [];
+      const tasks = lab.tasks || [];
+      const cli = lab.cli || {};
+      const devKeys = Object.keys(cli);
+
+      if (tasks.length > 0) {
+        tasks.forEach((t, idx) => {
+          const dev = devKeys[idx % devKeys.length] || 'Device';
+          const cmds = cli[dev] || ['display ip interface brief'];
+          const code = Array.isArray(cmds) ? cmds.slice(0, 10).join('\n') : cmds;
+          steps.push({
+            task_num: idx + 1,
+            title: t,
+            theory: `This step configures the necessary VRP parameters for ${t}. Review the command breakdown below before applying configurations to the live device.`,
+            substeps: [
+              {
+                device: dev,
+                code: code,
+                explanation: `Executes configuration directives on ${dev} matching the task objectives and network topology requirements.`
+              }
+            ],
+            verify: {
+              device: dev,
+              code: 'display ip interface brief',
+              expected: 'Interfaces and protocol states report Up and Normal.'
+            }
+          });
+        });
+      }
+      return steps;
+    }
+
     function renderLab(id) {
       const lab = labs.find(l => l.id === id) || labs[0];
       if (!lab) return;
@@ -948,7 +937,7 @@
 
       const wb = document.getElementById('ensp-workbench');
 
-      // Table rows
+      // 1. Table rows
       let tableRows = '';
       if (lab.table && lab.table.length > 0) {
         tableRows = lab.table.map(r => `
@@ -962,7 +951,7 @@
         `).join('');
       }
 
-      // Tasks
+      // 2. Tasks
       let taskRows = '';
       if (lab.tasks && lab.tasks.length > 0) {
         taskRows = lab.tasks.map((t, idx) => `
@@ -973,65 +962,66 @@
         `).join('');
       }
 
-      // CCNA-Style Step-by-Step Walkthrough HTML
-      let walkthroughHtml = '';
-      if (lab.guided_walkthrough && lab.guided_walkthrough.length > 0) {
-        walkthroughHtml = lab.guided_walkthrough.map((step, sIdx) => {
-          let substepsHtml = step.substeps.map(sub => `
-            <div class="ccna-step-block">
-              <div class="ensp-terminal-box">
-                <div class="ensp-terminal-header">
-                  <span class="ensp-terminal-node">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-                    @${sub.device}
-                  </span>
-                  <button class="ensp-copy-btn" onclick="copyCliFromPre(this)">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    Copy Block
-                  </button>
-                </div>
-                <pre class="ensp-terminal-code">${escapeHtml(sub.code)}</pre>
+      // 3. CCNA-Style Guided Solution Walkthrough
+      const walkthroughData = (lab.guided_walkthrough && lab.guided_walkthrough.length > 0) 
+        ? lab.guided_walkthrough 
+        : buildFallbackWalkthrough(lab);
+
+      let walkthroughHtml = walkthroughData.map(step => {
+        let substepsHtml = (step.substeps || []).map(sub => `
+          <div class="ccna-step-block">
+            <div class="ensp-terminal-box">
+              <div class="ensp-terminal-header">
+                <span class="ensp-terminal-node">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                  @${sub.device}
+                </span>
+                <button class="ensp-copy-btn" onclick="copyCliFromPre(this)">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy Block
+                </button>
               </div>
-              <div class="ccna-expl-text">${sub.explanation}</div>
+              <pre class="ensp-terminal-code">${escapeHtml(sub.code)}</pre>
             </div>
-          `).join('');
+            <div class="ccna-expl-text">${sub.explanation}</div>
+          </div>
+        `).join('');
 
-          let verifyBlock = '';
-          if (step.verify) {
-            verifyBlock = `
-              <div class="ccna-verify-section">
-                <div class="ccna-verify-label">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  VERIFICATION &amp; CHECK COMMANDS:
+        let verifyBlock = '';
+        if (step.verify) {
+          verifyBlock = `
+            <div class="ccna-verify-section">
+              <div class="ccna-verify-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                VERIFICATION &amp; CHECK COMMANDS:
+              </div>
+              <div class="ensp-terminal-box" style="margin-bottom: 6px;">
+                <div class="ensp-terminal-header">
+                  <span class="ensp-terminal-node">@${step.verify.device || 'Verification'}</span>
+                  <button class="ensp-copy-btn" onclick="copyCliFromPre(this)">Copy Verification</button>
                 </div>
-                <div class="ensp-terminal-box" style="margin-bottom: 6px;">
-                  <div class="ensp-terminal-header">
-                    <span class="ensp-terminal-node">@${step.verify.device || 'Verification'}</span>
-                    <button class="ensp-copy-btn" onclick="copyCliFromPre(this)">Copy Verification</button>
-                  </div>
-                  <pre class="ensp-terminal-code">${escapeHtml(step.verify.code)}</pre>
-                </div>
-                <div style="font-size: 12px; color: var(--hw-text-secondary); line-height: 1.5;"><b>Expected Behavior:</b> ${step.verify.expected}</div>
+                <pre class="ensp-terminal-code">${escapeHtml(step.verify.code)}</pre>
               </div>
-            `;
-          }
-
-          return `
-            <div class="ccna-task-card">
-              <div class="ccna-task-header">
-                <span>Task ${step.task_num}: ${step.title}</span>
-              </div>
-              <div class="ccna-task-body">
-                <div class="ccna-theory-box">${step.theory}</div>
-                ${substepsHtml}
-                ${verifyBlock}
-              </div>
+              <div style="font-size: 12px; color: var(--hw-text-secondary); line-height: 1.5;"><b>Expected Behavior:</b> ${step.verify.expected}</div>
             </div>
           `;
-        }).join('');
-      }
+        }
 
-      // Raw Full-Device CLI Blocks (Alternative view)
+        return `
+          <div class="ccna-task-card">
+            <div class="ccna-task-header">
+              <span>Task ${step.task_num}: ${step.title}</span>
+            </div>
+            <div class="ccna-task-body">
+              <div class="ccna-theory-box">${step.theory}</div>
+              ${substepsHtml}
+              ${verifyBlock}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 4. Raw Full-Device CLI Blocks
       let rawCliBlocks = '';
       if (lab.cli) {
         for (const [dev, cmds] of Object.entries(lab.cli)) {
@@ -1055,7 +1045,7 @@
         }
       }
 
-      // Verification
+      // 5. Verification
       let verifRows = '';
       if (lab.verif && lab.verif.length > 0) {
         verifRows = lab.verif.map(v => `
@@ -1101,7 +1091,6 @@
         </nav>
 
         <div class="ensp-content-body">
-          <!-- 1. Overview -->
           <div id="tab-sec-overview" class="ensp-tab-view active">
             <div class="ensp-card">
               <div class="ensp-card-header">
@@ -1133,7 +1122,6 @@
             </div>
           </div>
 
-          <!-- 2. Cabling -->
           <div id="tab-sec-cabling" class="ensp-tab-view">
             <div class="ensp-card">
               <div class="ensp-card-header">
@@ -1159,7 +1147,6 @@
             </div>
           </div>
 
-          <!-- 3. Tasks -->
           <div id="tab-sec-tasks" class="ensp-tab-view">
             <div class="ensp-card">
               <div class="ensp-card-header">
@@ -1174,7 +1161,6 @@
             </div>
           </div>
 
-          <!-- 4. CLI: CCNA-Style Guided Solution Walkthrough -->
           <div id="tab-sec-cli" class="ensp-tab-view">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
               <div style="font-size: 13px; font-weight: 700; color: var(--hw-text-title);">
@@ -1187,18 +1173,15 @@
               </div>
             </div>
 
-            <!-- View 1: CCNA Guided Step-by-Step -->
             <div id="view-ccna-walkthrough">
-              ${walkthroughHtml || '<p style="color:var(--hw-text-secondary);">Guided walkthrough loaded.</p>'}
+              ${walkthroughHtml}
             </div>
 
-            <!-- View 2: Raw Full Scripts -->
             <div id="view-raw-cli" style="display: none;">
               ${rawCliBlocks}
             </div>
           </div>
 
-          <!-- 5. Verification -->
           <div id="tab-sec-verif" class="ensp-tab-view">
             <div class="ensp-card">
               <div class="ensp-card-header">

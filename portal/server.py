@@ -16,11 +16,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 DATA_FILE = os.path.join(BASE_DIR, "labs_data.json")
 
-# In-memory pre-cached and pre-compressed asset store
 CACHE = {}
 
 def preload_assets():
-    print("[*] Preloading and pre-compressing all assets in RAM for zero-disk-IO serving...")
+    print("[*] Preloading and pre-compressing all assets in RAM...")
     
     # 1. HTML
     html_path = os.path.join(STATIC_DIR, "index.html")
@@ -29,18 +28,16 @@ def preload_assets():
             raw = f.read()
         gz = gzip.compress(raw, compresslevel=9)
         etag = f'"{hashlib.md5(raw).hexdigest()}"'
-        CACHE["/"] = {"raw": raw, "gz": gz, "type": "text/html; charset=utf-8", "etag": etag, "cache": "public, max-age=3600"}
+        CACHE["/"] = {"raw": raw, "gz": gz, "type": "text/html; charset=utf-8", "etag": etag, "cache": "no-cache, must-revalidate"}
         CACHE["/index.html"] = CACHE["/"]
-        print(f" - Cached index.html: {len(raw)} bytes (Gzip: {len(gz)} bytes)")
 
-    # 2. Labs JSON API
+    # 2. Labs JSON API (Always fresh, no-store)
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "rb") as f:
             raw = f.read()
         gz = gzip.compress(raw, compresslevel=9)
         etag = f'"{hashlib.md5(raw).hexdigest()}"'
-        CACHE["/api/labs"] = {"raw": raw, "gz": gz, "type": "application/json; charset=utf-8", "etag": etag, "cache": "public, max-age=3600"}
-        print(f" - Cached labs_data.json: {len(raw)} bytes (Gzip: {len(gz)} bytes)")
+        CACHE["/api/labs"] = {"raw": raw, "gz": gz, "type": "application/json; charset=utf-8", "etag": etag, "cache": "no-cache, must-revalidate"}
 
     # 3. Static Images & Assets
     for fname in os.listdir(STATIC_DIR):
@@ -65,14 +62,11 @@ def preload_assets():
                 "etag": etag,
                 "cache": "public, max-age=31536000, immutable"
             }
-            print(f" - Cached /{fname}: {len(raw)} bytes (Gzip: {len(gz)} bytes)")
 
 class ZeroResourceHandler(http.server.BaseHTTPRequestHandler):
-    # Disable DNS resolution for client IPs to eliminate lookup delay
     def address_string(self):
         return self.client_address[0]
         
-    # Minimize logging overhead
     def log_message(self, format, *args):
         pass
 
@@ -95,16 +89,6 @@ class ZeroResourceHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(b"Not Found")
             return
 
-        # Check ETag for 304 Not Modified (instant client-side cache hit)
-        client_etag = self.headers.get("If-None-Match")
-        if client_etag and client_etag == asset["etag"]:
-            self.send_response(304)
-            self.send_header("ETag", asset["etag"])
-            self.send_header("Cache-Control", asset["cache"])
-            self.end_headers()
-            return
-
-        # Check if client supports Gzip compression
         accept_encoding = self.headers.get("Accept-Encoding", "")
         if "gzip" in accept_encoding and len(asset["gz"]) < len(asset["raw"]):
             body = asset["gz"]
