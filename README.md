@@ -7,58 +7,99 @@
 
 ---
 
-## 1. System Architecture & How It Is Built
+## 1. Quick Access & Port Allocation Summary
 
-The virtual infrastructure is engineered as a **self-contained, dual-tier Linux environment** running on EulerOS. It isolates high-performance network device emulation from student curriculum delivery to guarantee zero resource contention.
+The virtual infrastructure operates on a **dual-port architecture** separating lab documentation from live network simulation:
+
+| Port | Service | Purpose | URL / Access Method |
+| :--- | :--- | :--- | :--- |
+| **`80`** | **Main Lab Portal** | **Main website for lab descriptions**, scenario objectives, interface/IP addressing tables, copyable VRP scripts, and line-by-line CCNA-style syntax breakdowns. | **`http://10.10.10.137/`** |
+| **`8443`** | **eNSP Lite Console** | **Live simulation environment** containing the HTML5 topology canvas, interactive wiring, device power controls, and web CLI terminals. | **`https://10.10.10.137:8443/`** |
+| **`22`** | **EulerOS Linux SSH** | Remote administrative shell access to the host virtual machine via PowerShell or terminal. | **`ssh root@10.10.10.137`** |
 
 ```mermaid
 graph TD
     subgraph VM_Environment ["Huawei eNSP Virtual Machine (10.10.10.137)"]
-        subgraph Port_80 ["Port 80 (HTTP): Student Lab Portal"]
+        subgraph Port_80 ["Port 80: Main Website for Descriptions & Syntax"]
             PortalServer["In-Memory Zero-Copy Web Server (server.py)"]
-            PortalData["33 Structured Labs & Syntax Guide (labs_data.json)"]
-            PortalAssets["Local Branding & Theme Assets (static/)"]
+            PortalData["33 Structured Labs & Line-by-Line Syntax Guide"]
             Cgroups["Linux cgroups Sandbox (Nice=19, CPUQuota=5%, RAM <= 32MB)"]
         end
 
-        subgraph Port_8443 ["Port 8443 (HTTPS): eNSP Lite Simulation Engine"]
+        subgraph Port_8443 ["Port 8443: eNSP Lite Console Environment"]
             SpringEngine["eNSP Java Spring Boot Service (eNSP-Lite.jar)"]
             TopoCanvas["HTML5 Web Topology Canvas & Terminal Multiplexer"]
-            VRPNodes["Huawei VRP Node Emulators (vpnf_tor / AR1000v / S5700 / USG6000)"]
-            SQLiteDB["Topology & Link Database (ensp_ng.db)"]
+            VRPNodes["Huawei VRP Node Emulators (AR1000v / S5700 / USG6000 / NE40E)"]
+        end
+
+        subgraph Port_22 ["Port 22: Remote Host Management"]
+            OpenSSH["EulerOS OpenSSH Daemon"]
         end
     end
 
-    StudentBrowser["Student Web Browser (Host PC)"] -->|"http://10.10.10.137/"| Port_80
-    StudentBrowser -->|"https://10.10.10.137:8443/"| Port_8443
-    PortalServer --> Cgroups
-    SpringEngine --> VRPNodes
-    SpringEngine --> SQLiteDB
+    StudentBrowser["Student Web Browser"] -->|"http://10.10.10.137/ (Descriptions)"| Port_80
+    StudentBrowser -->|"https://10.10.10.137:8443/ (Console)"| Port_8443
+    PowerShellClient["Windows PowerShell"] -->|"ssh root@10.10.10.137"| Port_22
 ```
-
-### Key Architectural Pillars:
-
-1. **Dual-Port Isolation Model:**
-   * **Port 80 (`http://<VM-IP>/`):** Dedicated **Huawei Enterprise Lab Portal** serving the entire 33-lab curriculum, complete interface/IP addressing tables, task checklists, copyable VRP scripts, and line-by-line CCNA-style syntax explanations.
-   * **Port 8443 (`https://<VM-IP>:8443/`):** Official **Huawei eNSP Lite Console** running the simulation engine, Docker containers, and live VRP CLI nodes.
-
-2. **Clean Canvas SQLite Injection:**
-   * All 32 standardized CCNA-to-Huawei practice labs plus the **Featured Figure 4-7 Enterprise HQ & WAN** topology are pre-created, pre-placed, and pre-cabled in SQLite (`ensp_ng_project`, `ensp_ng_node`, `ensp_ng_link`).
-   * Bulky on-canvas textboxes were removed to provide a clean, distraction-free canvas for students.
-
-3. **100% Self-Contained Local Assets (Export-Ready):**
-   * All images, logos (Huawei official eNSP raster and COESS emblem), stylesheets, scripts, and JSON syllabus files are stored locally in `/opt/huawei_lab_portal/`.
-   * **No internet connection is required** for the portal or the simulation engine to function.
-
-4. **Zero-Resource In-Memory Server:**
-   * The portal server runs on an in-memory pre-compressed Gzip buffer engine using **~21 MB RAM** (<0.13% of system memory) and **0.0% idle CPU**.
-   * Linux kernel scheduling priority `Nice=19` and cgroups hardware limits (`CPUQuota=5%`, `MemoryMax=32M`) ensure the portal never degrades network device emulation.
 
 ---
 
-## 2. Recommended Virtual Machine (VM) & Host Settings
+## 2. How to SSH via Windows PowerShell
 
-To ensure optimal performance and responsiveness when students power on multiple virtual routers, switches, and firewalls, configure the VM in VMware Workstation, VirtualBox, or Proxmox as follows:
+Students and instructors can access the backend EulerOS operating system directly from Windows PowerShell using the pre-configured root credentials.
+
+### Step 1: Open Windows PowerShell
+Press `Win + X` and select **Terminal** or **Windows PowerShell**.
+
+### Step 2: Run the SSH Command
+Type the following command and press `Enter`:
+
+```powershell
+ssh root@10.10.10.137
+```
+
+*(Optional: If connecting for the first time or after a VM reset, you can bypass host key prompts with:)*
+```powershell
+ssh -o StrictHostKeyChecking=no root@10.10.10.137
+```
+
+### Step 3: Enter the Password
+When prompted for `root@10.10.10.137's password:`, enter:
+```text
+ensp2026@ensp
+```
+*(Note: Characters will not display on screen while typing the password in PowerShell. Just type `ensp2026@ensp` and press `Enter`.)*
+
+### Example PowerShell Session Output:
+```powershell
+PS C:\Users\Student> ssh root@10.10.10.137
+root@10.10.10.137's password:
+
+Authorized users only. All activities may be monitored and reported.
+Welcome to Huawei EulerOS (eNSP Lite Enterprise Edition)
+
+[root@ensp ~]# systemctl status huawei-lab-portal.service
+● huawei-lab-portal.service - Huawei Datacom Student Lab Portal
+     Active: active (running)
+```
+
+---
+
+## 3. System Credentials & Reference Summary
+
+| Component | Endpoint | Username | Password | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Lab Portal (Port 80)** | `http://10.10.10.137/` | *(None)* | *(None)* | Open access for all students |
+| **Console Env (Port 8443)** | `https://10.10.10.137:8443/` | *(No auth patch)* | *(None)* | Direct simulation canvas access |
+| **VM OS Root SSH (Port 22)** | `10.10.10.137:22` | **`root`** | **`ensp2026@ensp`** | Host administrative shell |
+| **VRP Device AAA** | Console / Telnet / SSH | **`admin`** | **`admin`** | Privilege Level 15 (Manager) |
+| **VRP Super Password** | Privilege Elevation | **`super`** | **`super`** | Privilege Level 15 Elevation |
+
+---
+
+## 4. Recommended Virtual Machine (VM) & Host Settings
+
+Configure the VM in VMware Workstation, VirtualBox, or Proxmox as follows:
 
 | Setting | Minimum Specification | Recommended Specification | Notes |
 | :--- | :--- | :--- | :--- |
@@ -74,20 +115,20 @@ To ensure optimal performance and responsiveness when students power on multiple
 
 ---
 
-## 3. Student User Guide: Step-by-Step Workflow
+## 5. Student User Guide: Step-by-Step Workflow
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Student
-    participant Portal as Lab Portal (Port 80)
-    participant Console as eNSP Lite Console (Port 8443)
+    participant Portal as Port 80 (Lab Descriptions)
+    participant Console as Port 8443 (Console Environment)
     participant Node as VRP Device Nodes
 
-    Student->>Portal: 1. Open http://10.10.10.137/
+    Student->>Portal: 1. Open http://10.10.10.137/ (Descriptions & Syntax)
     Student->>Portal: 2. Select Assigned Lab from Sidebar
-    Student->>Portal: 3. Review Cabling Matrix & Line-by-Line Syntax
-    Student->>Console: 4. Click "Open Simulation Console" (Port 8443)
+    Student->>Portal: 3. Review Cabling Matrix & Line-by-Line Syntax Guide
+    Student->>Console: 4. Click "Open Simulation Console" (https://10.10.10.137:8443)
     Student->>Console: 5. Open corresponding Sandbox
     Student->>Node: 6. Power ON required nodes (Green Start button)
     Student->>Node: 7. Open Terminal & apply VRP configurations
@@ -96,27 +137,23 @@ sequenceDiagram
     Student->>Console: 10. CRITICAL: Stop / Power OFF Sandbox when finished!
 ```
 
-### Step 1: Open the Lab Portal
-Open your web browser and navigate to:
-```
-http://10.10.10.137/
-```
+### Step 1: Open the Lab Portal (`http://10.10.10.137/`)
 * Use the **Theme Switcher** (Sun/Moon icon in top right) to toggle between Huawei Light and Dark modes.
 * Use the **Search Bar** in the left sidebar to quickly find labs by topic (e.g., `OSPF`, `VLAN`, `VRRP`, `NAT`, `ACL`).
 
 ### Step 2: Study the Lab Blueprint
 Before touching the CLI, review the five structured tabs:
-1. **Overview & Setup:** Understand the real-world network problem statement and default credentials.
-2. **Interface & IP Matrix:** Note all port interconnections, IP subnets, and VLAN memberships.
-3. **Task Objectives:** Review the step-by-step checklist of requirements.
+1. **Overview & Setup:** Problem statement and default credentials.
+2. **Interface & IP Matrix:** Port interconnections, IP subnets, and VLAN memberships.
+3. **Task Objectives:** Step-by-step checklist of requirements.
 4. **VRP Configuration & Detailed Syntax Breakdown:** 
    * Review the exact Huawei VRP commands for each device.
    * Read the **Line-by-Line Mechanism Breakdown** table to understand *why* each command is used and how it maps to Cisco CCNA / RFC standards.
    * Click **"Copy Script"** to copy clean configuration blocks.
-5. **Verification Runbook:** Review the expected `display` verification commands.
+5. **Verification Runbook:** Expected `display` verification commands.
 
-### Step 3: Launch eNSP Lite Simulation Environment
-1. Click **"Open Simulation Console"** or go to `https://10.10.10.137:8443`.
+### Step 3: Launch eNSP Lite Console (`https://10.10.10.137:8443/`)
+1. Click **"Open Simulation Console"** or navigate directly to `https://10.10.10.137:8443`.
 2. Find your lab sandbox (e.g., `Lab 01 Huawei DHCP Global Pool and Easy IP NAT` or `Enterprise HQ and WAN Figure 4-7`).
 3. Click to open the topology canvas.
 
@@ -132,7 +169,7 @@ Before touching the CLI, review the five structured tabs:
 
 ---
 
-## 4. Critical Resource Hygiene: Stopping Labs When Finished
+## 6. Critical Resource Hygiene: Stopping Labs When Finished
 
 > [!CAUTION]
 > **Always Stop / Power Off Sandboxes When Done!**  
@@ -146,22 +183,10 @@ Before touching the CLI, review the five structured tabs:
 
 ---
 
-## 5. System Credentials & Reference Summary
-
-### Default Management & Console Credentials
-
-| Component | Endpoint | Username | Password | Notes |
-| :--- | :--- | :--- | :--- | :--- |
-| **Lab Portal** | `http://10.10.10.137/` | *(None required)* | *(None)* | Open access |
-| **eNSP Lite Console** | `https://10.10.10.137:8443/` | *(No auth patch)* | *(None)* | Direct canvas access |
-| **VRP Device AAA** | Console / Telnet / SSH | `admin` | `admin` | Level 15 Manager |
-| **VRP Super Password** | Privilege Elevation | `super` | `super` | Level 15 Elevation |
-| **VM OS Root SSH** | `10.10.10.137:22` | `root` | `ensp2026@ensp` | Admin SSH login |
-
-### Administrator Service Commands
+## 7. Administrator Commands Reference
 
 ```bash
-# Check status of the portal service
+# Check status of the portal service (Port 80)
 systemctl status huawei-lab-portal.service
 
 # Restart the portal service
@@ -173,17 +198,3 @@ ps -eo pid,user,%cpu,%mem,rss,cmd | grep "[s]erver.py"
 # Gracefully shut down the entire VM
 shutdown -h now
 ```
-
----
-
-## 6. VM Export & Distribution Instructions
-
-The VM is 100% self-contained and ready to be distributed to students as an OVA/OVF template:
-
-1. In the VM console, shut down gracefully:
-   ```bash
-   shutdown -h now
-   ```
-2. In VMware Workstation / ESXi:
-   * Select the VM -> **File** -> **Export to OVF...** (or Export to OVA).
-3. Distribute the `.ova` file to students with instructions to import into VMware Workstation 17 Pro / Player and ensure Nested VT-x is enabled.
