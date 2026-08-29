@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<lab name="Lab-27-Huawei-LACP-Actor-Priority-and-PVID" id="e4d7980d-5bb3-46ba-918e-17ef913d79ed" version="1" scripttimeout="300" lock="0" description="Huawei LACP Negotiation: Active System Priority 100 vs Passive Role with PVID 11.">
+<lab name="Lab-27-Huawei-LACP-Actor-Priority-and-PVID" id="178eca35-0b5e-4a14-a3ef-349f7016f95f" version="1" scripttimeout="300" lock="0" description="Huawei LACP Negotiation: Active System Priority 100 vs Passive Role with PVID 11.">
   <topology>
     <nodes>
-      <node id="1" name="Core-SW1" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="8b5187d2-6291-49d6-8499-d8ba3e1200c9" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Switch L32.png" config="0" left="620" top="140">
+      <node id="1" name="Core-SW1" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="3ad18e5a-b420-4589-b5dd-0b70bfd27a2b" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Switch L32.png" config="0" left="620" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="2"/>
       </node>
-      <node id="2" name="Dist-SW2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="d03e4f5d-d308-4eca-9be0-3138f7367330" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Switch L32.png" config="0" left="920" top="140">
+      <node id="2" name="Dist-SW2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="c497f086-b033-48fa-9e4e-a4098140c9ce" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Switch L32.png" config="0" left="920" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="3"/>
       </node>

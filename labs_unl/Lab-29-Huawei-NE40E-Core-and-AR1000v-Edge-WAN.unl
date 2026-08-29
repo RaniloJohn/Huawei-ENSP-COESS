@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<lab name="Lab-29-Huawei-NE40E-Core-and-AR1000v-Edge-WAN" id="76470f9f-b67e-48a2-b34a-609fa6b2eeef" version="1" scripttimeout="300" lock="0" description="Huawei Enterprise WAN: Integrating NE40E Core Router with AR1000v Branch Routers.">
+<lab name="Lab-29-Huawei-NE40E-Core-and-AR1000v-Edge-WAN" id="e7bb72b8-3a50-46db-9af7-9610be29b5d8" version="1" scripttimeout="300" lock="0" description="Huawei Enterprise WAN: Integrating NE40E Core Router with AR1000v Branch Routers.">
   <topology>
     <nodes>
-      <node id="1" name="NE40E-Core" type="qemu" template="huaweine40" image="huaweine40-ne40" console="telnet" cpu="2" cpulimit="1" ram="2048" ethernet="12" uuid="92ca22d0-8895-45fb-b86d-6354e09a0c93" qemu_options="-cpu host -machine type=pc-1.0,accel=kvm -serial mon:stdio -nographic -nodefconfig -nodefaults -rtc base=utc" qemu_arch="x86_64" icon="Router.png" config="0" left="620" top="140">
+      <node id="1" name="NE40E-Core" type="qemu" template="huaweine40" image="huaweine40-ne40" console="telnet" cpu="2" cpulimit="1" ram="2048" ethernet="12" uuid="187ff38d-c51d-4694-8649-97b6f931d32b" qemu_options="-cpu host -machine type=pc-1.0,accel=kvm -serial mon:stdio -nographic -nodefconfig -nodefaults -rtc base=utc" qemu_arch="x86_64" icon="Router.png" config="0" left="620" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="2"/>
       </node>
-      <node id="2" name="AR1000v-Edge" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="349e6186-efaf-4859-9afa-a1e229ee56ac" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="920" top="140">
+      <node id="2" name="AR1000v-Edge" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="346fa813-202e-4fb8-9a09-1d47dba8bc68" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="920" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="3"/>
       </node>

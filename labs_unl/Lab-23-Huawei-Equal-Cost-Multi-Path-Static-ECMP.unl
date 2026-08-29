@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<lab name="Lab-23-Huawei-Equal-Cost-Multi-Path-Static-ECMP" id="cf42d12b-5dc5-49f5-983d-8aeda21fa602" version="1" scripttimeout="300" lock="0" description="Huawei Load Sharing: Equal-Cost Multi-Path (ECMP) Static Routes over Dual Links.">
+<lab name="Lab-23-Huawei-Equal-Cost-Multi-Path-Static-ECMP" id="f74c68e4-2e99-43c8-997e-fb558a2f32f1" version="1" scripttimeout="300" lock="0" description="Huawei Load Sharing: Equal-Cost Multi-Path (ECMP) Static Routes over Dual Links.">
   <topology>
     <nodes>
-      <node id="1" name="R1" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="def734fb-eba8-42df-98e9-d17b7028cd4a" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="620" top="140">
+      <node id="1" name="R1" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="2710c202-82eb-47ca-9e1f-15df8bac00f5" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="620" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="2"/>
       </node>
-      <node id="2" name="R2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="dfad072e-d394-4da0-acc2-33875b99a051" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="920" top="140">
+      <node id="2" name="R2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="cf754c1d-296a-4c66-882e-c65c4c91fb59" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="920" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="3"/>
       </node>

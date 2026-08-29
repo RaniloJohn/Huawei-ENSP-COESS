@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<lab name="Lab-01-Huawei-DHCP-Global-Pool-and-Easy-IP-NAT" id="bf523cb8-aa80-4984-8a08-46c3db75f3b5" version="1" scripttimeout="300" lock="0" description="Configure Huawei DHCP Global Address Pools and Easy-IP NAT outbound translation on AR1000v gateway.">
+<lab name="Lab-01-Huawei-DHCP-Global-Pool-and-Easy-IP-NAT" id="73b36b59-dc1a-418f-a4a5-820065581450" version="1" scripttimeout="300" lock="0" description="Configure Huawei DHCP Global Address Pools and Easy-IP NAT outbound translation on AR1000v gateway.">
   <topology>
     <nodes>
-      <node id="1" name="R1-GW" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="7b6078bc-4793-4eb0-b84e-04da2f97dfd0" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="620" top="140">
+      <node id="1" name="R1-GW" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="84b71696-d5ac-4ca1-9685-562a780167a3" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="620" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="2"/>
         <interface id="2" name="GE0/0/2" type="ethernet" network_id="3"/>
       </node>
-      <node id="2" name="ISP-R2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="23e81645-6522-4550-811d-711080c7ca47" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="920" top="140">
+      <node id="2" name="ISP-R2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="b631be03-6525-4dcd-b992-488689c6444b" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="920" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
       </node>
       <node id="3" name="PC1" type="vpcs" template="vpcs" ethernet="1" console="" delay="0" icon="Desktop.png" config="0" left="540" top="340">

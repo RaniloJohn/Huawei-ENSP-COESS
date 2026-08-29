@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<lab name="Lab-02-Huawei-VRRP-Gateway-Redundancy-and-Tracking" id="482afcd3-0f08-4705-a412-90afd95db430" version="1" scripttimeout="300" lock="0" description="Configure Huawei VRRP Virtual Router Redundancy Protocol with Master (Priority 120), Backup (Priority 100), Uplink Tracking, and Preemption.">
+<lab name="Lab-02-Huawei-VRRP-Gateway-Redundancy-and-Tracking" id="3b69faf9-2391-4b09-b226-1576712858b8" version="1" scripttimeout="300" lock="0" description="Configure Huawei VRRP Virtual Router Redundancy Protocol with Master (Priority 120), Backup (Priority 100), Uplink Tracking, and Preemption.">
   <topology>
     <nodes>
-      <node id="1" name="Core-R3" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="8b77db6b-f9b3-442f-855b-acebe53a032c" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="750" top="60">
+      <node id="1" name="Core-R3" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="cf1f57ad-9f8e-4a0d-b015-00f7315d8bc1" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="750" top="60">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="2"/>
       </node>
-      <node id="2" name="Master-GW1" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="98a035ac-0b66-4e8f-a51a-3b7b855390fe" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="600" top="180">
+      <node id="2" name="Master-GW1" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="23034097-58fb-4c09-87f4-3de32b9e8f8a" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="600" top="180">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="3"/>
       </node>
-      <node id="3" name="Backup-GW2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="48b3f1ff-b7ea-4b32-b774-27d76a63bfe2" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="900" top="180">
+      <node id="3" name="Backup-GW2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="7117f5b8-7d5f-4aff-be72-d2f48fc694b7" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="900" top="180">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="2"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="4"/>
       </node>
-      <node id="4" name="SW-Access" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="0511b974-b91c-458d-8c4f-d76a263822c7" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Switch L32.png" config="0" left="750" top="300">
+      <node id="4" name="SW-Access" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="cb52bafa-7707-4477-b3ba-d35cf1ee25f2" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Switch L32.png" config="0" left="750" top="300">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="3"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="4"/>
         <interface id="2" name="GE0/0/2" type="ethernet" network_id="5"/>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<lab name="Lab-04-Huawei-OSPFv2-Multi-Area-and-Authentication" id="d224240a-e54d-4d55-a969-dc1bf74aca29" version="1" scripttimeout="300" lock="0" description="Configure OSPFv2 Multi-Area routing with Area 0 backbone, Area 1 standard area, and MD5 authentication.">
+<lab name="Lab-04-Huawei-OSPFv2-Multi-Area-and-Authentication" id="ef64a27d-0e2a-4261-8e1e-86cafed196a6" version="1" scripttimeout="300" lock="0" description="Configure OSPFv2 Multi-Area routing with Area 0 backbone, Area 1 standard area, and MD5 authentication.">
   <topology>
     <nodes>
-      <node id="1" name="Area1-R1" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="809e7c2e-4b71-498f-bf22-2a5cc23f6f11" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="600" top="140">
+      <node id="1" name="Area1-R1" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="84049d14-360e-4576-9032-77d154d47a06" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="600" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="3"/>
       </node>
-      <node id="2" name="ABR-R2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="5da53a6d-02a8-47eb-a6ef-68378046e40c" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="780" top="140">
+      <node id="2" name="ABR-R2" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="0bb597cf-f823-4fd7-a8fa-4b4b55bc63d5" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="780" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="1"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="2"/>
       </node>
-      <node id="3" name="Backbone-R3" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="b9d21cc6-8449-4eab-81e8-96d7cc248955" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="960" top="140">
+      <node id="3" name="Backbone-R3" type="qemu" template="huaweiar1k" image="huaweiar1k-5.170" console="telnet" cpu="2" cpulimit="0" ram="4096" ethernet="6" uuid="035c3b4c-79fa-4819-8391-b17bfb15d5e4" qemu_options="-machine type=pc,accel=kvm -vga std -usbdevice tablet -boot order=cd -cpu host" qemu_version="2.12.0" qemu_arch="x86_64" qemu_nic="virtio-net-pci" delay="0" icon="Router.png" config="0" left="960" top="140">
         <interface id="0" name="GE0/0/0" type="ethernet" network_id="2"/>
         <interface id="1" name="GE0/0/1" type="ethernet" network_id="4"/>
       </node>
