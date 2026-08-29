@@ -947,7 +947,114 @@
         }
       ]
     },
-    "display_name": "Enterprise HQ and WAN Figure 4 7"
+    "display_name": "Enterprise HQ and WAN Figure 4 7",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Layer 2 Broadcast Domain Isolation & VLAN Segmentation",
+        "theory": "In enterprise campus networks, broadcast domain isolation is essential to restrict Layer 2 broadcast storms, segment departmental traffic, and enforce security boundaries. We create dedicated VLANs for Wired Employees (VLAN 10), Wireless Endpoints (VLAN 20), Management & APs (VLAN 30), and DMZ/Servers (VLAN 100).",
+        "substeps": [
+          {
+            "device": "LSW2 & LSW3 (Core Switches)",
+            "code": "system-view\nvlan batch 10 20 30 100",
+            "explanation": "The 'vlan batch' command creates VLAN IDs 10, 20, 30, and 100 simultaneously in the switch database. In Cisco IOS, this is equivalent to running 'vlan 10,20,30,100'."
+          },
+          {
+            "device": "LSW1 (Access Switch)",
+            "code": "system-view\nvlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type access\n port default vlan 10\n quit\ninterface GigabitEthernet 0/0/2\n port link-type access\n port default vlan 20\n quit",
+            "explanation": "Configures access ports facing end devices. 'port link-type access' instructs the port to transmit only untagged frames, and 'port default vlan 10' sets the Port VLAN ID (PVID)."
+          }
+        ],
+        "verify": {
+          "device": "LSW1 / LSW2",
+          "code": "display vlan brief",
+          "expected": "Shows VLANs 10, 20, 30, 100 in Active state with their assigned member interfaces."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Core Link Aggregation via LACP Static Mode (Eth-Trunk)",
+        "theory": "To prevent inter-switch bandwidth bottlenecks and provide sub-second link redundancy between Core switches (LSW2 and LSW3), we bundle multiple physical Gigabit links into a single logical Eth-Trunk interface using IEEE 802.3ad LACP (Link Aggregation Control Protocol) Static mode.",
+        "substeps": [
+          {
+            "device": "LSW2 (Core-A)",
+            "code": "system-view\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30 100\n quit\ninterface GigabitEthernet 0/0/1\n eth-trunk 1\n quit\ninterface GigabitEthernet 0/0/2\n eth-trunk 1\n quit",
+            "explanation": "'mode lacp-static' enables active LACP negotiation packets (LACPDUs). 'port trunk allow-pass vlan' explicitly whitelists VLAN tags across the logical pipe. Physical ports are then bound to the trunk with 'eth-trunk 1'."
+          },
+          {
+            "device": "LSW3 (Core-B)",
+            "code": "system-view\ninterface Eth-Trunk 1\n mode lacp-static\n port link-type trunk\n port trunk allow-pass vlan 10 20 30 100\n quit\ninterface GigabitEthernet 0/0/1\n eth-trunk 1\n quit\ninterface GigabitEthernet 0/0/2\n eth-trunk 1\n quit",
+            "explanation": "Mirrors the LACP static configuration on Core-B to form the aggregated 2 Gbps channel bundle."
+          }
+        ],
+        "verify": {
+          "device": "LSW2 / LSW3",
+          "code": "display eth-trunk 1",
+          "expected": "Status should display 'WorkingMode: STATIC', 'Operating Status: Up', and 'Active Ports: 2'."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "First-Hop Redundancy Protocol: VRRP Gateway High Availability",
+        "theory": "To provide default gateway redundancy for campus workstations, we implement Virtual Router Redundancy Protocol (VRRP). LSW2 acts as the primary Master gateway (Priority 120), while LSW3 acts as the hot-standby Backup gateway (Priority 100). Endpoints point their default gateway to the Virtual IP.",
+        "substeps": [
+          {
+            "device": "LSW2 (Primary Gateway)",
+            "code": "system-view\ninterface Vlanif 10\n ip address 192.168.10.2 255.255.255.0\n vrrp vrid 10 virtual-ip 192.168.10.254\n vrrp vrid 10 priority 120\n vrrp vrid 10 preempt-mode timer delay 20\n quit",
+            "explanation": "Creates SVI Vlanif 10 with physical IP 192.168.10.2. 'vrrp vrid 10 virtual-ip 192.168.10.254' defines the shared virtual IP. 'priority 120' ensures LSW2 wins the Master election (default priority is 100)."
+          },
+          {
+            "device": "LSW3 (Backup Gateway)",
+            "code": "system-view\ninterface Vlanif 10\n ip address 192.168.10.3 255.255.255.0\n vrrp vrid 10 virtual-ip 192.168.10.254\n vrrp vrid 10 priority 100\n quit",
+            "explanation": "Configures SVI Vlanif 10 on the secondary core with default priority 100, placing it in Backup state."
+          }
+        ],
+        "verify": {
+          "device": "LSW2 / LSW3",
+          "code": "display vrrp brief",
+          "expected": "LSW2 shows State: 'Master' for VRID 10, while LSW3 shows State: 'Backup'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "Core OSPF Multi-Area Routing & Default Route Injection",
+        "theory": "To provide dynamic route reachability between core switches, edge aggregation routers (AR1/AR2), and WAN gateways without static routing overhead, we deploy OSPFv2 Multi-Area. Backbone Area 0 connects the core and edge routers.",
+        "substeps": [
+          {
+            "device": "AR1 (Edge Gateway)",
+            "code": "system-view\nospf 1 router-id 1.1.1.1\n area 0.0.0.0\n  network 10.0.12.0 0.0.0.255\n  network 10.0.13.0 0.0.0.255\n  quit\n default-route-advertise always\n quit",
+            "explanation": "Initializes OSPF Process 1 with Router ID 1.1.1.1. 'default-route-advertise always' injects a Type-5 external default route into the entire OSPF domain to direct internet-bound traffic to the WAN edge."
+          },
+          {
+            "device": "LSW2 (Core-A)",
+            "code": "system-view\nospf 1 router-id 2.2.2.2\n area 0.0.0.0\n  network 10.0.12.0 0.0.0.255\n  network 192.168.10.0 0.0.0.255\n  network 192.168.20.0 0.0.0.255\n  quit\n quit",
+            "explanation": "Advertises internal user VLAN subnets into OSPF Area 0 so WAN routers and remote sites can reach campus endpoints."
+          }
+        ],
+        "verify": {
+          "device": "AR1 / LSW2",
+          "code": "display ospf peer brief\ndisplay ip routing-table protocol ospf",
+          "expected": "OSPF neighbor state displays 'Full'. Routing table shows learned OSPF routes with metric and next-hop."
+        }
+      },
+      {
+        "task_num": 5,
+        "title": "Next-Gen Firewall Security: Zone Assignment & Outbound NAT Policy",
+        "theory": "Enterprise security requires strict traffic inspection between security zones. On the USG6000 firewall, we assign internal networks to the Trust zone and external internet connections to the Untrust zone, applying an interzone security policy and Easy-IP NAT.",
+        "substeps": [
+          {
+            "device": "FW1 (USG6000)",
+            "code": "system-view\nfirewall zone trust\n add interface GigabitEthernet 0/0/1\n quit\nfirewall zone untrust\n add interface GigabitEthernet 0/0/0\n quit\nsecurity-policy\n default action deny\n rule name Trust_to_Untrust\n  source-zone trust\n  destination-zone untrust\n  source-address 192.168.0.0 mask 255.255.0.0\n  action permit\n  quit\n quit\nnat-policy\n rule name Easy_IP_NAT\n  source-zone trust\n  destination-zone untrust\n  action source-nat easy-ip\n  quit\n quit",
+            "explanation": "Places GE0/0/1 in Trust and GE0/0/0 in Untrust. The security-policy allows LAN endpoints to initiate outbound sessions while blocking unsolicited inbound connections. 'source-nat easy-ip' dynamically translates internal private addresses to the firewall's public WAN IP."
+          }
+        ],
+        "verify": {
+          "device": "FW1",
+          "code": "display firewall session table\ndisplay security-policy rule all",
+          "expected": "Active session table records outbound TCP/UDP connections with NAT translation entries."
+        }
+      }
+    ]
   },
   {
     "id": 1,
@@ -1390,7 +1497,82 @@
         }
       ]
     },
-    "display_name": "DHCP Global Pool and Easy IP NAT"
+    "display_name": "DHCP Global Pool and Easy IP NAT",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1-GW",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1-GW",
+            "code": "system-view\nsysname R1-GW\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1-GW",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Global DHCP Server Daemon & Dynamic IP Address Pool Scope",
+        "theory": "DHCP eliminates manual endpoint IP configuration by dynamically allocating IPv4 addresses, subnet masks, default gateways (Option 3), and DNS servers (Option 6) from a centrally managed pool scope.",
+        "substeps": [
+          {
+            "device": "R1-GW",
+            "code": "dhcp enable\nip pool POOL_LAN1\n network 192.168.10.0 mask 255.255.255.0\n gateway-list 192.168.10.1\n dns-list 8.8.8.8\n quit",
+            "explanation": "'dhcp enable' activates the DHCP service daemon. 'ip pool POOL_LAN1' defines the scope. 'network' sets the assignable range, 'gateway-list' pushes the default router IP, and 'dns-list' specifies the recursive resolver."
+          },
+          {
+            "device": "R1-GW",
+            "code": "interface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n dhcp select global\n quit",
+            "explanation": "'dhcp select global' binds the interface to match client DHCP Discover broadcasts with the globally defined IP pool corresponding to 192.168.10.0/24."
+          }
+        ],
+        "verify": {
+          "device": "R1-GW",
+          "code": "display ip pool name POOL_LAN1 used",
+          "expected": "Lists active IP leases, client MAC addresses, and lease expiration timestamps."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on ISP-R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "ISP-R2",
+            "code": "system-view\nsysname ISP-R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on ISP-R2 matching the parameters configured on R1-GW."
+          }
+        ],
+        "verify": {
+          "device": "ISP-R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> dhcp\nPC1> show ip\nPC1> ping 203.0.113.2\nPC2> dhcp\nPC2> ping 203.0.113.2",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1-GW",
+          "code": "On R1-GW: Run 'display ip pool name POOL_LAN1 used' to view allocated IP leases.\nOn R1-GW: Run 'display nat outbound' to confirm NAT translation on GE0/0/0.\nOn R1-GW: Run 'display nat session all' during active ping.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 2,
@@ -1912,7 +2094,77 @@
         }
       ]
     },
-    "display_name": "VRRP Gateway Redundancy and Tracking"
+    "display_name": "VRRP Gateway Redundancy and Tracking",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Master-GW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Master-GW1",
+            "code": "system-view\nsysname Master-GW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Master-GW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "VRRP Virtual Gateway Configuration & Active Priority Elevation",
+        "theory": "VRRP creates a resilient default gateway by grouping two or more physical routers into a single Virtual Router with a shared Virtual IP (VIP) and Virtual MAC. Endpoints point their gateway to the VIP without needing protocol awareness.",
+        "substeps": [
+          {
+            "device": "Master-GW1",
+            "code": "interface GigabitEthernet 0/0/1\n ip address 192.168.1.1 255.255.255.0\n vrrp vrid 1 virtual-ip 192.168.1.254\n vrrp vrid 1 priority 120\n vrrp vrid 1 preempt-mode timer delay 20\n quit",
+            "explanation": "'vrrp vrid 1 virtual-ip 192.168.1.254' instantiates group 1 with VIP 192.168.1.254. 'priority 120' elevates this device above default (100) to win Master state. 'preempt-mode timer delay 20' ensures link stabilization before reclaiming Master role."
+          }
+        ],
+        "verify": {
+          "device": "Master-GW1",
+          "code": "display vrrp brief",
+          "expected": "Displays State: 'Master', Virtual IP: 192.168.1.254, and Priority: 120."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Backup-GW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Backup-GW2",
+            "code": "system-view\nsysname Backup-GW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Backup-GW2 matching the parameters configured on Master-GW1."
+          }
+        ],
+        "verify": {
+          "device": "Backup-GW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ping 192.168.10.1\nPC1> show ip",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Master-GW1",
+          "code": "On Master-GW1 & Backup-GW2: Run 'display vrrp brief' to check Master/Backup states.\nFrom PC1: Run continuous ping to virtual gateway 'ping 192.168.1.254'.\nOn Master-GW1: Execute 'shutdown' on GE0/0/0 and observe failover.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 3,
@@ -2419,7 +2671,77 @@
         }
       ]
     },
-    "display_name": "IPv4 Static and Default Routing"
+    "display_name": "IPv4 Static and Default Routing",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Branch-R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Branch-R1",
+            "code": "system-view\nsysname Branch-R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Branch-R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Static Routing & Default Gateway Forwarding Table Injection",
+        "theory": "Static routes provide deterministic, manual control over network traffic paths with zero protocol bandwidth overhead. Default routes (0.0.0.0/0) handle all traffic with no specific destination in the routing table.",
+        "substeps": [
+          {
+            "device": "Branch-R1",
+            "code": "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2",
+            "explanation": "'ip route-static 0.0.0.0 0.0.0.0 203.0.113.2' installs a default route to next-hop 203.0.113.2 with default administrative preference 60 (equivalent to Administrative Distance 1 in Cisco)."
+          }
+        ],
+        "verify": {
+          "device": "Branch-R1",
+          "code": "display ip routing-table protocol static",
+          "expected": "Displays installed static routes with Destination/Mask, Protocol (Static), Preference (60), Cost (0), and NextHop."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on HQ-R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "HQ-R2",
+            "code": "system-view\nsysname HQ-R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on HQ-R2 matching the parameters configured on Branch-R1."
+          }
+        ],
+        "verify": {
+          "device": "HQ-R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "Branch-PC> ip 192.168.10.10/24 192.168.10.1\nServer-PC> ip 192.168.30.50/24 192.168.30.1\nBranch-PC> ping 192.168.30.50\nBranch-PC> trace 192.168.30.50",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Branch-R1",
+          "code": "From Branch-PC: Run 'ping 192.168.30.50' (expect 5/5 reply).\nFrom Branch-PC: Run 'trace 192.168.30.50' to verify multi-hop path.\nOn HQ-R2: Run 'display ip routing-table' to inspect static entries.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 4,
@@ -2996,7 +3318,77 @@
         }
       ]
     },
-    "display_name": "OSPFv2 Multi Area and Authentication"
+    "display_name": "OSPFv2 Multi Area and Authentication",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Area1-R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Area1-R1",
+            "code": "system-view\nsysname Area1-R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Area1-R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "OSPFv2 Dynamic Routing Process & Area Link State Advertisement",
+        "theory": "OSPF (Open Shortest Path First) is a link-state interior gateway routing protocol utilizing Dijkstra's SPF algorithm to calculate loop-free shortest paths across multi-area topologies with rapid convergence.",
+        "substeps": [
+          {
+            "device": "Area1-R1",
+            "code": "ospf 1 router-id 1.1.1.1\n area 0.0.0.0\n  network 10.0.12.0 0.0.0.255\n  network 192.168.10.0 0.0.0.255\n  authentication-mode md5 1 cipher Huawei@123\n  quit\n quit",
+            "explanation": "'ospf 1 router-id 1.1.1.1' initializes process 1. 'area 0.0.0.0' enters the backbone. 'network' statements specify interfaces by IP and wildcard mask. 'authentication-mode md5' enforces cryptographic handshake security."
+          }
+        ],
+        "verify": {
+          "device": "Area1-R1",
+          "code": "display ospf peer brief\ndisplay ospf lsdb",
+          "expected": "Neighbor state displays 'Full'. Link State Database (LSDB) lists Router and Network LSAs."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on ABR-R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "ABR-R2",
+            "code": "system-view\nsysname ABR-R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on ABR-R2 matching the parameters configured on Area1-R1."
+          }
+        ],
+        "verify": {
+          "device": "ABR-R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "Area1-PC> ip 192.168.1.10/24 192.168.1.1\nArea0-PC> ip 192.168.0.10/24 192.168.0.1\nArea1-PC> ping 192.168.0.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Area1-R1",
+          "code": "On all routers: Run 'display ospf peer brief' to verify Full neighbor adjacencies.\nOn Area1-R1: Run 'display ip routing-table protocol ospf' to inspect O_IA routes.\nFrom Area1-PC: Run 'ping 192.168.0.10' (5/5 success).",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 5,
@@ -3470,7 +3862,77 @@
         }
       ]
     },
-    "display_name": "Eth Trunk LACP Static Mode Aggregation"
+    "display_name": "Eth Trunk LACP Static Mode Aggregation",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24\nPC2> ip 192.168.10.20/24\nPC1> ping 192.168.10.20",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "On both switches: Run 'display eth-trunk 1' to verify Selected member links.\nFrom PC1: Run 'ping 192.168.10.20' across the aggregated link.\nShutdown Core-SW1 GE0/0/0 and observe uninterrupted ping connectivity.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 6,
@@ -3848,7 +4310,77 @@
         }
       ]
     },
-    "display_name": "Voice VLAN and QoS Priority"
+    "display_name": "Voice VLAN and QoS Priority",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 7,
@@ -4226,7 +4758,77 @@
         }
       ]
     },
-    "display_name": "VLAN Hybrid Ports and Isolation"
+    "display_name": "VLAN Hybrid Ports and Isolation",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 8,
@@ -4584,7 +5186,77 @@
         }
       ]
     },
-    "display_name": "IPv4 IPv6 Dual Stack Configuration"
+    "display_name": "IPv4 IPv6 Dual Stack Configuration",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on R1",
+        "theory": "Implements the core networking function for Lab-08-Huawei-IPv4-IPv6-Dual-Stack-Configuration according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 9,
@@ -4962,7 +5634,77 @@
         }
       ]
     },
-    "display_name": "Advanced ACL 3000 and Port Security"
+    "display_name": "Advanced ACL 3000 and Port Security",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on Core-SW1",
+        "theory": "Implements the core networking function for Lab-09-Huawei-Advanced-ACL-3000-and-Port-Security according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 10,
@@ -5340,7 +6082,82 @@
         }
       ]
     },
-    "display_name": "DHCP Snooping and IPSG Defense"
+    "display_name": "DHCP Snooping and IPSG Defense",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Global DHCP Server Daemon & Dynamic IP Address Pool Scope",
+        "theory": "DHCP eliminates manual endpoint IP configuration by dynamically allocating IPv4 addresses, subnet masks, default gateways (Option 3), and DNS servers (Option 6) from a centrally managed pool scope.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "dhcp enable\nip pool POOL_LAN1\n network 192.168.10.0 mask 255.255.255.0\n gateway-list 192.168.10.1\n dns-list 8.8.8.8\n quit",
+            "explanation": "'dhcp enable' activates the DHCP service daemon. 'ip pool POOL_LAN1' defines the scope. 'network' sets the assignable range, 'gateway-list' pushes the default router IP, and 'dns-list' specifies the recursive resolver."
+          },
+          {
+            "device": "Core-SW1",
+            "code": "interface GigabitEthernet 0/0/1\n ip address 192.168.10.1 255.255.255.0\n dhcp select global\n quit",
+            "explanation": "'dhcp select global' binds the interface to match client DHCP Discover broadcasts with the globally defined IP pool corresponding to 192.168.10.0/24."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display ip pool name POOL_LAN1 used",
+          "expected": "Lists active IP leases, client MAC addresses, and lease expiration timestamps."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 11,
@@ -5718,7 +6535,77 @@
         }
       ]
     },
-    "display_name": "LLDP Neighbor Discovery and VLANs"
+    "display_name": "LLDP Neighbor Discovery and VLANs",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 12,
@@ -6076,7 +6963,77 @@
         }
       ]
     },
-    "display_name": "VLSM Subnet Planning and Routing"
+    "display_name": "VLSM Subnet Planning and Routing",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on R1",
+        "theory": "Implements the core networking function for Lab-12-Huawei-VLSM-Subnet-Planning-and-Routing according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 13,
@@ -6434,7 +7391,77 @@
         }
       ]
     },
-    "display_name": "Floating Static Route Failover"
+    "display_name": "Floating Static Route Failover",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Static Routing & Default Gateway Forwarding Table Injection",
+        "theory": "Static routes provide deterministic, manual control over network traffic paths with zero protocol bandwidth overhead. Default routes (0.0.0.0/0) handle all traffic with no specific destination in the routing table.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2",
+            "explanation": "'ip route-static 0.0.0.0 0.0.0.0 203.0.113.2' installs a default route to next-hop 203.0.113.2 with default administrative preference 60 (equivalent to Administrative Distance 1 in Cisco)."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display ip routing-table protocol static",
+          "expected": "Displays installed static routes with Destination/Mask, Protocol (Static), Preference (60), Cost (0), and NextHop."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 14,
@@ -6792,7 +7819,77 @@
         }
       ]
     },
-    "display_name": "Route Summarization and Null0"
+    "display_name": "Route Summarization and Null0",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Static Routing & Default Gateway Forwarding Table Injection",
+        "theory": "Static routes provide deterministic, manual control over network traffic paths with zero protocol bandwidth overhead. Default routes (0.0.0.0/0) handle all traffic with no specific destination in the routing table.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2",
+            "explanation": "'ip route-static 0.0.0.0 0.0.0.0 203.0.113.2' installs a default route to next-hop 203.0.113.2 with default administrative preference 60 (equivalent to Administrative Distance 1 in Cisco)."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display ip routing-table protocol static",
+          "expected": "Displays installed static routes with Destination/Mask, Protocol (Static), Preference (60), Cost (0), and NextHop."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 15,
@@ -7170,7 +8267,77 @@
         }
       ]
     },
-    "display_name": "Multi Switch LLDP Topology Audit"
+    "display_name": "Multi Switch LLDP Topology Audit",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on Core-SW1",
+        "theory": "Implements the core networking function for Lab-15-Huawei-Multi-Switch-LLDP-Topology-Audit according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 16,
@@ -7548,7 +8715,77 @@
         }
       ]
     },
-    "display_name": "LLDP TLV Fine Grained Control"
+    "display_name": "LLDP TLV Fine Grained Control",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on Core-SW1",
+        "theory": "Implements the core networking function for Lab-16-Huawei-LLDP-TLV-Fine-Grained-Control according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 17,
@@ -7906,7 +9143,77 @@
         }
       ]
     },
-    "display_name": "IPv6 Next Hop Global and LinkLocal"
+    "display_name": "IPv6 Next Hop Global and LinkLocal",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on R1",
+        "theory": "Implements the core networking function for Lab-17-Huawei-IPv6-Next-Hop-Global-and-LinkLocal according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 18,
@@ -8284,7 +9591,77 @@
         }
       ]
     },
-    "display_name": "Auto Voice VLAN via OUI Matching"
+    "display_name": "Auto Voice VLAN via OUI Matching",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 19,
@@ -8642,7 +10019,77 @@
         }
       ]
     },
-    "display_name": "Traffic Filter Inbound Outbound"
+    "display_name": "Traffic Filter Inbound Outbound",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on R1",
+        "theory": "Implements the core networking function for Lab-19-Huawei-Traffic-Filter-Inbound-Outbound according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 20,
@@ -9020,7 +10467,77 @@
         }
       ]
     },
-    "display_name": "LLDP MED Voice Policy Distribution"
+    "display_name": "LLDP MED Voice Policy Distribution",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on Core-SW1",
+        "theory": "Implements the core networking function for Lab-20-Huawei-LLDP-MED-Voice-Policy-Distribution according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 21,
@@ -9398,7 +10915,77 @@
         }
       ]
     },
-    "display_name": "Trunk PVID Native and Eth Trunk"
+    "display_name": "Trunk PVID Native and Eth Trunk",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 22,
@@ -9776,7 +11363,77 @@
         }
       ]
     },
-    "display_name": "VLAN Pruning and LLDP Verification"
+    "display_name": "VLAN Pruning and LLDP Verification",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 23,
@@ -10134,7 +11791,77 @@
         }
       ]
     },
-    "display_name": "Equal Cost Multi Path Static ECMP"
+    "display_name": "Equal Cost Multi Path Static ECMP",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Static Routing & Default Gateway Forwarding Table Injection",
+        "theory": "Static routes provide deterministic, manual control over network traffic paths with zero protocol bandwidth overhead. Default routes (0.0.0.0/0) handle all traffic with no specific destination in the routing table.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2",
+            "explanation": "'ip route-static 0.0.0.0 0.0.0.0 203.0.113.2' installs a default route to next-hop 203.0.113.2 with default administrative preference 60 (equivalent to Administrative Distance 1 in Cisco)."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display ip routing-table protocol static",
+          "expected": "Displays installed static routes with Destination/Mask, Protocol (Static), Preference (60), Cost (0), and NextHop."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 24,
@@ -10492,7 +12219,77 @@
         }
       ]
     },
-    "display_name": "Dual Stack Host Address SLAAC"
+    "display_name": "Dual Stack Host Address SLAAC",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on R1",
+        "theory": "Implements the core networking function for Lab-24-Huawei-Dual-Stack-Host-Address-SLAAC according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 25,
@@ -10870,7 +12667,77 @@
         }
       ]
     },
-    "display_name": "Standard Dot1Q and Eth Trunk Core"
+    "display_name": "Standard Dot1Q and Eth Trunk Core",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 26,
@@ -11228,7 +13095,77 @@
         }
       ]
     },
-    "display_name": "Hierarchical WAN Subnet Planning"
+    "display_name": "Hierarchical WAN Subnet Planning",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on R1",
+        "theory": "Implements the core networking function for Lab-26-Huawei-Hierarchical-WAN-Subnet-Planning according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 27,
@@ -11606,7 +13543,77 @@
         }
       ]
     },
-    "display_name": "LACP Actor Priority and PVID"
+    "display_name": "LACP Actor Priority and PVID",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on Core-SW1",
+        "theory": "Implements the core networking function for Lab-27-Huawei-LACP-Actor-Priority-and-PVID according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 28,
@@ -11964,7 +13971,77 @@
         }
       ]
     },
-    "display_name": "Recursive Multi Hop Static Routing"
+    "display_name": "Recursive Multi Hop Static Routing",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Static Routing & Default Gateway Forwarding Table Injection",
+        "theory": "Static routes provide deterministic, manual control over network traffic paths with zero protocol bandwidth overhead. Default routes (0.0.0.0/0) handle all traffic with no specific destination in the routing table.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2",
+            "explanation": "'ip route-static 0.0.0.0 0.0.0.0 203.0.113.2' installs a default route to next-hop 203.0.113.2 with default administrative preference 60 (equivalent to Administrative Distance 1 in Cisco)."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display ip routing-table protocol static",
+          "expected": "Displays installed static routes with Destination/Mask, Protocol (Static), Preference (60), Cost (0), and NextHop."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 29,
@@ -12322,7 +14399,77 @@
         }
       ]
     },
-    "display_name": "NE40E Core and AR1000v Edge WAN"
+    "display_name": "NE40E Core and AR1000v Edge WAN",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on NE40E-Core",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "NE40E-Core",
+            "code": "system-view\nsysname NE40E-Core\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "NE40E-Core",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Protocol Implementation & Feature Activation on NE40E-Core",
+        "theory": "Implements the core networking function for Lab-29-Huawei-NE40E-Core-and-AR1000v-Edge-WAN according to enterprise engineering standards.",
+        "substeps": [
+          {
+            "device": "NE40E-Core",
+            "code": "system-view\nsysname NE40E-Core\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15",
+            "explanation": "Executes feature configuration commands on the primary network device."
+          }
+        ],
+        "verify": {
+          "device": "NE40E-Core",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.",
+          "expected": "Confirms operational status and active feature states."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on AR1000v-Edge",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "AR1000v-Edge",
+            "code": "system-view\nsysname AR1000v-Edge\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on AR1000v-Edge matching the parameters configured on NE40E-Core."
+          }
+        ],
+        "verify": {
+          "device": "AR1000v-Edge",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "NE40E-Core",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn NE40E-Core & AR1000v-Edge: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 30,
@@ -12680,7 +14827,77 @@
         }
       ]
     },
-    "display_name": "Dual Core Campus Redundant Static"
+    "display_name": "Dual Core Campus Redundant Static",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on R1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "system-view\nsysname R1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Static Routing & Default Gateway Forwarding Table Injection",
+        "theory": "Static routes provide deterministic, manual control over network traffic paths with zero protocol bandwidth overhead. Default routes (0.0.0.0/0) handle all traffic with no specific destination in the routing table.",
+        "substeps": [
+          {
+            "device": "R1",
+            "code": "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2\nip route-static 192.168.20.0 255.255.255.0 10.0.12.2",
+            "explanation": "'ip route-static 0.0.0.0 0.0.0.0 203.0.113.2' installs a default route to next-hop 203.0.113.2 with default administrative preference 60 (equivalent to Administrative Distance 1 in Cisco)."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "display ip routing-table protocol static",
+          "expected": "Displays installed static routes with Destination/Mask, Protocol (Static), Preference (60), Cost (0), and NextHop."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on R2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "R2",
+            "code": "system-view\nsysname R2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on R2 matching the parameters configured on R1."
+          }
+        ],
+        "verify": {
+          "device": "R2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "R1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn R1 & R2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 31,
@@ -13058,7 +15275,77 @@
         }
       ]
     },
-    "display_name": "End to End Voice and Data VLANs"
+    "display_name": "End to End Voice and Data VLANs",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   },
   {
     "id": 32,
@@ -13436,6 +15723,76 @@
         }
       ]
     },
-    "display_name": "Eth Trunk Link Protection VLANs"
+    "display_name": "Eth Trunk Link Protection VLANs",
+    "guided_walkthrough": [
+      {
+        "task_num": 1,
+        "title": "Device Initialization, Hostname & AAA Management Security on Core-SW1",
+        "theory": "Before applying protocol configurations, enterprise security standards require establishing secure administrative access with Privilege Level 15 (Manager) and encrypted credentials to protect against unauthorized access.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "system-view\nsysname Core-SW1\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n quit\nsuper password cipher super\nuser-interface vty 0 4\n authentication-mode aaa\n user privilege level 15\n quit",
+            "explanation": "'system-view' enters global configuration mode (equivalent to 'configure terminal' in Cisco IOS). 'aaa' creates the local user database, encrypts the password with 'cipher', and sets the authorization privilege level to 15. 'authentication-mode aaa' enforces credential verification on VTY remote sessions."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display local-user\ndisplay user-interface vty 0 4",
+          "expected": "Shows user 'admin' active with privilege level 15 and AAA authentication enabled on VTY lines."
+        }
+      },
+      {
+        "task_num": 2,
+        "title": "Layer 2 VLAN Creation & 802.1Q Trunk Port Whitelisting",
+        "theory": "VLANs partition physical switch ports into logical broadcast domains. 802.1Q trunk links insert a 4-byte VLAN tag into Ethernet frames to multiplex multiple VLANs across single physical inter-switch links.",
+        "substeps": [
+          {
+            "device": "Core-SW1",
+            "code": "vlan batch 10 20 30\ninterface GigabitEthernet 0/0/1\n port link-type trunk\n port trunk allow-pass vlan 10 20 30\n quit",
+            "explanation": "'vlan batch' provisions broadcast domains. 'port link-type trunk' sets 802.1Q tagged mode. 'port trunk allow-pass vlan' explicitly whitelists permitted VLAN IDs across the trunk."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "display port vlan GigabitEthernet 0/0/1",
+          "expected": "Shows Link Type: Trunk, PVID: 1, and Allowed VLANs: 1, 10, 20, 30."
+        }
+      },
+      {
+        "task_num": 3,
+        "title": "Complementary Peer Configuration on Dist-SW2",
+        "theory": "Network protocols require coordinated peer configuration across interconnecting devices to negotiate link states, synchronize databases, and establish end-to-end data paths.",
+        "substeps": [
+          {
+            "device": "Dist-SW2",
+            "code": "system-view\nsysname Dist-SW2\naaa\n local-user admin password cipher admin\n local-user admin service-type telnet ssh terminal\n local-user admin privilege level 15\n local-user super password cipher super\n local-user super service-type telnet ssh terminal",
+            "explanation": "Applies complementary peer settings on Dist-SW2 matching the parameters configured on Core-SW1."
+          }
+        ],
+        "verify": {
+          "device": "Dist-SW2",
+          "code": "display ip interface brief",
+          "expected": "All configured interfaces report Physical status: 'Up' and Protocol status: 'Up'."
+        }
+      },
+      {
+        "task_num": 4,
+        "title": "End-to-End Data Plane Verification & Traffic Testing",
+        "theory": "After completing control-plane configurations, end-to-end data plane testing verifies that routing tables, NAT sessions, and Layer 2 switching paths properly forward user payload packets.",
+        "substeps": [
+          {
+            "device": "Endpoints / Hosts",
+            "code": "PC1> ip 192.168.10.10/24 192.168.10.1\nPC2> ip 192.168.20.10/24 192.168.20.1\nPC1> ping 192.168.20.10",
+            "explanation": "Executes ICMP echo request tests from client nodes to verify bidirectional packet delivery across the topology."
+          }
+        ],
+        "verify": {
+          "device": "Core-SW1",
+          "code": "From PC1: Run 'ping 192.168.20.10' to test end-to-end communication.\nOn Core-SW1 & Dist-SW2: Run relevant 'display' commands to verify status.\nSave configurations on all devices: 'save' -> 'y'.",
+          "expected": "Ping success rate should reach 100% (5/5 replies received) with active state in protocol display tables."
+        }
+      }
+    ]
   }
 ]
