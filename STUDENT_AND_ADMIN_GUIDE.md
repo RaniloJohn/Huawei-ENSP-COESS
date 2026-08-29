@@ -7,9 +7,20 @@
 
 ---
 
+## 📥 Virtual Machine Appliance (.OVA) Download
+
+Students and instructors can download the complete, pre-configured **Huawei eNSP Lite Virtual Machine (`.ova` format)** using the official link below:
+
+> ### 🚀 [**Click Here to Download Huawei eNSP Pro / Lite VM (.OVA)**](https://ueeduph-my.sharepoint.com/my?id=%2Fpersonal%2Fdelosangeles%5Franilojohn%5Fue%5Fedu%5Fph%2FDocuments%2FENSP%20Pro&viewid=d3e4f1ef%2Dfb3e%2D4ef1%2Db828%2Db1087ebe0b59)
+> * **Hosted on:** UE SharePoint / OneDrive Cloud Storage
+> * **Included:** EulerOS Linux, Huawei eNSP Lite 2026 engine, All 33 Pre-Wired Practice Labs, and Local In-Memory Student Portal.
+> * **Ready-to-Use:** Single file import into VMware Workstation 17 Pro / Player or Oracle VM VirtualBox.
+
+---
+
 ## 1. Quick Access & Port Allocation Summary
 
-The virtual infrastructure operates on a **dual-port architecture** separating lab documentation from live network simulation:
+Once the VM is imported and booted, access the services using these dedicated ports:
 
 | Port | Service | Purpose | URL / Access Method |
 | :--- | :--- | :--- | :--- |
@@ -19,7 +30,23 @@ The virtual infrastructure operates on a **dual-port architecture** separating l
 
 ---
 
-## 2. How to SSH via Windows PowerShell
+## 2. How to Import the `.OVA` in VMware Workstation
+
+1. Download the `.ova` file from the [SharePoint link above](https://ueeduph-my.sharepoint.com/my?id=%2Fpersonal%2Fdelosangeles%5Franilojohn%5Fue%5Fedu%5Fph%2FDocuments%2FENSP%20Pro&viewid=d3e4f1ef%2Dfb3e%2D4ef1%2Db828%2Db1087ebe0b59).
+2. Open **VMware Workstation** (Pro or Player).
+3. Go to **File** $ightarrow$ **Open...** (or press `Ctrl + O`).
+4. Select the downloaded `.ova` file and choose your desired storage location.
+5. Click **Import**.
+6. **Verify Hardware Settings before powering on:**
+   * **vCPUs:** 4 to 8 Cores.
+   * **Nested Virtualization:** Check **"Virtualize Intel VT-x/EPT or AMD-V/RVI"** (Mandatory).
+   * **RAM:** 8 GB minimum (12–16 GB recommended).
+   * **Network Adapter:** Host-Only (`10.10.10.0/24`) or Bridged.
+7. Power on the VM. Within 30–60 seconds, the console welcome screen will appear with the active IP address `10.10.10.137`.
+
+---
+
+## 3. How to SSH via Windows PowerShell
 
 Students and instructors can access the backend EulerOS operating system directly from Windows PowerShell using the pre-configured root credentials.
 
@@ -33,7 +60,7 @@ Type the following command and press `Enter`:
 ssh root@10.10.10.137
 ```
 
-*(Optional: If connecting for the first time or after a VM reset, you can bypass host key prompts with:)*
+*(Optional: If connecting for the first time or after a VM reset, bypass host key prompts with:)*
 ```powershell
 ssh -o StrictHostKeyChecking=no root@10.10.10.137
 ```
@@ -60,7 +87,7 @@ Welcome to Huawei EulerOS (eNSP Lite Enterprise Edition)
 
 ---
 
-## 3. System Credentials & Reference Summary
+## 4. System Credentials & Reference Summary
 
 | Component | Endpoint | Username | Password | Notes |
 | :--- | :--- | :--- | :--- | :--- |
@@ -72,9 +99,7 @@ Welcome to Huawei EulerOS (eNSP Lite Enterprise Edition)
 
 ---
 
-## 4. Recommended Virtual Machine (VM) & Host Settings
-
-Configure the VM in VMware Workstation, VirtualBox, or Proxmox as follows:
+## 5. Recommended Virtual Machine (VM) & Host Settings
 
 | Setting | Minimum Specification | Recommended Specification | Notes |
 | :--- | :--- | :--- | :--- |
@@ -84,13 +109,9 @@ Configure the VM in VMware Workstation, VirtualBox, or Proxmox as follows:
 | **Virtual Disk** | 40 GB (Thin Provisioned) | **60 GB (SSD)** | Fast container image and state loading |
 | **Network Adapter** | Bridged or Host-Only | **Host-Only (`10.10.10.0/24`) or Bridged** | Static IP `10.10.10.137` configured on `eth0` |
 
-> [!IMPORTANT]
-> **Nested Virtualization is Mandatory:**  
-> In your hypervisor settings (e.g. VMware Workstation -> *VM Settings* -> *Processors*), ensure **"Virtualize Intel VT-x/EPT or AMD-V/RVI"** is checked. If this is disabled, VRP virtual router containers cannot boot!
-
 ---
 
-## 5. Student User Guide: Step-by-Step Workflow
+## 6. Student User Guide: Step-by-Step Workflow
 
 ### Step 1: Open the Lab Portal (`http://10.10.10.137/`)
 * Use the **Theme Switcher** (Sun/Moon icon in top right) to toggle between Huawei Light and Dark modes.
@@ -114,7 +135,7 @@ Before touching the CLI, review the five structured tabs:
 
 ### Step 4: Power On Nodes & Configure
 1. Click the **Start / Power On** button on the devices needed for your active lab.
-2. Double-click any device (or right-click -> *CLI*) to open the web terminal.
+2. Double-click any device (or right-click $ightarrow$ *CLI*) to open the web terminal.
 3. Apply configurations, test ping connectivity, and execute verification commands.
 4. Before finishing, save your work in VRP User View:
    ```text
@@ -124,7 +145,7 @@ Before touching the CLI, review the five structured tabs:
 
 ---
 
-## 6. Critical Resource Hygiene: Stopping Labs When Finished
+## 7. Critical Resource Hygiene: Stopping Labs When Finished
 
 > [!CAUTION]
 > **Always Stop / Power Off Sandboxes When Done!**  
@@ -138,7 +159,7 @@ Before touching the CLI, review the five structured tabs:
 
 ---
 
-## 7. Administrator Commands Reference
+## 8. Administrator Commands Reference
 
 ```bash
 # Check status of the portal service (Port 80)
