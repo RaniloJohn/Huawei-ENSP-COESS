@@ -17,31 +17,6 @@ The virtual infrastructure operates on a **dual-port architecture** separating l
 | **`8443`** | **eNSP Lite Console** | **Live simulation environment** containing the HTML5 topology canvas, interactive wiring, device power controls, and web CLI terminals. | **`https://10.10.10.137:8443/`** |
 | **`22`** | **EulerOS Linux SSH** | Remote administrative shell access to the host virtual machine via PowerShell or terminal. | **`ssh root@10.10.10.137`** |
 
-```mermaid
-flowchart TD
-    subgraph VM["Huawei eNSP Virtual Machine - 10.10.10.137"]
-        subgraph P80["Port 80: Lab Descriptions & Syllabus Portal"]
-            Server["In-Memory Zero-Copy Web Server"]
-            Dataset["33 Structured Labs with Line-by-Line Syntax"]
-            Sandbox["Linux cgroups Sandbox - Low Priority"]
-        end
-
-        subgraph P8443["Port 8443: eNSP Lite Console Environment"]
-            Engine["eNSP Java Spring Boot Service"]
-            Canvas["HTML5 Web Topology Canvas & CLI Terminals"]
-            Nodes["Huawei VRP Devices - AR1000v / S5700 / USG6000"]
-        end
-
-        subgraph P22["Port 22: Remote Host Management"]
-            SSH["EulerOS OpenSSH Daemon"]
-        end
-    end
-
-    Browser["Student Web Browser"] -->|"HTTP Port 80"| P80
-    Browser -->|"HTTPS Port 8443"| P8443
-    Terminal["Windows PowerShell"] -->|"SSH Port 22"| P22
-```
-
 ---
 
 ## 2. How to SSH via Windows PowerShell
@@ -116,25 +91,6 @@ Configure the VM in VMware Workstation, VirtualBox, or Proxmox as follows:
 ---
 
 ## 5. Student User Guide: Step-by-Step Workflow
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Student as Student
-    participant Portal as Port 80 - Lab Portal
-    participant Console as Port 8443 - Console Env
-    participant Nodes as Huawei VRP Nodes
-
-    Student->>Portal: 1. Open Portal and select assigned lab
-    Student->>Portal: 2. Review IP matrix and line-by-line syntax guide
-    Student->>Console: 3. Launch eNSP Lite Console
-    Student->>Console: 4. Open matching lab sandbox topology
-    Student->>Nodes: 5. Power ON required devices
-    Student->>Nodes: 6. Open CLI terminal and apply VRP commands
-    Student->>Nodes: 7. Run verification commands and ping tests
-    Student->>Nodes: 8. Save configuration in VRP user view
-    Student->>Console: 9. CRITICAL: Stop and power OFF sandbox when done
-```
 
 ### Step 1: Open the Lab Portal (`http://10.10.10.137/`)
 * Use the **Theme Switcher** (Sun/Moon icon in top right) to toggle between Huawei Light and Dark modes.
