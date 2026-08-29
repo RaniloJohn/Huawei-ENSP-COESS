@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Huawei Enterprise Lab Center | COESS Datacom Portal</title>
+  <style>
+    :root {
+      /* Official Huawei eNSP Color Palette */
+      --ensp-nav-bg: #24292e;
+      --ensp-red: #e50012;
+      --ensp-red-hover: #c7000b;
+      --ensp-blue: #2673dd;
+      --ensp-blue-hover: #1e62c4;
+      --ensp-blue-subtle: #eef5fe;
+      --ensp-green: #22c55e;
+      --ensp-amber: #eab308;
+      
+      /* Light Theme (eNSP Standard) */
+      --hw-bg-page: #f0f2f5;
+      --hw-bg-card: #ffffff;
+      --hw-bg-sidebar: #ffffff;
+      --hw-bg-subnav: #ffffff;
+      --hw-bg-hover: #f5f7fa;
+      --hw-bg-active: #eef5fe;
+      
+      --hw-border-main: #e8eaed;
+      --hw-border-subtle: #f0f2f5;
+      --hw-border-dark: #d1d5db;
+      
+      --hw-table-head: #f7f8fa;
+      --hw-table-row: #ffffff;
+      --hw-table-even: #fbfcfd;
+      
+      --hw-text-title: #24292e;
+      --hw-text-main: #333333;
+      --hw-text-secondary: #666666;
+      --hw-text-muted: #999999;
+      
+      --hw-terminal-bg: #1e2430;
+      --hw-terminal-text: #50e3c2;
+      --hw-terminal-bar: #161b24;
+      
+      --hw-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --hw-mono: "Consolas", "Liberation Mono", "Courier New", monospace;
+    }
+
+    html.dark {
+      /* Dark Theme (eNSP Dark Console) */
+      --ensp-nav-bg: #1a1e22;
+      --ensp-red: #e50012;
+      --ensp-red-hover: #ff2d3b;
+      --ensp-blue: #3b82f6;
+      --ensp-blue-hover: #2563eb;
+      --ensp-blue-subtle: rgba(59, 130, 246, 0.12);
+      
+      --hw-bg-page: #0f1216;
+      --hw-bg-card: #161a1f;
+      --hw-bg-sidebar: #13171c;
+      --hw-bg-subnav: #161a1f;
+      --hw-bg-hover: #1f252d;
+      --hw-bg-active: rgba(59, 130, 246, 0.15);
+      
+      --hw-border-main: #262c35;
+      --hw-border-subtle: #1c2128;
+      --hw-border-dark: #374151;
+      
+      --hw-table-head: #1c2128;
+      --hw-table-row: #161a1f;
+      --hw-table-even: #13171c;
+      
+      --hw-text-title: #f9fafb;
+      --hw-text-main: #e2e8f0;
+      --hw-text-secondary: #94a3b8;
+      --hw-text-muted: #64748b;
+      
+      --hw-terminal-bg: #0b0e13;
+      --hw-terminal-text: #4ade80;
+      --hw-terminal-bar: #141820;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--hw-font);
+      background-color: var(--hw-bg-page);
+      color: var(--hw-text-main);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.15s, color 0.15s;
+    }
+
+    /* 1. Official eNSP Top Navigation Bar */
+    .ensp-topbar {
+      height: 48px;
+      min-height: 48px;
+      background: var(--ensp-nav-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    }
+    .ensp-brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .ensp-logo-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .ensp-logo-img {
+      height: 24px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .ensp-nav-divider {
+      width: 1px;
+      height: 18px;
+      background: #3e4651;
+    }
+
+    /* COESS Brand Section */
+    .coess-brand-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .coess-logo-pic {
+      height: 26px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 2px;
+    }
+    .coess-title-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+    .coess-name-text {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: 0.2px;
+    }
+    .coess-author-sub {
+      font-size: 10px;
+      font-weight: 400;
+      color: #cbd5e1;
+      opacity: 0.55;
+      letter-spacing: 0.3px;
+    }
+
+    .ensp-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .theme-switch-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .theme-switch-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+    }
+    .theme-switch-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+    .ensp-status-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px 8px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .ensp-green-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+    .ensp-action-btn-blue {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--ensp-blue);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 3px;
+      transition: background 0.15s;
+    }
+    .ensp-action-btn-blue:hover {
+      background: var(--ensp-blue-hover);
+    }
+
+    /* 2. Secondary Subnav */
+    .ensp-subnav {
+      height: 38px;
+      background: var(--hw-bg-subnav);
+      border-bottom: 1px solid var(--hw-border-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      font-size: 12px;
+      transition: background-color 0.15s, border-color 0.15s;
+    }
+    .ensp-crumbs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--hw-text-muted);
+    }
+    .ensp-crumbs span.active-crumb {
+      color: var(--hw-text-main);
+      font-weight: 600;
+    }
+    .ensp-tool-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--ensp-blue);
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 2px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .ensp-tool-btn:hover {
+      background: var(--ensp-blue-hover);
+    }
+
+    /* 3. Workspace Layout */
+    .ensp-layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .ensp-sidebar {
+      width: 360px;
+      min-width: 360px;
+      background: var(--hw-bg-sidebar);
+      border-right: 1px solid var(--hw-border-main);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      transition: background-color 0.15s, border-color 0.15s;
+    }
+    .ensp-search-panel {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--hw-border-main);
+      background: var(--hw-bg-hover);
+    }
+    .ensp-search-field {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .ensp-search-field input {
+      width: 100%;
+      background: var(--hw-bg-card);
+      border: 1px solid var(--hw-border-dark);
+      border-radius: 2px;
+      padding: 6px 10px 6px 30px;
+      font-size: 12px;
+      color: var(--hw-text-title);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .ensp-search-field input:focus {
+      border-color: var(--ensp-blue);
+    }
+    .ensp-search-field svg {
+      position: absolute;
+      left: 9px;
+      width: 13px;
+      height: 13px;
+      stroke: var(--hw-text-muted);
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .ensp-syllabus-tree {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 6px;
+    }
+    .ensp-syllabus-tree::-webkit-scrollbar { width: 4px; }
+    .ensp-syllabus-tree::-webkit-scrollbar-thumb { background: var(--hw-border-dark); border-radius: 2px; }
+
+    .ensp-module-group {
+      margin-bottom: 10px;
+    }
+    .ensp-module-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--hw-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 8px 3px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ensp-count-tag {
+      font-size: 10px;
+      font-family: var(--hw-mono);
+      background: var(--hw-bg-hover);
+      color: var(--hw-text-secondary);
+      padding: 1px 5px;
+      border-radius: 2px;
+      border: 1px solid var(--hw-border-main);
+    }
+
+    .ensp-lab-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      margin-bottom: 1px;
+      border-radius: 2px;
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: all 0.12s;
+    }
+    .ensp-lab-item:hover {
+      background: var(--hw-bg-hover);
+    }
+    .ensp-lab-item.active {
+      background: var(--hw-bg-active);
+      border-left-color: var(--ensp-blue);
+    }
+    .ensp-lab-id {
+      font-family: var(--hw-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--hw-text-muted);
+      min-width: 24px;
+    }
+    .ensp-lab-item.active .ensp-lab-id {
+      color: var(--ensp-blue);
+      font-weight: 700;
+    }
+    .ensp-lab-item svg {
+      width: 13px;
+      height: 13px;
+      stroke: var(--hw-text-muted);
+      stroke-width: 1.8;
+      fill: none;
+      flex-shrink: 0;
+    }
+    .ensp-lab-item.active svg {
+      stroke: var(--ensp-blue);
+    }
+    .ensp-lab-text {
+      font-size: 12px;
+      color: var(--hw-text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ensp-lab-item.active .ensp-lab-text {
+      color: var(--ensp-blue);
+      font-weight: 600;
+    }
+
+    /* Right Workbench Area */
+    .ensp-workbench {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      background: var(--hw-bg-page);
+      transition: background-color 0.15s;
+    }
+    .ensp-workbench::-webkit-scrollbar { width: 5px; }
+    .ensp-workbench::-webkit-scrollbar-thumb { background: var(--hw-border-dark); border-radius: 2px; }
+
+    .ensp-header-panel {
+      background: var(--hw-bg-card);
+      border-bottom: 1px solid var(--hw-border-main);
+      padding: 16px 24px;
+    }
+    .ensp-headline-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--hw-text-title);
+      line-height: 1.3;
+    }
+    .ensp-badge-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .ensp-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 2px;
+      border: 1px solid var(--hw-border-main);
+      background: var(--hw-bg-hover);
+      color: var(--hw-text-secondary);
+    }
+    .ensp-badge-blue {
+      border-color: #bfdbfe;
+      color: var(--ensp-blue);
+      background: var(--ensp-blue-subtle);
+    }
+    .ensp-badge-green {
+      border-color: #bbf7d0;
+      color: #16a34a;
+      background: #f0fdf4;
+    }
+
+    /* Tab Navigation */
+    .ensp-tabs-bar {
+      display: flex;
+      background: var(--hw-bg-card);
+      border-bottom: 1px solid var(--hw-border-main);
+      padding: 0 24px;
+    }
+    .ensp-tab-btn {
+      padding: 9px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--hw-text-secondary);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.1s;
+    }
+    .ensp-tab-btn:hover {
+      color: var(--hw-text-title);
+    }
+    .ensp-tab-btn.active {
+      color: var(--ensp-blue);
+      border-bottom-color: var(--ensp-blue);
+    }
+    .ensp-tab-btn svg {
+      width: 13px;
+      height: 13px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+    }
+
+    .ensp-content-body {
+      padding: 20px 24px;
+      max-width: 1200px;
+    }
+    .ensp-tab-view { display: none; }
+    .ensp-tab-view.active { display: block; }
+
+    /* Section Cards */
+    .ensp-card {
+      background: var(--hw-bg-card);
+      border: 1px solid var(--hw-border-main);
+      border-radius: 2px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+    .ensp-card-header {
+      padding: 10px 14px;
+      background: var(--hw-table-head);
+      border-bottom: 1px solid var(--hw-border-main);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--hw-text-title);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ensp-card-body {
+      padding: 14px;
+    }
+
+    /* Tables */
+    .ensp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+    .ensp-table th {
+      background: var(--hw-table-head);
+      color: var(--hw-text-secondary);
+      font-weight: 600;
+      padding: 9px 12px;
+      border: 1px solid var(--hw-border-main);
+    }
+    .ensp-table td {
+      padding: 9px 12px;
+      border: 1px solid var(--hw-border-main);
+      color: var(--hw-text-main);
+      vertical-align: top;
+    }
+    .ensp-table tbody tr:nth-child(even) {
+      background: var(--hw-table-even);
+    }
+    .ensp-table td.col-name {
+      font-weight: 600;
+      color: var(--ensp-blue);
+    }
+    .ensp-table td.col-if {
+      font-family: var(--hw-mono);
+      font-weight: 600;
+      color: var(--hw-text-title);
+    }
+    .ensp-table td.col-ip {
+      font-family: var(--hw-mono);
+      color: #16a34a;
+      font-weight: 600;
+    }
+    .ensp-table td.col-cmd {
+      font-family: var(--hw-mono);
+      color: var(--ensp-blue);
+      font-weight: 600;
+      white-space: nowrap;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    .ensp-table td.col-expl {
+      color: var(--hw-text-main);
+      line-height: 1.55;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    .ensp-table td.col-status-normal {
+      color: var(--ensp-green);
+      font-weight: 600;
+    }
+
+    /* Tasks Checklist */
+    .ensp-task-list { list-style: none; }
+    .ensp-task-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 12px;
+      margin-bottom: 5px;
+      background: var(--hw-bg-card);
+      border: 1px solid var(--hw-border-main);
+      border-radius: 2px;
+    }
+    .ensp-task-check {
+      margin-top: 3px;
+      width: 14px;
+      height: 14px;
+      accent-color: var(--ensp-blue);
+      cursor: pointer;
+    }
+    .ensp-task-text {
+      font-size: 12.5px;
+      color: var(--hw-text-title);
+      line-height: 1.5;
+    }
+
+    /* CLI Terminal Output Container with Real Line Breaks */
+    .ensp-terminal-box {
+      background: var(--hw-terminal-bg);
+      border: 1px solid var(--hw-border-main);
+      border-radius: 2px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .ensp-terminal-header {
+      padding: 8px 12px;
+      background: var(--hw-terminal-bar);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ensp-terminal-node {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--hw-text-title);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ensp-copy-btn {
+      background: var(--hw-bg-card);
+      border: 1px solid var(--hw-border-dark);
+      color: var(--hw-text-title);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .ensp-copy-btn:hover {
+      background: var(--ensp-blue);
+      color: #ffffff;
+      border-color: var(--ensp-blue);
+    }
+    .ensp-copy-btn.copied {
+      background: #22c55e !important;
+      color: #ffffff !important;
+      border-color: #16a34a !important;
+    }
+    .ensp-terminal-code {
+      font-family: var(--hw-mono);
+      font-size: 12px;
+      color: var(--hw-terminal-text);
+      padding: 14px 16px;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre !important;
+      display: block;
+    }
+
+    /* Verification Runbook */
+    .ensp-verif-step {
+      padding: 9px 14px;
+      background: var(--hw-bg-card);
+      border-left: 3px solid var(--ensp-blue);
+      margin-bottom: 8px;
+      font-family: var(--hw-mono);
+      font-size: 12px;
+      color: var(--hw-text-title);
+      border-top: 1px solid var(--hw-border-main);
+      border-right: 1px solid var(--hw-border-main);
+      border-bottom: 1px solid var(--hw-border-main);
+      border-radius: 0 2px 2px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Official eNSP Top Navigation Bar -->
+  <header class="ensp-topbar">
+    <div class="ensp-brand-group">
+      
+      <!-- Official Extracted Huawei eNSP Logo Asset -->
+      <a href="http://10.10.10.137/" class="ensp-logo-link" title="Huawei eNSP Lab Portal">
+        <img src="/huawei_logo.png" alt="Huawei eNSP" class="ensp-logo-img">
+      </a>
+
+      <div class="ensp-nav-divider"></div>
+
+      <!-- COESS Branding & Attribution (with lowered opacity) -->
+      <div class="coess-brand-box">
+        <img src="/coess_logo.png" alt="COESS Logo" class="coess-logo-pic">
+        <div class="coess-title-meta">
+          <span class="coess-name-text">Computer Engineering Students Society (COESS)</span>
+          <span class="coess-author-sub">Made by Ranilo John Delos Angeles</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Controls -->
+    <div class="ensp-top-actions">
+      
+      <button id="theme-btn" class="theme-switch-btn" title="Toggle Light/Dark Mode" onclick="toggleTheme()">
+        <svg id="theme-icon" viewBox="0 0 24 24">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+
+      <div class="ensp-status-chip">
+        <span class="ensp-green-dot"></span>
+        <span>Simulation Host: <b>10.10.10.137</b></span>
+      </div>
+
+      <a href="https://10.10.10.137:8443" target="_blank" class="ensp-action-btn-blue">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        <span>Open Simulation Console</span>
+      </a>
+
+    </div>
+  </header>
+
+  <!-- 2. Secondary Subnav -->
+  <div class="ensp-subnav">
+    <div class="ensp-crumbs">
+      <span>Simulation Environment</span>
+      <span>/</span>
+      <span class="active-crumb" id="crumb-lab-title">Enterprise HQ & WAN (Figure 4-7)</span>
+    </div>
+    <div class="ensp-btn-bar">
+      <a href="https://10.10.10.137:8443" target="_blank" class="ensp-tool-btn">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        <span>Start Lab in eNSP Lite</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 3. Workspace Layout -->
+  <div class="ensp-layout">
+    
+    <!-- Left Syllabus Tree -->
+    <aside class="ensp-sidebar">
+      <div class="ensp-search-panel">
+        <div class="ensp-search-field">
+          <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="ensp-search" placeholder="Filter practice labs...">
+        </div>
+      </div>
+      <div class="ensp-syllabus-tree" id="syllabus-tree-box">
+        <!-- Injected via JS -->
+      </div>
+    </aside>
+
+    <!-- Right Workbench Content -->
+    <main class="ensp-workbench" id="ensp-workbench">
+      <!-- Injected via JS -->
+    </main>
+
+  </div>
+
+  <script>
+    let labs = [];
+    let currentId = 99; // Default to Enterprise HQ
+
+    // Theme Management
+    function initTheme() {
+      const saved = localStorage.getItem('ensp-portal-theme') || 'light';
+      applyTheme(saved);
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const nextTheme = isDark ? 'light' : 'dark';
+      applyTheme(nextTheme);
+      localStorage.setItem('ensp-portal-theme', nextTheme);
+    }
+
+    function applyTheme(theme) {
+      const icon = document.getElementById('theme-icon');
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        if (icon) {
+          icon.innerHTML = `
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          `;
+        }
+      } else {
+        document.documentElement.classList.remove('dark');
+        if (icon) {
+          icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+        }
+      }
+    }
+
+    async function loadData() {
+      try {
+        const resp = await fetch('/api/labs');
+        labs = await resp.json();
+        renderTree(labs);
+        renderLab(currentId);
+      } catch (e) {
+        console.error("Failed to load curriculum:", e);
+      }
+    }
+
+    function renderTree(items) {
+      const box = document.getElementById('syllabus-tree-box');
+      box.innerHTML = '';
+
+      const modules = {};
+      items.forEach(l => {
+        const m = l.module || 'Enterprise Practice Labs';
+        if (!modules[m]) modules[m] = [];
+        modules[m].push(l);
+      });
+
+      for (const [mName, mList] of Object.entries(modules)) {
+        const group = document.createElement('div');
+        group.className = 'ensp-module-group';
+
+        const head = document.createElement('div');
+        head.className = 'ensp-module-title';
+        head.innerHTML = `
+          <span>${mName}</span>
+          <span class="ensp-count-tag">${mList.length}</span>
+        `;
+        group.appendChild(head);
+
+        mList.forEach(l => {
+          const row = document.createElement('div');
+          row.className = `ensp-lab-item ${l.id === currentId ? 'active' : ''}`;
+          row.dataset.id = l.id;
+          row.onclick = () => selectLab(l.id);
+
+          const idxStr = l.id === 99 ? 'HQ' : String(l.id).padStart(2, '0');
+          const cleanTitle = getCleanTitle(l);
+
+          row.innerHTML = `
+            <span class="ensp-lab-id">${idxStr}</span>
+            <svg viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span class="ensp-lab-text" title="${cleanTitle}">${cleanTitle}</span>
+          `;
+          group.appendChild(row);
+        });
+
+        box.appendChild(group);
+      }
+    }
+
+    function getCleanTitle(lab) {
+      if (lab.id === 99) return "Enterprise HQ and WAN (Figure 4-7)";
+      if (lab.display_name) return lab.display_name;
+      return lab.title.replace(/^Lab[-_ ]\d+[-_ ](Huawei[-_ ])?/i, '').replace(/-/g, ' ');
+    }
+
+    function selectLab(id) {
+      currentId = id;
+      document.querySelectorAll('.ensp-lab-item').forEach(r => {
+        r.classList.toggle('active', parseInt(r.dataset.id) === id);
+      });
+      renderLab(id);
+    }
+
+    function renderLab(id) {
+      const lab = labs.find(l => l.id === id) || labs[0];
+      if (!lab) return;
+
+      const cleanTitle = getCleanTitle(lab);
+      const isFeatured = lab.id === 99;
+      const idLabel = isFeatured ? 'Featured Topology' : `Lab ${String(lab.id).padStart(2, '0')}`;
+      const nodeCount = lab.nodes ? lab.nodes.length : (lab.table ? new Set(lab.table.map(r => r[0])).size : 'Multi');
+
+      document.getElementById('crumb-lab-title').textContent = `${idLabel}: ${cleanTitle}`;
+
+      const wb = document.getElementById('ensp-workbench');
+
+      // Table rows
+      let tableRows = '';
+      if (lab.table && lab.table.length > 0) {
+        tableRows = lab.table.map(r => `
+          <tr>
+            <td class="col-name">${r[0]}</td>
+            <td class="col-if">${r[1]}</td>
+            <td class="col-ip">${r[2]}</td>
+            <td>${r[3]}</td>
+            <td class="col-status-normal">Normal</td>
+          </tr>
+        `).join('');
+      }
+
+      // Tasks
+      let taskRows = '';
+      if (lab.tasks && lab.tasks.length > 0) {
+        taskRows = lab.tasks.map((t, idx) => `
+          <li class="ensp-task-row">
+            <input type="checkbox" id="task-${idx}" class="ensp-task-check">
+            <label for="task-${idx}" class="ensp-task-text">${t}</label>
+          </li>
+        `).join('');
+      }
+
+      // CLI Blocks + Syntax Explanations
+      let cliBlocks = '';
+      if (lab.cli) {
+        for (const [dev, cmds] of Object.entries(lab.cli)) {
+          // Real newline joined string for terminal display
+          const rawCode = Array.isArray(cmds) ? cmds.join('\n') : cmds;
+          
+          // Build line-by-line syntax breakdown table
+          let explRows = '';
+          if (lab.syntax_explanations && lab.syntax_explanations[dev]) {
+            explRows = lab.syntax_explanations[dev].map(item => `
+              <tr>
+                <td class="col-cmd"><code>${escapeHtml(item.command)}</code></td>
+                <td class="col-expl">${item.explanation}</td>
+              </tr>
+            `).join('');
+          }
+
+          cliBlocks += `
+            <div class="ensp-card">
+              <div class="ensp-card-header" style="justify-content: space-between;">
+                <div class="ensp-terminal-node">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                  <span>${dev} (Huawei VRP CLI Configuration)</span>
+                </div>
+                <button class="ensp-copy-btn" onclick="copyCliFromPre(this)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy Script
+                </button>
+              </div>
+              <div style="padding: 12px 14px 0 14px;">
+                <div class="ensp-terminal-box">
+                  <pre class="ensp-terminal-code">${escapeHtml(rawCode)}</pre>
+                </div>
+              </div>
+              
+              <!-- Detailed Line-by-Line Syntax Explanation (CCNA Style) -->
+              <div style="padding: 0 14px 14px 14px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--hw-text-title); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  <span>Line-by-Line Command Syntax & Mechanism Breakdown:</span>
+                </div>
+                <table class="ensp-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 36%;">Command Line</th>
+                      <th>Function, Networking Theory & Mechanism</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${explRows || '<tr><td colspan="2">Standard configuration commands.</td></tr>'}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Verification
+      let verifRows = '';
+      if (lab.verif && lab.verif.length > 0) {
+        verifRows = lab.verif.map(v => `
+          <div class="ensp-verif-step">${v}</div>
+        `).join('');
+      }
+
+      wb.innerHTML = `
+        <div class="ensp-header-panel">
+          <div class="ensp-headline-row">
+            <div>
+              <h1 class="ensp-headline-title">${idLabel}: ${cleanTitle}</h1>
+              <div class="ensp-badge-strip">
+                <span class="ensp-badge ensp-badge-blue">${lab.module || 'Enterprise Module'}</span>
+                <span class="ensp-badge ensp-badge-green">${nodeCount} Pre-Wired Nodes</span>
+                <span class="ensp-badge">Status: Ready in eNSP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="ensp-tabs-bar">
+          <button class="ensp-tab-btn active" onclick="switchTab(this, 'tab-sec-overview')">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            1. Overview & Setup
+          </button>
+          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-cabling')">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+            2. Interface & IP Matrix
+          </button>
+          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-tasks')">
+            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            3. Task Objectives
+          </button>
+          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-cli')">
+            <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            4. VRP Configuration & Detailed Syntax Breakdown
+          </button>
+          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-verif')">
+            <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            5. Verification Runbook
+          </button>
+        </nav>
+
+        <div class="ensp-content-body">
+          <!-- 1. Overview -->
+          <div id="tab-sec-overview" class="ensp-tab-view active">
+            <div class="ensp-card">
+              <div class="ensp-card-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <span>Lab Scenario Description</span>
+              </div>
+              <div class="ensp-card-body">
+                <p style="font-size: 13px; line-height: 1.7; color: var(--hw-text-main);">${lab.desc}</p>
+              </div>
+            </div>
+
+            <div class="ensp-card">
+              <div class="ensp-card-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Default Console & AAA Credentials</span>
+              </div>
+              <div class="ensp-card-body" style="padding: 0;">
+                <table class="ensp-table">
+                  <thead>
+                    <tr><th>Login Parameter</th><th>Value</th><th>Privilege Level</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>AAA Username</td><td><code>admin</code></td><td>Level 15 (Manager)</td><td class="col-status-normal">Normal</td></tr>
+                    <tr><td>AAA Password</td><td><code>admin</code></td><td>Level 15</td><td class="col-status-normal">Normal</td></tr>
+                    <tr><td>Super Elevation Password</td><td><code>super</code></td><td>Level 15</td><td class="col-status-normal">Normal</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Cabling -->
+          <div id="tab-sec-cabling" class="ensp-tab-view">
+            <div class="ensp-card">
+              <div class="ensp-card-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                <span>Interface Interconnection & IP Addressing Matrix</span>
+              </div>
+              <div class="ensp-card-body" style="padding: 0;">
+                <table class="ensp-table">
+                  <thead>
+                    <tr>
+                      <th>Device Node</th>
+                      <th>Interface</th>
+                      <th>IP Address / Prefix</th>
+                      <th>Connected Peer / Network Function</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${tableRows || '<tr><td colspan="5" style="padding:12px;">Refer to task requirements for interface addressing.</td></tr>'}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Tasks -->
+          <div id="tab-sec-tasks" class="ensp-tab-view">
+            <div class="ensp-card">
+              <div class="ensp-card-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span>Task Checklist</span>
+              </div>
+              <div class="ensp-card-body">
+                <ul class="ensp-task-list">
+                  ${taskRows || '<li style="color:var(--hw-text-secondary);">No specific checklist items. Follow scenario objectives.</li>'}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. CLI -->
+          <div id="tab-sec-cli" class="ensp-tab-view">
+            ${cliBlocks || '<div class="ensp-card"><div class="ensp-card-body"><p style="color:var(--hw-text-secondary);">No scripts provided for this module.</p></div></div>'}
+          </div>
+
+          <!-- 5. Verification -->
+          <div id="tab-sec-verif" class="ensp-tab-view">
+            <div class="ensp-card">
+              <div class="ensp-card-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <span>Verification Commands</span>
+              </div>
+              <div class="ensp-card-body">
+                ${verifRows || '<div class="ensp-verif-step">display ip interface brief</div>'}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function switchTab(btn, tabId) {
+      document.querySelectorAll('.ensp-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.ensp-tab-view').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function copyCliFromPre(btn) {
+      const card = btn.closest('.ensp-card');
+      const pre = card.querySelector('pre');
+      const text = pre ? pre.textContent : '';
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    document.getElementById('ensp-search').addEventListener('input', e => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        renderTree(labs);
+        return;
+      }
+      const filtered = labs.filter(l => 
+        l.title.toLowerCase().includes(q) || 
+        (l.display_name && l.display_name.toLowerCase().includes(q)) ||
+        l.desc.toLowerCase().includes(q) ||
+        (l.module && l.module.toLowerCase().includes(q))
+      );
+      renderTree(filtered);
+    });
+
+    initTheme();
+    loadData();
+  </script>
+</body>
+</html>

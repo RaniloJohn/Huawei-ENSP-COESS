@@ -1,0 +1,26 @@
+---
+type: qemu
+description: Huawei NE40E
+name: NE40E
+cpulimit: 1
+icon: Router.png
+cpu: 2
+ram: 2048
+ethernet: 12
+console: telnet
+qemu_arch: x86_64
+qemu_options: -cpu host -machine type=pc-1.0,accel=kvm -serial mon:stdio -nographic -nodefconfig -nodefaults -rtc base=utc 
+eth_name:
+- eth0
+- eth1
+- GigabitEthernet0/0/0
+- GigabitEthernet0/0/1
+- GigabitEthernet0/0/2
+- GigabitEthernet0/0/3
+- GigabitEthernet0/0/4
+- GigabitEthernet0/0/5
+- GigabitEthernet0/0/6
+- GigabitEthernet0/0/7
+- GigabitEthernet0/0/8
+- GigabitEthernet0/0/9
+...
