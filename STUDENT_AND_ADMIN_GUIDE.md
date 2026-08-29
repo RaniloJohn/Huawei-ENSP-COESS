@@ -18,28 +18,28 @@ The virtual infrastructure operates on a **dual-port architecture** separating l
 | **`22`** | **EulerOS Linux SSH** | Remote administrative shell access to the host virtual machine via PowerShell or terminal. | **`ssh root@10.10.10.137`** |
 
 ```mermaid
-graph TD
-    subgraph VM_Environment ["Huawei eNSP Virtual Machine (10.10.10.137)"]
-        subgraph Port_80 ["Port 80: Main Website for Descriptions & Syntax"]
-            PortalServer["In-Memory Zero-Copy Web Server (server.py)"]
-            PortalData["33 Structured Labs & Line-by-Line Syntax Guide"]
-            Cgroups["Linux cgroups Sandbox (Nice=19, CPUQuota=5%, RAM <= 32MB)"]
+flowchart TD
+    subgraph VM["Huawei eNSP Virtual Machine - 10.10.10.137"]
+        subgraph P80["Port 80: Lab Descriptions & Syllabus Portal"]
+            Server["In-Memory Zero-Copy Web Server"]
+            Dataset["33 Structured Labs with Line-by-Line Syntax"]
+            Sandbox["Linux cgroups Sandbox - Low Priority"]
         end
 
-        subgraph Port_8443 ["Port 8443: eNSP Lite Console Environment"]
-            SpringEngine["eNSP Java Spring Boot Service (eNSP-Lite.jar)"]
-            TopoCanvas["HTML5 Web Topology Canvas & Terminal Multiplexer"]
-            VRPNodes["Huawei VRP Node Emulators (AR1000v / S5700 / USG6000 / NE40E)"]
+        subgraph P8443["Port 8443: eNSP Lite Console Environment"]
+            Engine["eNSP Java Spring Boot Service"]
+            Canvas["HTML5 Web Topology Canvas & CLI Terminals"]
+            Nodes["Huawei VRP Devices - AR1000v / S5700 / USG6000"]
         end
 
-        subgraph Port_22 ["Port 22: Remote Host Management"]
-            OpenSSH["EulerOS OpenSSH Daemon"]
+        subgraph P22["Port 22: Remote Host Management"]
+            SSH["EulerOS OpenSSH Daemon"]
         end
     end
 
-    StudentBrowser["Student Web Browser"] -->|"http://10.10.10.137/ (Descriptions)"| Port_80
-    StudentBrowser -->|"https://10.10.10.137:8443/ (Console)"| Port_8443
-    PowerShellClient["Windows PowerShell"] -->|"ssh root@10.10.10.137"| Port_22
+    Browser["Student Web Browser"] -->|"HTTP Port 80"| P80
+    Browser -->|"HTTPS Port 8443"| P8443
+    Terminal["Windows PowerShell"] -->|"SSH Port 22"| P22
 ```
 
 ---
@@ -120,21 +120,20 @@ Configure the VM in VMware Workstation, VirtualBox, or Proxmox as follows:
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Student
-    participant Portal as Port 80 (Lab Descriptions)
-    participant Console as Port 8443 (Console Environment)
-    participant Node as VRP Device Nodes
+    actor Student as Student
+    participant Portal as Port 80 - Lab Portal
+    participant Console as Port 8443 - Console Env
+    participant Nodes as Huawei VRP Nodes
 
-    Student->>Portal: 1. Open http://10.10.10.137/ (Descriptions & Syntax)
-    Student->>Portal: 2. Select Assigned Lab from Sidebar
-    Student->>Portal: 3. Review Cabling Matrix & Line-by-Line Syntax Guide
-    Student->>Console: 4. Click "Open Simulation Console" (https://10.10.10.137:8443)
-    Student->>Console: 5. Open corresponding Sandbox
-    Student->>Node: 6. Power ON required nodes (Green Start button)
-    Student->>Node: 7. Open Terminal & apply VRP configurations
-    Student->>Node: 8. Execute verification runbook (display commands)
-    Student->>Node: 9. Save configurations ('save' in user view)
-    Student->>Console: 10. CRITICAL: Stop / Power OFF Sandbox when finished!
+    Student->>Portal: 1. Open Portal and select assigned lab
+    Student->>Portal: 2. Review IP matrix and line-by-line syntax guide
+    Student->>Console: 3. Launch eNSP Lite Console
+    Student->>Console: 4. Open matching lab sandbox topology
+    Student->>Nodes: 5. Power ON required devices
+    Student->>Nodes: 6. Open CLI terminal and apply VRP commands
+    Student->>Nodes: 7. Run verification commands and ping tests
+    Student->>Nodes: 8. Save configuration in VRP user view
+    Student->>Console: 9. CRITICAL: Stop and power OFF sandbox when done
 ```
 
 ### Step 1: Open the Lab Portal (`http://10.10.10.137/`)
