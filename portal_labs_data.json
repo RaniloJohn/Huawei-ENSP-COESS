@@ -328,6 +328,449 @@
           "expected": "Shows active ACL rules, packet match hit counters, and security enforcement status."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "sysname LSW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "vlan batch 10 20 30 100",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "port link-type access",
+        "desc": "Configures the switchport as an Access port to connect end-user devices (PCs, printers, servers).",
+        "param": "Access ports accept untagged frames only and tag them with the port's default PVID upon ingress.",
+        "cisco_eq": "switchport mode access",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "port default vlan 10",
+        "desc": "Assigns the Port VLAN ID (PVID) to the access port, binding it to a single broadcast domain.",
+        "param": "VLAN ID integer (e.g., 10).",
+        "cisco_eq": "switchport access vlan <id>",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/2",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "port default vlan 20",
+        "desc": "Assigns the Port VLAN ID (PVID) to the access port, binding it to a single broadcast domain.",
+        "param": "VLAN ID integer (e.g., 10).",
+        "cisco_eq": "switchport access vlan <id>",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/3",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "port link-type trunk",
+        "desc": "Configures the switchport as an IEEE 802.1Q Trunk port to carry traffic for multiple VLANs across switches.",
+        "param": "Trunk ports preserve 4-byte 802.1Q tags across inter-switch links.",
+        "cisco_eq": "switchport mode trunk",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "port trunk allow-pass vlan 10 20 30 100",
+        "desc": "Explicitly whitelists the VLAN IDs permitted to traverse the 802.1Q trunk link.",
+        "param": "VLAN IDs or 'all'. By default in Huawei VRP, only VLAN 1 is permitted until explicitly whitelisted.",
+        "cisco_eq": "switchport trunk allowed vlan <list>",
+        "device": "LSW1 (Access Switch)"
+      },
+      {
+        "cmd": "sysname LSW2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "lacp priority 100",
+        "desc": "Sets the system LACP priority (default: 32768, lower wins) to elect the controlling Actor switch.",
+        "param": "Priority value (e.g. 100). The Actor switch dictates which member links become active.",
+        "cisco_eq": "lacp system-priority <val>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "interface Eth-Trunk 1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "mode lacp-static",
+        "desc": "Configures IEEE 802.3ad dynamic Link Aggregation Control Protocol (LACP) negotiation in Static mode.",
+        "param": "Enables periodic LACPDU exchange to detect link failures and unidirectional cabling faults.",
+        "cisco_eq": "channel-group <id> mode active",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "desc": "Batch adds a range of physical Ethernet interfaces directly into the Eth-Trunk bundle.",
+        "param": "Start and end interface names (e.g., GigabitEthernet 0/0/1 to 0/0/2).",
+        "cisco_eq": "channel-group <id> mode active (on range)",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "interface Vlanif 10",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "ip address 192.168.10.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "vrrp vrid 10 virtual-ip 192.168.10.254",
+        "desc": "Instantiates a Virtual Router Redundancy Protocol (VRRP) group with a shared Virtual IP (VIP).",
+        "param": "VRID specifies group ID (1-255). Virtual IP is the default gateway configured on client PCs.",
+        "cisco_eq": "vrrp <vrid> ip <virtual_ip>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "vrrp vrid 10 priority 120",
+        "desc": "Configures the VRRP priority of the local router in the redundancy group (default is 100).",
+        "param": "Priority value (1-254). The router with the highest priority is elected as the active Master.",
+        "cisco_eq": "vrrp <vrid> priority <val>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "vrrp vrid 10 preempt-mode timer delay 20",
+        "desc": "Configures the preempt delay timer allowing upstream routing and links to stabilize before reclaiming Master state.",
+        "param": "Delay in seconds (e.g., 20s). Prevents premature state flapping during router reboot.",
+        "cisco_eq": "vrrp <vrid> preempt delay minimum <sec>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "interface Vlanif 20",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "ip address 192.168.20.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "vrrp vrid 20 virtual-ip 192.168.20.254",
+        "desc": "Instantiates a Virtual Router Redundancy Protocol (VRRP) group with a shared Virtual IP (VIP).",
+        "param": "VRID specifies group ID (1-255). Virtual IP is the default gateway configured on client PCs.",
+        "cisco_eq": "vrrp <vrid> ip <virtual_ip>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "vrrp vrid 20 priority 120",
+        "desc": "Configures the VRRP priority of the local router in the redundancy group (default is 100).",
+        "param": "Priority value (1-254). The router with the highest priority is elected as the active Master.",
+        "cisco_eq": "vrrp <vrid> priority <val>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "vrrp vrid 20 preempt-mode timer delay 20",
+        "desc": "Configures the preempt delay timer allowing upstream routing and links to stabilize before reclaiming Master state.",
+        "param": "Delay in seconds (e.g., 20s). Prevents premature state flapping during router reboot.",
+        "cisco_eq": "vrrp <vrid> preempt delay minimum <sec>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "ospf 1 router-id 2.2.2.2",
+        "desc": "Initializes an OSPFv2 dynamic link-state routing process with an explicit 32-bit Router Identifier.",
+        "param": "Process ID (1-65535) and 32-bit unique Router-ID in dotted-decimal format (e.g., 1.1.1.1).",
+        "cisco_eq": "router ospf <pid> -> router-id <id>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "area 0.0.0.0",
+        "desc": "Enters configuration view for the specified OSPF area (0.0.0.0 is the mandatory Backbone Area 0).",
+        "param": "Area ID in 32-bit dotted-decimal (0.0.0.0) or integer (0) format.",
+        "cisco_eq": "area <id>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "network 10.0.12.0 0.0.0.255",
+        "desc": "Enables OSPF on interfaces matching the specified IP address and wildcard (inverse) mask.",
+        "param": "Network IP address and inverted wildcard mask (e.g., 10.0.12.0 0.0.0.255).",
+        "cisco_eq": "network <ip> <wildcard> area <id>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "network 192.168.10.0 0.0.0.255",
+        "desc": "Enables OSPF on interfaces matching the specified IP address and wildcard (inverse) mask.",
+        "param": "Network IP address and inverted wildcard mask (e.g., 10.0.12.0 0.0.0.255).",
+        "cisco_eq": "network <ip> <wildcard> area <id>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "network 192.168.20.0 0.0.0.255",
+        "desc": "Enables OSPF on interfaces matching the specified IP address and wildcard (inverse) mask.",
+        "param": "Network IP address and inverted wildcard mask (e.g., 10.0.12.0 0.0.0.255).",
+        "cisco_eq": "network <ip> <wildcard> area <id>",
+        "device": "LSW2 (Core Switch A - Master Gateway)"
+      },
+      {
+        "cmd": "sysname LSW3",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "LSW3 (Core Switch B - Backup Gateway)"
+      },
+      {
+        "cmd": "ip address 192.168.10.3 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "LSW3 (Core Switch B - Backup Gateway)"
+      },
+      {
+        "cmd": "vrrp vrid 10 priority 100",
+        "desc": "Configures the VRRP priority of the local router in the redundancy group (default is 100).",
+        "param": "Priority value (1-254). The router with the highest priority is elected as the active Master.",
+        "cisco_eq": "vrrp <vrid> priority <val>",
+        "device": "LSW3 (Core Switch B - Backup Gateway)"
+      },
+      {
+        "cmd": "ip address 192.168.20.3 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "LSW3 (Core Switch B - Backup Gateway)"
+      },
+      {
+        "cmd": "vrrp vrid 20 priority 100",
+        "desc": "Configures the VRRP priority of the local router in the redundancy group (default is 100).",
+        "param": "Priority value (1-254). The router with the highest priority is elected as the active Master.",
+        "cisco_eq": "vrrp <vrid> priority <val>",
+        "device": "LSW3 (Core Switch B - Backup Gateway)"
+      },
+      {
+        "cmd": "ospf 1 router-id 3.3.3.3",
+        "desc": "Initializes an OSPFv2 dynamic link-state routing process with an explicit 32-bit Router Identifier.",
+        "param": "Process ID (1-65535) and 32-bit unique Router-ID in dotted-decimal format (e.g., 1.1.1.1).",
+        "cisco_eq": "router ospf <pid> -> router-id <id>",
+        "device": "LSW3 (Core Switch B - Backup Gateway)"
+      },
+      {
+        "cmd": "network 10.0.13.0 0.0.0.255",
+        "desc": "Enables OSPF on interfaces matching the specified IP address and wildcard (inverse) mask.",
+        "param": "Network IP address and inverted wildcard mask (e.g., 10.0.12.0 0.0.0.255).",
+        "cisco_eq": "network <ip> <wildcard> area <id>",
+        "device": "LSW3 (Core Switch B - Backup Gateway)"
+      },
+      {
+        "cmd": "sysname AR1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "AR1 (Edge WAN Gateway Router)"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "AR1 (Edge WAN Gateway Router)"
+      },
+      {
+        "cmd": "ip address 203.0.113.1 255.255.255.252",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "AR1 (Edge WAN Gateway Router)"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "AR1 (Edge WAN Gateway Router)"
+      },
+      {
+        "cmd": "ospf 1 router-id 1.1.1.1",
+        "desc": "Initializes an OSPFv2 dynamic link-state routing process with an explicit 32-bit Router Identifier.",
+        "param": "Process ID (1-65535) and 32-bit unique Router-ID in dotted-decimal format (e.g., 1.1.1.1).",
+        "cisco_eq": "router ospf <pid> -> router-id <id>",
+        "device": "AR1 (Edge WAN Gateway Router)"
+      },
+      {
+        "cmd": "default-route-advertise always",
+        "desc": "Forces the OSPF router to unconditionally generate and flood a Type-5 external default route into the OSPF domain.",
+        "param": "Injects 0.0.0.0/0 route even if no default route exists in the local routing table.",
+        "cisco_eq": "default-information originate always",
+        "device": "AR1 (Edge WAN Gateway Router)"
+      },
+      {
+        "cmd": "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "AR1 (Edge WAN Gateway Router)"
+      },
+      {
+        "cmd": "sysname FW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "ip address 192.168.100.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "ip address 198.51.100.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "firewall zone trust",
+        "desc": "Enters security zone configuration view on Huawei USG6000 next-generation firewalls.",
+        "param": "Zone name (Trust: LAN, Untrust: WAN/Internet, DMZ: Public Servers).",
+        "cisco_eq": "zone security <name> (Cisco ZFW)",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "add interface GigabitEthernet 0/0/1",
+        "desc": "Binds a physical or logical interface to the current firewall security zone.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/1).",
+        "cisco_eq": "zone-member security <name>",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "firewall zone untrust",
+        "desc": "Enters security zone configuration view on Huawei USG6000 next-generation firewalls.",
+        "param": "Zone name (Trust: LAN, Untrust: WAN/Internet, DMZ: Public Servers).",
+        "cisco_eq": "zone security <name> (Cisco ZFW)",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "add interface GigabitEthernet 0/0/0",
+        "desc": "Binds a physical or logical interface to the current firewall security zone.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/1).",
+        "cisco_eq": "zone-member security <name>",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "security-policy",
+        "desc": "Enters the inter-zone stateful firewall security policy definition view on the USG6000.",
+        "param": "Allows creation of directional traffic inspection rules between security zones.",
+        "cisco_eq": "policy-map type inspect <name>",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "default action deny",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "rule name Trust_to_Untrust",
+        "desc": "Declares a named stateful firewall security policy rule.",
+        "param": "Descriptive rule name string (e.g. Trust_to_Untrust, Easy_IP_NAT).",
+        "cisco_eq": "class-map type inspect <name>",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "source-zone trust",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "destination-zone untrust",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "source-address 192.168.0.0 mask 255.255.0.0",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "action permit",
+        "desc": "Defines the enforcement action for traffic matching the firewall rule criteria.",
+        "param": "Actions: 'permit' allows session, 'deny' drops session, 'source-nat easy-ip' performs outbound NAPT.",
+        "cisco_eq": "action pass / inspect / drop",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "nat-policy",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "rule name Easy_IP_NAT",
+        "desc": "Declares a named stateful firewall security policy rule.",
+        "param": "Descriptive rule name string (e.g. Trust_to_Untrust, Easy_IP_NAT).",
+        "cisco_eq": "class-map type inspect <name>",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      },
+      {
+        "cmd": "action source-nat easy-ip",
+        "desc": "Defines the enforcement action for traffic matching the firewall rule criteria.",
+        "param": "Actions: 'permit' allows session, 'deny' drops session, 'source-nat easy-ip' performs outbound NAPT.",
+        "cisco_eq": "action pass / inspect / drop",
+        "device": "FW1 (USG6000 Next-Gen Firewall)"
+      }
     ]
   },
   {
@@ -524,6 +967,225 @@
           "code": "display ip pool name POOL_LAN1 used\ndisplay ip pool name POOL_LAN2 used",
           "expected": "Displays active IP leases, client MAC addresses, and lease expiration timestamps."
         }
+      }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "sysname R1-GW",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "dhcp enable",
+        "desc": "Globally initializes and activates the DHCP server and relay daemon process on the device.",
+        "param": "Enables the internal DHCP software module in the VRP kernel.",
+        "cisco_eq": "service dhcp",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "ip pool POOL_LAN1",
+        "desc": "Creates and enters a centralized global dynamic IPv4 address pool configuration scope.",
+        "param": "Parameter is the case-sensitive pool identifier name (e.g., POOL_LAN1).",
+        "cisco_eq": "ip dhcp pool <name>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "network 192.168.10.0 mask 255.255.255.0",
+        "desc": "Defines the assignable IPv4 network address scope and subnet mask for dynamic client leases.",
+        "param": "Specifies the network base IP and dotted-decimal subnet mask (or prefix length /24).",
+        "cisco_eq": "network <ip> <mask_or_prefix>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "gateway-list 192.168.10.1",
+        "desc": "Specifies the default gateway IP address (DHCP Option 3) distributed to DHCP clients.",
+        "param": "IP address of the router interface facing the local subnet.",
+        "cisco_eq": "default-router <ip>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "dns-list 8.8.8.8",
+        "desc": "Specifies the primary and secondary recursive DNS server addresses (DHCP Option 6) for clients.",
+        "param": "IPv4 address of the DNS resolver (e.g., 8.8.8.8, 1.1.1.1).",
+        "cisco_eq": "dns-server <ip>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "lease day 1 hour 0 minute 0",
+        "desc": "Configures the expiration timer for dynamic IP address allocations in the pool.",
+        "param": "Specifies lease validity in days, hours, and minutes (default: 1 day).",
+        "cisco_eq": "lease <days> <hours> <minutes>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "ip pool POOL_LAN2",
+        "desc": "Creates and enters a centralized global dynamic IPv4 address pool configuration scope.",
+        "param": "Parameter is the case-sensitive pool identifier name (e.g., POOL_LAN1).",
+        "cisco_eq": "ip dhcp pool <name>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "network 192.168.20.0 mask 255.255.255.0",
+        "desc": "Defines the assignable IPv4 network address scope and subnet mask for dynamic client leases.",
+        "param": "Specifies the network base IP and dotted-decimal subnet mask (or prefix length /24).",
+        "cisco_eq": "network <ip> <mask_or_prefix>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "gateway-list 192.168.20.1",
+        "desc": "Specifies the default gateway IP address (DHCP Option 3) distributed to DHCP clients.",
+        "param": "IP address of the router interface facing the local subnet.",
+        "cisco_eq": "default-router <ip>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "ip address 192.168.10.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "dhcp select global",
+        "desc": "Binds the interface to allocate IP addresses to clients using the global address pool matching its subnet.",
+        "param": "Instructs the interface to trigger global pool scope matching upon receiving DHCP Discover.",
+        "cisco_eq": "ip dhcp server (implicit on Cisco)",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/2",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "ip address 192.168.20.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "ip address 203.0.113.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "nat outbound 2000",
+        "desc": "Enables Easy-IP Dynamic NAPT on the WAN interface, translating matching ACL traffic to the interface's public IP.",
+        "param": "References the Basic ACL number (e.g., 2000) identifying internal source subnets.",
+        "cisco_eq": "ip nat inside source list <acl> interface <if> overload",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "acl number 2000",
+        "desc": "Creates a Basic Access Control List (numbered 2000-2999) which inspects source IPv4 addresses only.",
+        "param": "ACL number between 2000 and 2999.",
+        "cisco_eq": "access-list <1-99> (Standard ACL)",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "rule 5 permit source 192.168.10.0 0.0.0.255",
+        "desc": "Adds an ACL permit statement matching traffic from a specified source IP and wildcard mask.",
+        "param": "Rule sequence ID (e.g. 5, 10), source IPv4 network, and inverted wildcard mask.",
+        "cisco_eq": "permit ip <src> <wildcard> <dst>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "rule 10 permit source 192.168.20.0 0.0.0.255",
+        "desc": "Adds an ACL permit statement matching traffic from a specified source IP and wildcard mask.",
+        "param": "Rule sequence ID (e.g. 5, 10), source IPv4 network, and inverted wildcard mask.",
+        "cisco_eq": "permit ip <src> <wildcard> <dst>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "ip route-static 0.0.0.0 0.0.0.0 203.0.113.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "R1-GW"
+      },
+      {
+        "cmd": "sysname ISP-Router",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "ISP-Router"
+      },
+      {
+        "cmd": "ip address 203.0.113.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "ISP-Router"
+      },
+      {
+        "cmd": "PC1> dhcp",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "PC1> show ip",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "PC1> ping 203.0.113.2",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "PC2> dhcp",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "PC2> ping 203.0.113.2",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
       }
     ]
   },
@@ -730,6 +1392,190 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "sysname Master-GW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "ip address 10.0.13.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "ip address 192.168.1.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "vrrp vrid 1 virtual-ip 192.168.1.254",
+        "desc": "Instantiates a Virtual Router Redundancy Protocol (VRRP) group with a shared Virtual IP (VIP).",
+        "param": "VRID specifies group ID (1-255). Virtual IP is the default gateway configured on client PCs.",
+        "cisco_eq": "vrrp <vrid> ip <virtual_ip>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "vrrp vrid 1 priority 120",
+        "desc": "Configures the VRRP priority of the local router in the redundancy group (default is 100).",
+        "param": "Priority value (1-254). The router with the highest priority is elected as the active Master.",
+        "cisco_eq": "vrrp <vrid> priority <val>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "vrrp vrid 1 preempt-mode timer delay 20",
+        "desc": "Configures the preempt delay timer allowing upstream routing and links to stabilize before reclaiming Master state.",
+        "param": "Delay in seconds (e.g., 20s). Prevents premature state flapping during router reboot.",
+        "cisco_eq": "vrrp <vrid> preempt delay minimum <sec>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "vrrp vrid 1 track interface GigabitEthernet 0/0/0 reduced 30",
+        "desc": "Monitors the operational health of an uplink interface, automatically demoting VRRP priority upon link failure.",
+        "param": "Uplink interface name and priority reduction value (e.g., reduced 30 demotes 120 to 90).",
+        "cisco_eq": "vrrp <vrid> track <obj> decrement <val>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "ip route-static 0.0.0.0 0.0.0.0 10.0.13.3",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Master-GW1"
+      },
+      {
+        "cmd": "sysname Backup-GW2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Backup-GW2"
+      },
+      {
+        "cmd": "ip address 10.0.23.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Backup-GW2"
+      },
+      {
+        "cmd": "ip address 192.168.1.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Backup-GW2"
+      },
+      {
+        "cmd": "vrrp vrid 1 priority 100",
+        "desc": "Configures the VRRP priority of the local router in the redundancy group (default is 100).",
+        "param": "Priority value (1-254). The router with the highest priority is elected as the active Master.",
+        "cisco_eq": "vrrp <vrid> priority <val>",
+        "device": "Backup-GW2"
+      },
+      {
+        "cmd": "ip route-static 0.0.0.0 0.0.0.0 10.0.23.3",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Backup-GW2"
+      },
+      {
+        "cmd": "sysname Core-R3",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-R3"
+      },
+      {
+        "cmd": "ip address 10.0.13.3 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Core-R3"
+      },
+      {
+        "cmd": "ip address 10.0.23.3 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Core-R3"
+      },
+      {
+        "cmd": "interface LoopBack 0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Core-R3"
+      },
+      {
+        "cmd": "ip address 3.3.3.3 255.255.255.255",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Core-R3"
+      },
+      {
+        "cmd": "ip route-static 192.168.1.0 255.255.255.0 10.0.13.1",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Core-R3"
+      },
+      {
+        "cmd": "ip route-static 192.168.1.0 255.255.255.0 10.0.23.2 preference 70",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Core-R3"
+      },
+      {
+        "cmd": "PC1> ip 192.168.1.10/24 192.168.1.254",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "PC1> ping 3.3.3.3",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      }
     ]
   },
   {
@@ -926,12 +1772,154 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "sysname Branch-R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip address 192.168.10.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip route-static 0.0.0.0 0.0.0.0 10.0.12.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "sysname HQ-R2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "HQ-R2"
+      },
+      {
+        "cmd": "ip address 10.0.12.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-R2"
+      },
+      {
+        "cmd": "ip address 10.0.23.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-R2"
+      },
+      {
+        "cmd": "ip route-static 192.168.10.0 255.255.255.0 10.0.12.1",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "HQ-R2"
+      },
+      {
+        "cmd": "ip route-static 192.168.30.0 255.255.255.0 10.0.23.3",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "HQ-R2"
+      },
+      {
+        "cmd": "sysname Cloud-R3",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Cloud-R3"
+      },
+      {
+        "cmd": "ip address 10.0.23.3 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Cloud-R3"
+      },
+      {
+        "cmd": "ip address 192.168.30.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Cloud-R3"
+      },
+      {
+        "cmd": "ip route-static 0.0.0.0 0.0.0.0 10.0.23.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Cloud-R3"
+      },
+      {
+        "cmd": "Branch-PC> ip 192.168.10.10/24 192.168.10.1",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "Cloud-Server> ip 192.168.30.10/24 192.168.30.1",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "Branch-PC> ping 192.168.30.10",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      }
     ]
   },
   {
     "id": 4,
     "title": "Lab-04-Huawei-OSPFv2-Multi-Area-and-MD5-Authentication",
-    "display_name": "Lab 04: OSPFv2 Multi-Area and MD5 Authentication",
+    "display_name": "Lab 04: OSPFv2 Multi Area and MD5 Authentication",
     "module": "Module 1: Enterprise Gateway & Access",
     "desc": "Deploy scalable hierarchical OSPFv2 routing across Backbone Area 0 and Non-Backbone Area 1 with Area Border Router (ABR-R2) and cryptographic MD5 packet authentication.",
     "nodes": [
@@ -1121,12 +2109,182 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "sysname Area1-R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "interface LoopBack 0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "ip address 192.168.10.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "ospf 1 router-id 1.1.1.1",
+        "desc": "Initializes an OSPFv2 dynamic link-state routing process with an explicit 32-bit Router Identifier.",
+        "param": "Process ID (1-65535) and 32-bit unique Router-ID in dotted-decimal format (e.g., 1.1.1.1).",
+        "cisco_eq": "router ospf <pid> -> router-id <id>",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "area 0.0.0.1",
+        "desc": "Enters configuration view for the specified OSPF area (0.0.0.0 is the mandatory Backbone Area 0).",
+        "param": "Area ID in 32-bit dotted-decimal (0.0.0.0) or integer (0) format.",
+        "cisco_eq": "area <id>",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "network 10.0.12.0 0.0.0.255",
+        "desc": "Enables OSPF on interfaces matching the specified IP address and wildcard (inverse) mask.",
+        "param": "Network IP address and inverted wildcard mask (e.g., 10.0.12.0 0.0.0.255).",
+        "cisco_eq": "network <ip> <wildcard> area <id>",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "network 192.168.10.0 0.0.0.255",
+        "desc": "Enables OSPF on interfaces matching the specified IP address and wildcard (inverse) mask.",
+        "param": "Network IP address and inverted wildcard mask (e.g., 10.0.12.0 0.0.0.255).",
+        "cisco_eq": "network <ip> <wildcard> area <id>",
+        "device": "Area1-R1"
+      },
+      {
+        "cmd": "sysname ABR-R2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "ABR-R2"
+      },
+      {
+        "cmd": "ip address 10.0.12.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "ABR-R2"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "ABR-R2"
+      },
+      {
+        "cmd": "ip address 10.0.23.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "ABR-R2"
+      },
+      {
+        "cmd": "ospf 1 router-id 2.2.2.2",
+        "desc": "Initializes an OSPFv2 dynamic link-state routing process with an explicit 32-bit Router Identifier.",
+        "param": "Process ID (1-65535) and 32-bit unique Router-ID in dotted-decimal format (e.g., 1.1.1.1).",
+        "cisco_eq": "router ospf <pid> -> router-id <id>",
+        "device": "ABR-R2"
+      },
+      {
+        "cmd": "area 0.0.0.0",
+        "desc": "Enters configuration view for the specified OSPF area (0.0.0.0 is the mandatory Backbone Area 0).",
+        "param": "Area ID in 32-bit dotted-decimal (0.0.0.0) or integer (0) format.",
+        "cisco_eq": "area <id>",
+        "device": "ABR-R2"
+      },
+      {
+        "cmd": "network 10.0.23.0 0.0.0.255",
+        "desc": "Enables OSPF on interfaces matching the specified IP address and wildcard (inverse) mask.",
+        "param": "Network IP address and inverted wildcard mask (e.g., 10.0.12.0 0.0.0.255).",
+        "cisco_eq": "network <ip> <wildcard> area <id>",
+        "device": "ABR-R2"
+      },
+      {
+        "cmd": "authentication-mode md5 1 cipher Huawei@123",
+        "desc": "Enables cryptographic MD5 packet authentication across OSPF routers in the area or link.",
+        "param": "Key ID (e.g., 1), cipher storage keyword, and secret pre-shared password string.",
+        "cisco_eq": "ip ospf message-digest-key <id> md5 <key>",
+        "device": "ABR-R2"
+      },
+      {
+        "cmd": "sysname Backbone-R3",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Backbone-R3"
+      },
+      {
+        "cmd": "ip address 10.0.23.3 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Backbone-R3"
+      },
+      {
+        "cmd": "ip address 192.168.30.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Backbone-R3"
+      },
+      {
+        "cmd": "ospf 1 router-id 3.3.3.3",
+        "desc": "Initializes an OSPFv2 dynamic link-state routing process with an explicit 32-bit Router Identifier.",
+        "param": "Process ID (1-65535) and 32-bit unique Router-ID in dotted-decimal format (e.g., 1.1.1.1).",
+        "cisco_eq": "router ospf <pid> -> router-id <id>",
+        "device": "Backbone-R3"
+      },
+      {
+        "cmd": "network 192.168.30.0 0.0.0.255",
+        "desc": "Enables OSPF on interfaces matching the specified IP address and wildcard (inverse) mask.",
+        "param": "Network IP address and inverted wildcard mask (e.g., 10.0.12.0 0.0.0.255).",
+        "cisco_eq": "network <ip> <wildcard> area <id>",
+        "device": "Backbone-R3"
+      }
     ]
   },
   {
     "id": 5,
     "title": "Lab-05-Huawei-Eth-Trunk-LACP-Static-Mode-Aggregation",
-    "display_name": "Lab 05: Eth-Trunk LACP Static Mode Aggregation",
+    "display_name": "Lab 05: Eth Trunk LACP Static Mode Aggregation",
     "module": "Module 1: Enterprise Gateway & Access",
     "desc": "Bundle dual physical Gigabit Ethernet links into a 2 Gbps logical Eth-Trunk channel using IEEE 802.3ad LACP Static Mode with trunk 802.1Q encapsulation.",
     "nodes": [
@@ -1270,6 +2428,85 @@
           "code": "display eth-trunk 1\ndisplay trunkport",
           "expected": "Eth-Trunk status shows 'WorkingMode: STATIC', 'Operating Status: Up', with 2 active Selected member ports."
         }
+      }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "sysname Core-SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "vlan batch 10 20 30",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "lacp priority 100",
+        "desc": "Sets the system LACP priority (default: 32768, lower wins) to elect the controlling Actor switch.",
+        "param": "Priority value (e.g. 100). The Actor switch dictates which member links become active.",
+        "cisco_eq": "lacp system-priority <val>",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "interface Eth-Trunk 1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "mode lacp-static",
+        "desc": "Configures IEEE 802.3ad dynamic Link Aggregation Control Protocol (LACP) negotiation in Static mode.",
+        "param": "Enables periodic LACPDU exchange to detect link failures and unidirectional cabling faults.",
+        "cisco_eq": "channel-group <id> mode active",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "port link-type trunk",
+        "desc": "Configures the switchport as an IEEE 802.1Q Trunk port to carry traffic for multiple VLANs across switches.",
+        "param": "Trunk ports preserve 4-byte 802.1Q tags across inter-switch links.",
+        "cisco_eq": "switchport mode trunk",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "port trunk allow-pass vlan 10 20 30",
+        "desc": "Explicitly whitelists the VLAN IDs permitted to traverse the 802.1Q trunk link.",
+        "param": "VLAN IDs or 'all'. By default in Huawei VRP, only VLAN 1 is permitted until explicitly whitelisted.",
+        "cisco_eq": "switchport trunk allowed vlan <list>",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "desc": "Batch adds a range of physical Ethernet interfaces directly into the Eth-Trunk bundle.",
+        "param": "Start and end interface names (e.g., GigabitEthernet 0/0/1 to 0/0/2).",
+        "cisco_eq": "channel-group <id> mode active (on range)",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "sysname Dist-SW2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Dist-SW2"
       }
     ]
   },
@@ -1415,6 +2652,120 @@
           "code": "display vlan brief\ndisplay port vlan",
           "expected": "VLANs appear in Active state with their assigned physical interfaces."
         }
+      }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "sysname Access-SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "vlan batch 10 100",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "voice-vlan mac-address 0011-2200-0000 mask ffff-ff00-0000",
+        "desc": "Registers an Organizationally Unique Identifier (OUI) MAC mask to identify IP phones automatically.",
+        "param": "OUI MAC prefix (e.g., 00e0-fc00-0000) and hexadecimal subnet mask (ffff-ff00-0000).",
+        "cisco_eq": "voice vlan oui <mac>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port link-type hybrid",
+        "desc": "Configures switchport as Huawei Hybrid mode, allowing custom per-VLAN tagged and untagged egress control.",
+        "param": "Hybrid mode provides advanced VLAN isolation and voice integration without sub-interfaces.",
+        "cisco_eq": "N/A (Huawei Proprietary Hybrid Port)",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "voice-vlan 100 enable",
+        "desc": "Enables Voice VLAN processing on the interface to segregate VoIP telephony with QoS priority.",
+        "param": "Voice VLAN ID integer (e.g., 100).",
+        "cisco_eq": "switchport voice vlan <id>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "voice-vlan mode manual",
+        "desc": "Sets Voice VLAN membership assignment to dynamic OUI packet detection (auto) or explicit configuration (manual).",
+        "param": "Mode: 'auto' automatically joins port to voice VLAN upon detecting phone MAC.",
+        "cisco_eq": "N/A (CDP/LLDP driven on Cisco)",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port hybrid pvid vlan 10",
+        "desc": "Sets the default ingress VLAN ID (PVID) for untagged frames entering a hybrid port.",
+        "param": "VLAN ID integer.",
+        "cisco_eq": "switchport access vlan / native vlan",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port hybrid untagged vlan 10",
+        "desc": "Specifies the VLANs for which 802.1Q tags are stripped upon frame egress out this hybrid port.",
+        "param": "List of VLAN IDs (e.g., 10 30). Allows standard PCs to communicate with multiple VLANs.",
+        "cisco_eq": "N/A (Multi-VLAN Untagged Egress)",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port hybrid tagged vlan 100",
+        "desc": "Specifies the VLANs for which 802.1Q tags are retained upon frame egress out this hybrid port.",
+        "param": "List of VLAN IDs (e.g., 100 for IP Phones).",
+        "cisco_eq": "switchport trunk allowed vlan",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "qos trust 8021p",
+        "desc": "Configures interface to trust incoming IEEE 802.1p Layer 2 Class of Service (CoS) priority tags in Ethernet frames.",
+        "param": "Preserves frame priority values (0-7) for expedited queue forwarding.",
+        "cisco_eq": "mls qos trust cos",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/24",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port link-type trunk",
+        "desc": "Configures the switchport as an IEEE 802.1Q Trunk port to carry traffic for multiple VLANs across switches.",
+        "param": "Trunk ports preserve 4-byte 802.1Q tags across inter-switch links.",
+        "cisco_eq": "switchport mode trunk",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port trunk allow-pass vlan 10 100",
+        "desc": "Explicitly whitelists the VLAN IDs permitted to traverse the 802.1Q trunk link.",
+        "param": "VLAN IDs or 'all'. By default in Huawei VRP, only VLAN 1 is permitted until explicitly whitelisted.",
+        "cisco_eq": "switchport trunk allowed vlan <list>",
+        "device": "Access-SW1"
       }
     ]
   },
@@ -1578,12 +2929,154 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "vlan batch 10 20 30",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port link-type hybrid",
+        "desc": "Configures switchport as Huawei Hybrid mode, allowing custom per-VLAN tagged and untagged egress control.",
+        "param": "Hybrid mode provides advanced VLAN isolation and voice integration without sub-interfaces.",
+        "cisco_eq": "N/A (Huawei Proprietary Hybrid Port)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port hybrid pvid vlan 10",
+        "desc": "Sets the default ingress VLAN ID (PVID) for untagged frames entering a hybrid port.",
+        "param": "VLAN ID integer.",
+        "cisco_eq": "switchport access vlan / native vlan",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port hybrid untagged vlan 10 30",
+        "desc": "Specifies the VLANs for which 802.1Q tags are stripped upon frame egress out this hybrid port.",
+        "param": "List of VLAN IDs (e.g., 10 30). Allows standard PCs to communicate with multiple VLANs.",
+        "cisco_eq": "N/A (Multi-VLAN Untagged Egress)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/2",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port hybrid pvid vlan 20",
+        "desc": "Sets the default ingress VLAN ID (PVID) for untagged frames entering a hybrid port.",
+        "param": "VLAN ID integer.",
+        "cisco_eq": "switchport access vlan / native vlan",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port hybrid untagged vlan 20 30",
+        "desc": "Specifies the VLANs for which 802.1Q tags are stripped upon frame egress out this hybrid port.",
+        "param": "List of VLAN IDs (e.g., 10 30). Allows standard PCs to communicate with multiple VLANs.",
+        "cisco_eq": "N/A (Multi-VLAN Untagged Egress)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/3",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port hybrid pvid vlan 30",
+        "desc": "Sets the default ingress VLAN ID (PVID) for untagged frames entering a hybrid port.",
+        "param": "VLAN ID integer.",
+        "cisco_eq": "switchport access vlan / native vlan",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port hybrid untagged vlan 10 20 30",
+        "desc": "Specifies the VLANs for which 802.1Q tags are stripped upon frame egress out this hybrid port.",
+        "param": "List of VLAN IDs (e.g., 10 30). Allows standard PCs to communicate with multiple VLANs.",
+        "cisco_eq": "N/A (Multi-VLAN Untagged Egress)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "PC-HR> ip 192.168.1.10/24",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "PC-Finance> ip 192.168.1.20/24",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "Server> ip 192.168.1.100/24",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "PC-HR> ping 192.168.1.100",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "PC-Finance> ping 192.168.1.100",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      },
+      {
+        "cmd": "PC-HR> ping 192.168.1.20",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Endpoints (VPCS)"
+      }
     ]
   },
   {
     "id": 8,
     "title": "Lab-08-Huawei-IPv4-and-IPv6-Dual-Stack-Configuration",
-    "display_name": "Lab 08: IPv4 and IPv6 Dual-Stack Configuration",
+    "display_name": "Lab 08: IPv4 and IPv6 Dual Stack Configuration",
     "module": "Module 1: Enterprise Gateway & Access",
     "desc": "Deploy concurrent IPv4 and IPv6 routing across enterprise routers, enabling global IPv6 packet forwarding and SLAAC host autoconfiguration.",
     "nodes": [
@@ -1748,6 +3241,155 @@
           "expected": "Interfaces display IPv6 Global and Link-Local addresses in Up state."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "sysname R1-DualStack",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "ipv6",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "ipv6 enable",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "ipv6 address 2001:DB8:12::1 64",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "ip address 192.168.1.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "ipv6 address 2001:DB8:1::1 64",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "undo ipv6 nd ra halt",
+        "desc": "Un-halts periodic ICMPv6 Router Advertisements (RA) on the interface to support SLAAC autoconfiguration.",
+        "param": "By default in Huawei VRP, RA transmissions are halted. Running undo enables RA broadcasts.",
+        "cisco_eq": "no ipv6 nd ra suppress",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "ipv6 route-static 2001:DB8:2:: 64 2001:DB8:12::2",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "ip route-static 192.168.2.0 255.255.255.0 10.0.12.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "R1-DualStack"
+      },
+      {
+        "cmd": "sysname R2-DualStack",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "R2-DualStack"
+      },
+      {
+        "cmd": "ip address 10.0.12.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "R2-DualStack"
+      },
+      {
+        "cmd": "ipv6 address 2001:DB8:12::2 64",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R2-DualStack"
+      },
+      {
+        "cmd": "ip address 192.168.2.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "R2-DualStack"
+      },
+      {
+        "cmd": "ipv6 address 2001:DB8:2::1 64",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R2-DualStack"
+      },
+      {
+        "cmd": "ipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R2-DualStack"
+      },
+      {
+        "cmd": "ip route-static 192.168.1.0 255.255.255.0 10.0.12.1",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "R2-DualStack"
+      }
     ]
   },
   {
@@ -1902,6 +3544,134 @@
           "expected": "Shows active ACL rules, packet match hit counters, and security enforcement status."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "sysname Access-SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "vlan 10",
+        "desc": "Creates a single VLAN ID and enters its configuration view.",
+        "param": "VLAN ID integer between 1 and 4094.",
+        "cisco_eq": "vlan <id>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port link-type access",
+        "desc": "Configures the switchport as an Access port to connect end-user devices (PCs, printers, servers).",
+        "param": "Access ports accept untagged frames only and tag them with the port's default PVID upon ingress.",
+        "cisco_eq": "switchport mode access",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port default vlan 10",
+        "desc": "Assigns the Port VLAN ID (PVID) to the access port, binding it to a single broadcast domain.",
+        "param": "VLAN ID integer (e.g., 10).",
+        "cisco_eq": "switchport access vlan <id>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port-security enable",
+        "desc": "Enables Layer 2 MAC address port security on the interface to prevent MAC flooding attacks.",
+        "param": "Restricts the number of dynamic MAC addresses learned on the switchport.",
+        "cisco_eq": "switchport port-security",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port-security max-mac-num 1",
+        "desc": "Configures the maximum threshold of secure MAC addresses allowed on the port.",
+        "param": "Integer value (e.g. 1 or 2). Additional source MACs trigger security violation actions.",
+        "cisco_eq": "switchport port-security maximum <num>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port-security protect-type restrict",
+        "desc": "Configures the security violation action when unauthorized MAC frames arrive on the secure port.",
+        "param": "Mode: 'restrict' drops frames, increments error counters, and sends SNMP traps; 'shutdown' disables port.",
+        "cisco_eq": "switchport port-security violation restrict/shutdown",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "port-security mac-address aging-time 10",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "sysname GW-R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "GW-R1"
+      },
+      {
+        "cmd": "acl number 3000",
+        "desc": "Creates an Advanced Access Control List (numbered 3000-3999) inspecting source/dest IP, protocol, and ports.",
+        "param": "ACL number between 3000 and 3999.",
+        "cisco_eq": "ip access-list extended <name/num>",
+        "device": "GW-R1"
+      },
+      {
+        "cmd": "rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 80",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "GW-R1"
+      },
+      {
+        "cmd": "rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination 192.168.20.100 0.0.0.0 destination-port eq 23",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "GW-R1"
+      },
+      {
+        "cmd": "rule 15 permit ip",
+        "desc": "Adds a default permit rule allowing all remaining IPv4 traffic through the ACL filter.",
+        "param": "Permits any IPv4 protocol packet matching no preceding deny statements.",
+        "cisco_eq": "permit ip any any",
+        "device": "GW-R1"
+      },
+      {
+        "cmd": "ip address 192.168.10.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "GW-R1"
+      },
+      {
+        "cmd": "traffic-filter inbound acl 3000",
+        "desc": "Applies an Access Control List as an active hardware packet filter directly to interface ingress or egress.",
+        "param": "Direction (inbound/outbound) and ACL number (e.g., 3000).",
+        "cisco_eq": "ip access-group <acl> in/out",
+        "device": "GW-R1"
+      }
     ]
   },
   {
@@ -2041,6 +3811,71 @@
           "expected": "Displays active IP leases, client MAC addresses, and lease expiration timestamps."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "sysname Access-SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "dhcp enable",
+        "desc": "Globally initializes and activates the DHCP server and relay daemon process on the device.",
+        "param": "Enables the internal DHCP software module in the VRP kernel.",
+        "cisco_eq": "service dhcp",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "dhcp snooping enable",
+        "desc": "Globally enables DHCP Snooping security defense to intercept and inspect all DHCP transactions on switchports.",
+        "param": "Activates the DHCP Snooping database module.",
+        "cisco_eq": "ip dhcp snooping",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/24",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "dhcp snooping trusted",
+        "desc": "Designates an uplink interface connected to a legitimate enterprise DHCP server as Trusted.",
+        "param": "Permits DHCP Offer and DHCP Ack server reply packets on this interface while blocking them on untrusted ports.",
+        "cisco_eq": "ip dhcp snooping trust",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "ip source check user-bind enable",
+        "desc": "Enables IP Source Guard (IPSG) on untrusted access ports to drop IP/MAC spoofed packets not in snooping table.",
+        "param": "Hardware ASIC validates incoming source IP and MAC against the dynamic DHCP Snooping binding table.",
+        "cisco_eq": "ip verify source (IPSG)",
+        "device": "Access-SW1"
+      }
     ]
   },
   {
@@ -2163,6 +3998,57 @@
           "code": "display current-configuration",
           "expected": "Configuration applied and operational."
         }
+      }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "lldp enable",
+        "desc": "Globally activates IEEE 802.1ab Link Layer Discovery Protocol for vendor-neutral neighbor mapping.",
+        "param": "Enables periodic LLDPDU exchange across all capable interfaces.",
+        "cisco_eq": "lldp run",
+        "device": "SW1"
+      },
+      {
+        "cmd": "lldp compliance cdp receive",
+        "desc": "Enables Cisco Discovery Protocol (CDP) backward compatibility, allowing switch to decode Cisco CDP frames.",
+        "param": "Enables CDP frame reception and translation into LLDP neighbor tables.",
+        "cisco_eq": "cdp run",
+        "device": "SW1"
+      },
+      {
+        "cmd": "lldp timer tx-interval 30",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "SW1"
+      },
+      {
+        "cmd": "lldp timer tx-hold 4",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW2"
       }
     ]
   },
@@ -2309,6 +4195,92 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "sysname HQ-Core",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip address 172.16.0.1 255.255.255.252",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip address 172.16.1.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip route-static 172.16.2.0 255.255.255.0 172.16.0.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "sysname Branch-R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip address 172.16.0.2 255.255.255.252",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip address 172.16.2.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip route-static 172.16.1.0 255.255.255.0 172.16.0.1",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Branch-R1"
+      }
     ]
   },
   {
@@ -2428,6 +4400,71 @@
           "code": "display ip routing-table protocol static",
           "expected": "Static routes appear in the active IP routing table with Preference 60 and NextHop IP."
         }
+      }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "sysname Branch-R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip address 10.0.13.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip route-static 0.0.0.0 0.0.0.0 10.0.12.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Branch-R1"
+      },
+      {
+        "cmd": "ip route-static 0.0.0.0 0.0.0.0 10.0.13.2 preference 100",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Branch-R1"
       }
     ]
   },
@@ -2566,12 +4603,133 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "sysname HQ-Core",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "interface LoopBack 0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip address 192.168.0.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "interface LoopBack 1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip address 192.168.1.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "interface LoopBack 2",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip address 192.168.2.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "interface LoopBack 3",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip address 192.168.3.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip route-static 192.168.0.0 255.255.252.0 NULL0",
+        "desc": "Installs a Null0 discard route (blackhole) for summarized IP ranges to prevent routing loops.",
+        "param": "Summary network IP, summary subnet mask, and NULL0 pseudo-interface.",
+        "cisco_eq": "ip route <summary> <mask> Null0",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "sysname Branch-R2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Branch-R2"
+      },
+      {
+        "cmd": "ip address 10.0.12.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Branch-R2"
+      },
+      {
+        "cmd": "ip route-static 192.168.0.0 255.255.252.0 10.0.12.1",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Branch-R2"
+      }
     ]
   },
   {
     "id": 15,
     "title": "Lab-15-Huawei-Multi-Switch-LLDP-Topology-Audit",
-    "display_name": "Lab 15: Multi-Switch LLDP Topology Audit",
+    "display_name": "Lab 15: Multi Switch LLDP Topology Audit",
     "module": "Module 2: Advanced L2 Switching & VLANs",
     "desc": "Perform automated Layer 2 network auditing and cable verification across a multi-switch campus ring using LLDP management TLVs.",
     "nodes": [
@@ -2683,12 +4841,70 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "lldp enable",
+        "desc": "Globally activates IEEE 802.1ab Link Layer Discovery Protocol for vendor-neutral neighbor mapping.",
+        "param": "Enables periodic LLDPDU exchange across all capable interfaces.",
+        "cisco_eq": "lldp run",
+        "device": "SW1"
+      },
+      {
+        "cmd": "lldp management-address 192.168.100.1",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW2"
+      },
+      {
+        "cmd": "lldp management-address 192.168.100.2",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "SW2"
+      },
+      {
+        "cmd": "sysname SW3",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW3"
+      },
+      {
+        "cmd": "lldp management-address 192.168.100.3",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "SW3"
+      }
     ]
   },
   {
     "id": 16,
     "title": "Lab-16-Huawei-LLDP-TLV-Fine-Grained-Security-Filtering",
-    "display_name": "Lab 16: LLDP TLV Fine-Grained Security Filtering",
+    "display_name": "Lab 16: LLDP TLV Fine Grained Security Filtering",
     "module": "Module 2: Advanced L2 Switching & VLANs",
     "desc": "Harden network reconnaissance defense by disabling sensitive LLDP Type-Length-Value (TLV) fields (System Description, OS version, Capabilities) on untrusted client access ports while preserving basic topology discovery on uplink trunks.",
     "nodes": [
@@ -2802,12 +5018,77 @@
           "expected": "Shows active ACL rules, packet match hit counters, and security enforcement status."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "sysname Access-SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "lldp enable",
+        "desc": "Globally activates IEEE 802.1ab Link Layer Discovery Protocol for vendor-neutral neighbor mapping.",
+        "param": "Enables periodic LLDPDU exchange across all capable interfaces.",
+        "cisco_eq": "lldp run",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "undo lldp tlv-enable basic-tlv sys-desc",
+        "desc": "Suppresses transmission of sensitive LLDP Type-Length-Value (TLV) fields (sys-desc, sys-cap) on untrusted ports.",
+        "param": "Specifies the TLV type to suppress (e.g., sys-desc disables broadcasting OS version and hardware model).",
+        "cisco_eq": "no lldp tlv-select <tlv>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "undo lldp tlv-enable basic-tlv sys-cap",
+        "desc": "Suppresses transmission of sensitive LLDP Type-Length-Value (TLV) fields (sys-desc, sys-cap) on untrusted ports.",
+        "param": "Specifies the TLV type to suppress (e.g., sys-desc disables broadcasting OS version and hardware model).",
+        "cisco_eq": "no lldp tlv-select <tlv>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/24",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "lldp tlv-enable basic-tlv all",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Access-SW1"
+      }
     ]
   },
   {
     "id": 17,
     "title": "Lab-17-Huawei-IPv6-Next-Hop-Global-and-Link-Local-Routing",
-    "display_name": "Lab 17: IPv6 Next-Hop Global and Link-Local Routing",
+    "display_name": "Lab 17: IPv6 Next Hop Global and Link Local Routing",
     "module": "Module 3: Security, IPv6 & Enterprise Services",
     "desc": "Compare and configure IPv6 static routes using Global Unicast Next-Hop Addresses versus Link-Local Next-Hop Addresses (FE80::/10) with mandatory outbound interface binding.",
     "nodes": [
@@ -2933,6 +5214,99 @@
           "expected": "Interfaces display IPv6 Global and Link-Local addresses in Up state."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "R1"
+      },
+      {
+        "cmd": "sysname R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "R1"
+      },
+      {
+        "cmd": "ipv6",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "R1"
+      },
+      {
+        "cmd": "ipv6 enable",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1"
+      },
+      {
+        "cmd": "ipv6 address 2001:DB8:12::1 64",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1"
+      },
+      {
+        "cmd": "ipv6 address FE80::1 link-local",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "R1"
+      },
+      {
+        "cmd": "ipv6 route-static 2001:DB8:2:: 64 GigabitEthernet 0/0/0 FE80::2",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R1"
+      },
+      {
+        "cmd": "sysname R2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "R2"
+      },
+      {
+        "cmd": "ipv6 address 2001:DB8:12::2 64",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R2"
+      },
+      {
+        "cmd": "ipv6 address FE80::2 link-local",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R2"
+      },
+      {
+        "cmd": "ipv6 route-static 2001:DB8:1:: 64 2001:DB8:12::1",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "R2"
+      }
     ]
   },
   {
@@ -3029,6 +5403,92 @@
           "code": "display vlan brief\ndisplay port vlan",
           "expected": "VLANs appear in Active state with their assigned physical interfaces."
         }
+      }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "vlan batch 10 100",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "SW1"
+      },
+      {
+        "cmd": "voice-vlan mac-address 00e0-fc00-0000 mask ffff-ff00-0000 description Huawei_Phone",
+        "desc": "Registers an Organizationally Unique Identifier (OUI) MAC mask to identify IP phones automatically.",
+        "param": "OUI MAC prefix (e.g., 00e0-fc00-0000) and hexadecimal subnet mask (ffff-ff00-0000).",
+        "cisco_eq": "voice vlan oui <mac>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "voice-vlan mac-address 0003-6b00-0000 mask ffff-ff00-0000 description Cisco_Phone",
+        "desc": "Registers an Organizationally Unique Identifier (OUI) MAC mask to identify IP phones automatically.",
+        "param": "OUI MAC prefix (e.g., 00e0-fc00-0000) and hexadecimal subnet mask (ffff-ff00-0000).",
+        "cisco_eq": "voice vlan oui <mac>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port link-type hybrid",
+        "desc": "Configures switchport as Huawei Hybrid mode, allowing custom per-VLAN tagged and untagged egress control.",
+        "param": "Hybrid mode provides advanced VLAN isolation and voice integration without sub-interfaces.",
+        "cisco_eq": "N/A (Huawei Proprietary Hybrid Port)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "voice-vlan 100 enable",
+        "desc": "Enables Voice VLAN processing on the interface to segregate VoIP telephony with QoS priority.",
+        "param": "Voice VLAN ID integer (e.g., 100).",
+        "cisco_eq": "switchport voice vlan <id>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "voice-vlan mode auto",
+        "desc": "Sets Voice VLAN membership assignment to dynamic OUI packet detection (auto) or explicit configuration (manual).",
+        "param": "Mode: 'auto' automatically joins port to voice VLAN upon detecting phone MAC.",
+        "cisco_eq": "N/A (CDP/LLDP driven on Cisco)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port hybrid pvid vlan 10",
+        "desc": "Sets the default ingress VLAN ID (PVID) for untagged frames entering a hybrid port.",
+        "param": "VLAN ID integer.",
+        "cisco_eq": "switchport access vlan / native vlan",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port hybrid untagged vlan 10",
+        "desc": "Specifies the VLANs for which 802.1Q tags are stripped upon frame egress out this hybrid port.",
+        "param": "List of VLAN IDs (e.g., 10 30). Allows standard PCs to communicate with multiple VLANs.",
+        "cisco_eq": "N/A (Multi-VLAN Untagged Egress)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "SW1"
       }
     ]
   },
@@ -3144,12 +5604,84 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "sysname Gateway-R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "acl number 3000",
+        "desc": "Creates an Advanced Access Control List (numbered 3000-3999) inspecting source/dest IP, protocol, and ports.",
+        "param": "ACL number between 3000 and 3999.",
+        "cisco_eq": "ip access-list extended <name/num>",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "rule 5 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 3306",
+        "desc": "Adds an Advanced ACL rule explicitly blocking specific TCP port sessions (e.g., HTTP 80, Telnet 23, MySQL 3306).",
+        "param": "Rule ID, protocol (tcp), source network, wildcard mask, and target TCP port number.",
+        "cisco_eq": "deny tcp <src> <wildcard> any eq <port>",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "rule 10 deny tcp source 192.168.10.0 0.0.0.255 destination-port eq 1433",
+        "desc": "Adds an Advanced ACL rule explicitly blocking specific TCP port sessions (e.g., HTTP 80, Telnet 23, MySQL 3306).",
+        "param": "Rule ID, protocol (tcp), source network, wildcard mask, and target TCP port number.",
+        "cisco_eq": "deny tcp <src> <wildcard> any eq <port>",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "rule 15 permit ip",
+        "desc": "Adds a default permit rule allowing all remaining IPv4 traffic through the ACL filter.",
+        "param": "Permits any IPv4 protocol packet matching no preceding deny statements.",
+        "cisco_eq": "permit ip any any",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "ip address 192.168.10.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "traffic-filter inbound acl 3000",
+        "desc": "Applies an Access Control List as an active hardware packet filter directly to interface ingress or egress.",
+        "param": "Direction (inbound/outbound) and ACL number (e.g., 3000).",
+        "cisco_eq": "ip access-group <acl> in/out",
+        "device": "Gateway-R1"
+      }
     ]
   },
   {
     "id": 20,
     "title": "Lab-20-Huawei-LLDP-MED-Voice-Network-Policy-Distribution",
-    "display_name": "Lab 20: LLDP-MED Voice Network Policy Distribution",
+    "display_name": "Lab 20: LLDP MED Voice Network Policy Distribution",
     "module": "Module 3: Security, IPv6 & Enterprise Services",
     "desc": "Deploy LLDP for Media Endpoint Devices (LLDP-MED) to dynamically distribute VLAN ID 100, 802.1p Layer 2 Priority 5, and DSCP 46 Expedited Forwarding settings to connected IP phones.",
     "nodes": [
@@ -3254,12 +5786,63 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "sysname Access-SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "vlan 100",
+        "desc": "Creates a single VLAN ID and enters its configuration view.",
+        "param": "VLAN ID integer between 1 and 4094.",
+        "cisco_eq": "vlan <id>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "lldp enable",
+        "desc": "Globally activates IEEE 802.1ab Link Layer Discovery Protocol for vendor-neutral neighbor mapping.",
+        "param": "Enables periodic LLDPDU exchange across all capable interfaces.",
+        "cisco_eq": "lldp run",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW1"
+      },
+      {
+        "cmd": "lldp tlv-enable med-tlv network-policy",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "Access-SW1"
+      }
     ]
   },
   {
     "id": 21,
     "title": "Lab-21-Huawei-Trunk-Native-PVID-and-Eth-Trunk-Integration",
-    "display_name": "Lab 21: Trunk Native PVID and Eth-Trunk Integration",
+    "display_name": "Lab 21: Trunk Native PVID and Eth Trunk Integration",
     "module": "Module 3: Security, IPv6 & Enterprise Services",
     "desc": "Configure Native VLAN (PVID 99) untagged frame processing across an aggregated LACP Eth-Trunk link, ensuring untagged management traffic traverses the trunk without 802.1Q tags.",
     "nodes": [
@@ -3404,6 +5987,85 @@
           "expected": "VLANs appear in Active state with their assigned physical interfaces."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "vlan batch 10 20 99",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "SW1"
+      },
+      {
+        "cmd": "interface Eth-Trunk 1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "mode lacp-static",
+        "desc": "Configures IEEE 802.3ad dynamic Link Aggregation Control Protocol (LACP) negotiation in Static mode.",
+        "param": "Enables periodic LACPDU exchange to detect link failures and unidirectional cabling faults.",
+        "cisco_eq": "channel-group <id> mode active",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port link-type trunk",
+        "desc": "Configures the switchport as an IEEE 802.1Q Trunk port to carry traffic for multiple VLANs across switches.",
+        "param": "Trunk ports preserve 4-byte 802.1Q tags across inter-switch links.",
+        "cisco_eq": "switchport mode trunk",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port trunk pvid vlan 99",
+        "desc": "Sets the native untagged VLAN ID (PVID) on the 802.1Q trunk port.",
+        "param": "VLAN ID integer (default is VLAN 1). Untagged frames received on trunk are mapped to this VLAN.",
+        "cisco_eq": "switchport trunk native vlan <id>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port trunk allow-pass vlan 10 20 99",
+        "desc": "Explicitly whitelists the VLAN IDs permitted to traverse the 802.1Q trunk link.",
+        "param": "VLAN IDs or 'all'. By default in Huawei VRP, only VLAN 1 is permitted until explicitly whitelisted.",
+        "cisco_eq": "switchport trunk allowed vlan <list>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "desc": "Batch adds a range of physical Ethernet interfaces directly into the Eth-Trunk bundle.",
+        "param": "Start and end interface names (e.g., GigabitEthernet 0/0/1 to 0/0/2).",
+        "cisco_eq": "channel-group <id> mode active (on range)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW2"
+      }
     ]
   },
   {
@@ -3514,12 +6176,77 @@
           "expected": "VLANs appear in Active state with their assigned physical interfaces."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "vlan batch 10 20 30",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port link-type trunk",
+        "desc": "Configures the switchport as an IEEE 802.1Q Trunk port to carry traffic for multiple VLANs across switches.",
+        "param": "Trunk ports preserve 4-byte 802.1Q tags across inter-switch links.",
+        "cisco_eq": "switchport mode trunk",
+        "device": "SW1"
+      },
+      {
+        "cmd": "undo port trunk allow-pass vlan 1",
+        "desc": "Removes the specified VLAN ID from the trunk's allowed transmission list (e.g. pruning default VLAN 1).",
+        "param": "VLAN ID to remove.",
+        "cisco_eq": "switchport trunk allowed vlan remove <id>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "port trunk allow-pass vlan 10",
+        "desc": "Explicitly whitelists the VLAN IDs permitted to traverse the 802.1Q trunk link.",
+        "param": "VLAN IDs or 'all'. By default in Huawei VRP, only VLAN 1 is permitted until explicitly whitelisted.",
+        "cisco_eq": "switchport trunk allowed vlan <list>",
+        "device": "SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "SW1"
+      },
+      {
+        "cmd": "sysname SW2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "SW2"
+      }
     ]
   },
   {
     "id": 23,
     "title": "Lab-23-Huawei-Equal-Cost-Multi-Path-(ECMP)-Static-Routing",
-    "display_name": "Lab 23: Equal-Cost Multi-Path (ECMP) Static Routing",
+    "display_name": "Lab 23: Equal Cost Multi Path (ECMP) Static Routing",
     "module": "Module 3: Security, IPv6 & Enterprise Services",
     "desc": "Implement per-flow load balancing and fault tolerance across dual equal-cost WAN links by installing multiple static routes with identical destination prefixes and identical preference (60).",
     "nodes": [
@@ -3649,12 +6376,126 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Core-R1"
+      },
+      {
+        "cmd": "sysname Core-R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Core-R1"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Core-R1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Core-R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Core-R1"
+      },
+      {
+        "cmd": "ip address 10.0.13.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Core-R1"
+      },
+      {
+        "cmd": "ip route-static 192.168.20.0 255.255.255.0 10.0.12.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Core-R1"
+      },
+      {
+        "cmd": "ip route-static 192.168.20.0 255.255.255.0 10.0.13.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Core-R1"
+      },
+      {
+        "cmd": "sysname Edge-R2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Edge-R2"
+      },
+      {
+        "cmd": "ip address 10.0.12.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Edge-R2"
+      },
+      {
+        "cmd": "ip address 10.0.13.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Edge-R2"
+      },
+      {
+        "cmd": "interface LoopBack 0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Edge-R2"
+      },
+      {
+        "cmd": "ip address 192.168.20.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Edge-R2"
+      },
+      {
+        "cmd": "ip route-static 192.168.10.0 255.255.255.0 10.0.12.1",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Edge-R2"
+      },
+      {
+        "cmd": "ip route-static 192.168.10.0 255.255.255.0 10.0.13.1",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Edge-R2"
+      }
     ]
   },
   {
     "id": 24,
     "title": "Lab-24-Huawei-Dual-Stack-Host-SLAAC-and-DHCPv6-Services",
-    "display_name": "Lab 24: Dual-Stack Host SLAAC and DHCPv6 Services",
+    "display_name": "Lab 24: Dual Stack Host SLAAC and DHCPv6 Services",
     "module": "Module 3: Security, IPv6 & Enterprise Services",
     "desc": "Deploy Stateless Address Autoconfiguration (SLAAC) using ICMPv6 Router Advertisements (RA) alongside stateless DHCPv6 for recursive DNS server distribution.",
     "nodes": [
@@ -3761,12 +6602,84 @@
           "expected": "Interfaces display IPv6 Global and Link-Local addresses in Up state."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "sysname Gateway-R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "ipv6",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "dhcp enable",
+        "desc": "Globally initializes and activates the DHCP server and relay daemon process on the device.",
+        "param": "Enables the internal DHCP software module in the VRP kernel.",
+        "cisco_eq": "service dhcp",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "ipv6 enable",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "ipv6 address 2001:DB8:ACAD:1::1 64",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "undo ipv6 nd ra halt",
+        "desc": "Un-halts periodic ICMPv6 Router Advertisements (RA) on the interface to support SLAAC autoconfiguration.",
+        "param": "By default in Huawei VRP, RA transmissions are halted. Running undo enables RA broadcasts.",
+        "cisco_eq": "no ipv6 nd ra suppress",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "ipv6 nd autoconfig other-flag",
+        "desc": "Globally enables IPv6 packet forwarding, ND resolution, and routing processes on the device.",
+        "param": "Activates the dual-stack IPv6 protocol stack in the VRP kernel.",
+        "cisco_eq": "ipv6 unicast-routing",
+        "device": "Gateway-R1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Gateway-R1"
+      }
     ]
   },
   {
     "id": 25,
     "title": "Lab-25-Huawei-Standard-IEEE-802.1Q-and-Eth-Trunk-Core",
-    "display_name": "Lab 25: Standard IEEE 802.1Q and Eth-Trunk Core",
+    "display_name": "Lab 25: Standard IEEE 802.1Q and Eth Trunk Core",
     "module": "Module 4: IP Infrastructure Services & High Availability",
     "desc": "Construct high-throughput data center switch interconnection combining 802.1Q multi-VLAN trunk encapsulation with LACP Eth-Trunk channel bundling.",
     "nodes": [
@@ -3873,6 +6786,78 @@
           "expected": "Eth-Trunk status shows 'WorkingMode: STATIC', 'Operating Status: Up', with 2 active Selected member ports."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "sysname Core-A",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "vlan batch 100 200",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "interface Eth-Trunk 10",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "mode lacp-static",
+        "desc": "Configures IEEE 802.3ad dynamic Link Aggregation Control Protocol (LACP) negotiation in Static mode.",
+        "param": "Enables periodic LACPDU exchange to detect link failures and unidirectional cabling faults.",
+        "cisco_eq": "channel-group <id> mode active",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "port link-type trunk",
+        "desc": "Configures the switchport as an IEEE 802.1Q Trunk port to carry traffic for multiple VLANs across switches.",
+        "param": "Trunk ports preserve 4-byte 802.1Q tags across inter-switch links.",
+        "cisco_eq": "switchport mode trunk",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "port trunk allow-pass vlan 100 200",
+        "desc": "Explicitly whitelists the VLAN IDs permitted to traverse the 802.1Q trunk link.",
+        "param": "VLAN IDs or 'all'. By default in Huawei VRP, only VLAN 1 is permitted until explicitly whitelisted.",
+        "cisco_eq": "switchport trunk allowed vlan <list>",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "desc": "Batch adds a range of physical Ethernet interfaces directly into the Eth-Trunk bundle.",
+        "param": "Start and end interface names (e.g., GigabitEthernet 0/0/1 to 0/0/2).",
+        "cisco_eq": "channel-group <id> mode active (on range)",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "sysname Core-B",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-B"
+      }
     ]
   },
   {
@@ -3963,6 +6948,57 @@
           "code": "display ip routing-table protocol static",
           "expected": "Static routes appear in the active IP routing table with Preference 60 and NextHop IP."
         }
+      }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "sysname HQ-Core",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip address 10.0.1.1 255.255.255.252",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip route-static 10.10.0.0 255.255.0.0 10.0.1.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "HQ-Core"
+      },
+      {
+        "cmd": "ip route-static 10.20.0.0 255.255.0.0 10.0.2.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "HQ-Core"
       }
     ]
   },
@@ -4100,12 +7136,105 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "sysname Master-SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "lacp priority 100",
+        "desc": "Sets the system LACP priority (default: 32768, lower wins) to elect the controlling Actor switch.",
+        "param": "Priority value (e.g. 100). The Actor switch dictates which member links become active.",
+        "cisco_eq": "lacp system-priority <val>",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "interface Eth-Trunk 1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "mode lacp-static",
+        "desc": "Configures IEEE 802.3ad dynamic Link Aggregation Control Protocol (LACP) negotiation in Static mode.",
+        "param": "Enables periodic LACPDU exchange to detect link failures and unidirectional cabling faults.",
+        "cisco_eq": "channel-group <id> mode active",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "max active-linknumber 2",
+        "desc": "Sets the maximum threshold of physical links simultaneously transmitting traffic in the Eth-Trunk.",
+        "param": "Integer value (e.g., 1 or 2). Remaining member links operate in hot-standby protection mode.",
+        "cisco_eq": "lacp max-bundle <num>",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "trunkport GigabitEthernet 0/0/1 to 0/0/3",
+        "desc": "Batch adds a range of physical Ethernet interfaces directly into the Eth-Trunk bundle.",
+        "param": "Start and end interface names (e.g., GigabitEthernet 0/0/1 to 0/0/2).",
+        "cisco_eq": "channel-group <id> mode active (on range)",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "lacp priority 10",
+        "desc": "Sets the system LACP priority (default: 32768, lower wins) to elect the controlling Actor switch.",
+        "param": "Priority value (e.g. 100). The Actor switch dictates which member links become active.",
+        "cisco_eq": "lacp system-priority <val>",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/2",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/3",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Master-SW1"
+      },
+      {
+        "cmd": "sysname Slave-SW2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Slave-SW2"
+      }
     ]
   },
   {
     "id": 28,
     "title": "Lab-28-Huawei-Recursive-Multi-Hop-Static-Routing",
-    "display_name": "Lab 28: Recursive Multi-Hop Static Routing",
+    "display_name": "Lab 28: Recursive Multi Hop Static Routing",
     "module": "Module 4: IP Infrastructure Services & High Availability",
     "desc": "Demonstrate recursive next-hop routing resolution where a static route points to an indirect next-hop IP that is resolved through an intermediate IGP/static route in the RIB.",
     "nodes": [
@@ -4197,6 +7326,57 @@
           "code": "display current-configuration",
           "expected": "Configuration applied and operational."
         }
+      }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "R1"
+      },
+      {
+        "cmd": "sysname R1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "R1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "R1"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "R1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "R1"
+      },
+      {
+        "cmd": "ip route-static 3.3.3.3 255.255.255.255 10.0.12.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "R1"
+      },
+      {
+        "cmd": "ip route-static 192.168.30.0 255.255.255.0 3.3.3.3",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "R1"
       }
     ]
   },
@@ -4332,12 +7512,105 @@
           "expected": "OSPF neighbor state displays 'Full'. Routing table shows learned OSPF inter-area routes."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "NE40E-Core"
+      },
+      {
+        "cmd": "sysname NE40E-Core",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "NE40E-Core"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/1/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "NE40E-Core"
+      },
+      {
+        "cmd": "undo shutdown",
+        "desc": "Executes specific VRP device configuration directive.",
+        "param": "Configures parameter according to network design specifications.",
+        "cisco_eq": "Equivalent Cisco IOS command",
+        "device": "NE40E-Core"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "NE40E-Core"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "NE40E-Core"
+      },
+      {
+        "cmd": "ospf 1 router-id 1.1.1.1",
+        "desc": "Initializes an OSPFv2 dynamic link-state routing process with an explicit 32-bit Router Identifier.",
+        "param": "Process ID (1-65535) and 32-bit unique Router-ID in dotted-decimal format (e.g., 1.1.1.1).",
+        "cisco_eq": "router ospf <pid> -> router-id <id>",
+        "device": "NE40E-Core"
+      },
+      {
+        "cmd": "area 0.0.0.0",
+        "desc": "Enters configuration view for the specified OSPF area (0.0.0.0 is the mandatory Backbone Area 0).",
+        "param": "Area ID in 32-bit dotted-decimal (0.0.0.0) or integer (0) format.",
+        "cisco_eq": "area <id>",
+        "device": "NE40E-Core"
+      },
+      {
+        "cmd": "network 10.0.12.0 0.0.0.255",
+        "desc": "Enables OSPF on interfaces matching the specified IP address and wildcard (inverse) mask.",
+        "param": "Network IP address and inverted wildcard mask (e.g., 10.0.12.0 0.0.0.255).",
+        "cisco_eq": "network <ip> <wildcard> area <id>",
+        "device": "NE40E-Core"
+      },
+      {
+        "cmd": "sysname AR1000v-Edge",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "AR1000v-Edge"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "AR1000v-Edge"
+      },
+      {
+        "cmd": "ip address 10.0.12.2 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "AR1000v-Edge"
+      },
+      {
+        "cmd": "ospf 1 router-id 2.2.2.2",
+        "desc": "Initializes an OSPFv2 dynamic link-state routing process with an explicit 32-bit Router Identifier.",
+        "param": "Process ID (1-65535) and 32-bit unique Router-ID in dotted-decimal format (e.g., 1.1.1.1).",
+        "cisco_eq": "router ospf <pid> -> router-id <id>",
+        "device": "AR1000v-Edge"
+      }
     ]
   },
   {
     "id": 30,
     "title": "Lab-30-Huawei-Dual-Core-Campus-Redundant-Static-Routing",
-    "display_name": "Lab 30: Dual-Core Campus Redundant Static Routing",
+    "display_name": "Lab 30: Dual Core Campus Redundant Static Routing",
     "module": "Module 4: IP Infrastructure Services & High Availability",
     "desc": "Implement dual-homed campus core redundancy using dual static routes with NQA / BFD tracking to achieve sub-second convergence between Core-1 and Core-2.",
     "nodes": [
@@ -4438,12 +7711,77 @@
           "expected": "Configuration applied and operational."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "sysname Core-SW1",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/0",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "ip address 10.0.12.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "ip route-static 192.168.0.0 255.255.0.0 10.0.12.2",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Core-SW1"
+      },
+      {
+        "cmd": "sysname Core-SW2",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-SW2"
+      },
+      {
+        "cmd": "ip address 10.0.13.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Core-SW2"
+      },
+      {
+        "cmd": "ip route-static 192.168.0.0 255.255.0.0 10.0.13.2 preference 70",
+        "desc": "Installs a static IPv4 forwarding route into the Routing Information Base (RIB) with default preference 60.",
+        "param": "Destination network, dotted-decimal subnet mask, and next-hop router IPv4 address.",
+        "cisco_eq": "ip route <dest> <mask> <next_hop>",
+        "device": "Core-SW2"
+      }
     ]
   },
   {
     "id": 31,
     "title": "Lab-31-Huawei-End-to-End-Voice-and-Data-VLAN-Architecture",
-    "display_name": "Lab 31: End-to-End Voice and Data VLAN Architecture",
+    "display_name": "Lab 31: End to End Voice and Data VLAN Architecture",
     "module": "Module 4: IP Infrastructure Services & High Availability",
     "desc": "Deploy a complete end-to-end voice and data network across Access switches, Distribution switches, and Layer 3 SVI Gateways with QoS 802.1p priority mapping.",
     "nodes": [
@@ -4585,12 +7923,140 @@
           "expected": "VLANs appear in Active state with their assigned physical interfaces."
         }
       }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "sysname Access-SW",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "vlan batch 10 100",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "port link-type hybrid",
+        "desc": "Configures switchport as Huawei Hybrid mode, allowing custom per-VLAN tagged and untagged egress control.",
+        "param": "Hybrid mode provides advanced VLAN isolation and voice integration without sub-interfaces.",
+        "cisco_eq": "N/A (Huawei Proprietary Hybrid Port)",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "voice-vlan 100 enable",
+        "desc": "Enables Voice VLAN processing on the interface to segregate VoIP telephony with QoS priority.",
+        "param": "Voice VLAN ID integer (e.g., 100).",
+        "cisco_eq": "switchport voice vlan <id>",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "port hybrid pvid vlan 10",
+        "desc": "Sets the default ingress VLAN ID (PVID) for untagged frames entering a hybrid port.",
+        "param": "VLAN ID integer.",
+        "cisco_eq": "switchport access vlan / native vlan",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "port hybrid untagged vlan 10",
+        "desc": "Specifies the VLANs for which 802.1Q tags are stripped upon frame egress out this hybrid port.",
+        "param": "List of VLAN IDs (e.g., 10 30). Allows standard PCs to communicate with multiple VLANs.",
+        "cisco_eq": "N/A (Multi-VLAN Untagged Egress)",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "port hybrid tagged vlan 100",
+        "desc": "Specifies the VLANs for which 802.1Q tags are retained upon frame egress out this hybrid port.",
+        "param": "List of VLAN IDs (e.g., 100 for IP Phones).",
+        "cisco_eq": "switchport trunk allowed vlan",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "interface GigabitEthernet 0/0/24",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "port link-type trunk",
+        "desc": "Configures the switchport as an IEEE 802.1Q Trunk port to carry traffic for multiple VLANs across switches.",
+        "param": "Trunk ports preserve 4-byte 802.1Q tags across inter-switch links.",
+        "cisco_eq": "switchport mode trunk",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "port trunk allow-pass vlan 10 100",
+        "desc": "Explicitly whitelists the VLAN IDs permitted to traverse the 802.1Q trunk link.",
+        "param": "VLAN IDs or 'all'. By default in Huawei VRP, only VLAN 1 is permitted until explicitly whitelisted.",
+        "cisco_eq": "switchport trunk allowed vlan <list>",
+        "device": "Access-SW"
+      },
+      {
+        "cmd": "sysname Core-SW",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-SW"
+      },
+      {
+        "cmd": "interface Vlanif 10",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Core-SW"
+      },
+      {
+        "cmd": "ip address 192.168.10.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Core-SW"
+      },
+      {
+        "cmd": "interface Vlanif 100",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Core-SW"
+      },
+      {
+        "cmd": "ip address 192.168.100.1 255.255.255.0",
+        "desc": "Assigns an IPv4 address and subnet mask to the interface for Layer 3 packet forwarding.",
+        "param": "Specifies IPv4 host address and dotted-decimal subnet mask.",
+        "cisco_eq": "ip address <ip> <mask>",
+        "device": "Core-SW"
+      }
     ]
   },
   {
     "id": 32,
     "title": "Lab-32-Huawei-Eth-Trunk-Link-Protection-and-Dynamic-Failover",
-    "display_name": "Lab 32: Eth-Trunk Link Protection and Dynamic Failover",
+    "display_name": "Lab 32: Eth Trunk Link Protection and Dynamic Failover",
     "module": "Module 4: IP Infrastructure Services & High Availability",
     "desc": "Configure LACP Eth-Trunk 1 with active/standby link protection ('max active-linknumber 1') to provide zero-packet-loss hardware failover across redundant trunk links.",
     "nodes": [
@@ -4717,6 +8183,85 @@
           "code": "display current-configuration",
           "expected": "Configuration applied and operational."
         }
+      }
+    ],
+    "syntax_breakdown": [
+      {
+        "cmd": "system-view",
+        "desc": "Enters system configuration view from user view to allow global parameter configuration.",
+        "param": "None. Transitions prompt from <Huawei> to [Huawei].",
+        "cisco_eq": "configure terminal (conf t)",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "sysname Core-A",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "vlan batch 10 20 30",
+        "desc": "Provisions multiple VLAN IDs simultaneously in the switch database in a single atomic transaction.",
+        "param": "Space-delimited or range-delimited list of VLAN IDs (e.g., 10 20 30 100 or 10 to 20).",
+        "cisco_eq": "vlan 10,20,30,100",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "interface Eth-Trunk 1",
+        "desc": "Enters configuration view for a specific physical port (GE), logical interface (Vlanif), or trunk.",
+        "param": "Interface identifier (e.g., GigabitEthernet 0/0/0, Vlanif 10, Eth-Trunk 1, LoopBack 0).",
+        "cisco_eq": "interface <type> <number>",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "mode lacp-static",
+        "desc": "Configures IEEE 802.3ad dynamic Link Aggregation Control Protocol (LACP) negotiation in Static mode.",
+        "param": "Enables periodic LACPDU exchange to detect link failures and unidirectional cabling faults.",
+        "cisco_eq": "channel-group <id> mode active",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "max active-linknumber 1",
+        "desc": "Sets the maximum threshold of physical links simultaneously transmitting traffic in the Eth-Trunk.",
+        "param": "Integer value (e.g., 1 or 2). Remaining member links operate in hot-standby protection mode.",
+        "cisco_eq": "lacp max-bundle <num>",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "port link-type trunk",
+        "desc": "Configures the switchport as an IEEE 802.1Q Trunk port to carry traffic for multiple VLANs across switches.",
+        "param": "Trunk ports preserve 4-byte 802.1Q tags across inter-switch links.",
+        "cisco_eq": "switchport mode trunk",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "port trunk allow-pass vlan 10 20 30",
+        "desc": "Explicitly whitelists the VLAN IDs permitted to traverse the 802.1Q trunk link.",
+        "param": "VLAN IDs or 'all'. By default in Huawei VRP, only VLAN 1 is permitted until explicitly whitelisted.",
+        "cisco_eq": "switchport trunk allowed vlan <list>",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "trunkport GigabitEthernet 0/0/1 to 0/0/2",
+        "desc": "Batch adds a range of physical Ethernet interfaces directly into the Eth-Trunk bundle.",
+        "param": "Start and end interface names (e.g., GigabitEthernet 0/0/1 to 0/0/2).",
+        "cisco_eq": "channel-group <id> mode active (on range)",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "quit",
+        "desc": "Exits current sub-view returning to the parent configuration view.",
+        "param": "Transitions back one hierarchical CLI view level.",
+        "cisco_eq": "exit",
+        "device": "Core-A"
+      },
+      {
+        "cmd": "sysname Core-B",
+        "desc": "Sets the unique administrative hostname/system identifier for the network device.",
+        "param": "Parameter specifies the device name string (e.g., R1-GW, LSW1, Core-SW).",
+        "cisco_eq": "hostname <name>",
+        "device": "Core-B"
       }
     ]
   }

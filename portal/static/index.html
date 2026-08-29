@@ -89,6 +89,7 @@
       transition: background-color 0.15s, color 0.15s;
     }
 
+    /* Top Nav */
     .ensp-topbar {
       height: 48px;
       min-height: 48px;
@@ -438,15 +439,18 @@
       background: #f0fdf4;
     }
 
+    /* 6 Tabs Navigation Bar */
     .ensp-tabs-bar {
       display: flex;
       background: var(--hw-bg-card);
       border-bottom: 1px solid var(--hw-border-main);
       padding: 0 24px;
+      overflow-x: auto;
     }
+    .ensp-tabs-bar::-webkit-scrollbar { height: 2px; }
     .ensp-tab-btn {
-      padding: 9px 14px;
-      font-size: 12.5px;
+      padding: 9px 12px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--hw-text-secondary);
       background: transparent;
@@ -455,7 +459,8 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      white-space: nowrap;
       transition: all 0.1s;
     }
     .ensp-tab-btn:hover {
@@ -538,6 +543,20 @@
       color: #16a34a;
       font-weight: 600;
     }
+    .ensp-table td.col-cmd {
+      font-family: var(--hw-mono);
+      color: var(--ensp-blue);
+      font-weight: 600;
+      white-space: nowrap;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    .ensp-table td.col-expl {
+      color: var(--hw-text-main);
+      line-height: 1.55;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
     .ensp-table td.col-status-normal {
       color: var(--ensp-green);
       font-weight: 600;
@@ -567,7 +586,7 @@
       line-height: 1.5;
     }
 
-    /* CCNA-Style Guided Solution Components */
+    /* CCNA Guided Solution Components */
     .ccna-task-card {
       background: var(--hw-bg-card);
       border: 1px solid var(--hw-border-main);
@@ -703,7 +722,7 @@
 </head>
 <body>
 
-  <!-- 1. Official eNSP Top Navigation Bar -->
+  <!-- Top Nav -->
   <header class="ensp-topbar">
     <div class="ensp-brand-group">
       <a href="http://10.10.10.137/" class="ensp-logo-link" title="Huawei eNSP Lab Portal">
@@ -719,7 +738,6 @@
       </div>
     </div>
 
-    <!-- Right Controls -->
     <div class="ensp-top-actions">
       <button id="theme-btn" class="theme-switch-btn" title="Toggle Light/Dark Mode" onclick="toggleTheme()">
         <svg id="theme-icon" viewBox="0 0 24 24">
@@ -743,7 +761,7 @@
     </div>
   </header>
 
-  <!-- 2. Secondary Subnav -->
+  <!-- Subnav -->
   <div class="ensp-subnav">
     <div class="ensp-crumbs">
       <span>Simulation Environment</span>
@@ -758,7 +776,7 @@
     </div>
   </div>
 
-  <!-- 3. Workspace Layout -->
+  <!-- Workspace -->
   <div class="ensp-layout">
     <aside class="ensp-sidebar">
       <div class="ensp-search-panel">
@@ -819,7 +837,6 @@
 
     async function loadData() {
       try {
-        // Cache-busting query parameter
         const resp = await fetch('/api/labs?v=' + Date.now(), { cache: 'no-store' });
         labs = await resp.json();
         renderTree(labs);
@@ -827,6 +844,15 @@
       } catch (e) {
         console.error("Failed to load curriculum:", e);
       }
+    }
+
+    function getCleanTitle(lab) {
+      if (lab.id === 99) return "Enterprise HQ and WAN (Figure 4-7)";
+      let t = lab.title || '';
+      t = t.replace(/^Lab[-_ ]\d+[:\-_ ]*/i, '');
+      t = t.replace(/^Huawei[-_ ]*/i, '');
+      t = t.replace(/[-_]/g, ' ').trim();
+      return t;
     }
 
     function renderTree(items) {
@@ -876,52 +902,12 @@
       }
     }
 
-    function getCleanTitle(lab) {
-      if (lab.id === 99) return "Enterprise HQ and WAN (Figure 4-7)";
-      if (lab.display_name) return lab.display_name;
-      return lab.title.replace(/^Lab[-_ ]\d+[-_ ](Huawei[-_ ])?/i, '').replace(/-/g, ' ');
-    }
-
     function selectLab(id) {
       currentId = id;
       document.querySelectorAll('.ensp-lab-item').forEach(r => {
         r.classList.toggle('active', parseInt(r.dataset.id) === id);
       });
       renderLab(id);
-    }
-
-    // Dynamic builder if guided_walkthrough is ever absent
-    function buildFallbackWalkthrough(lab) {
-      const steps = [];
-      const tasks = lab.tasks || [];
-      const cli = lab.cli || {};
-      const devKeys = Object.keys(cli);
-
-      if (tasks.length > 0) {
-        tasks.forEach((t, idx) => {
-          const dev = devKeys[idx % devKeys.length] || 'Device';
-          const cmds = cli[dev] || ['display ip interface brief'];
-          const code = Array.isArray(cmds) ? cmds.slice(0, 10).join('\n') : cmds;
-          steps.push({
-            task_num: idx + 1,
-            title: t,
-            theory: `This step configures the necessary VRP parameters for ${t}. Review the command breakdown below before applying configurations to the live device.`,
-            substeps: [
-              {
-                device: dev,
-                code: code,
-                explanation: `Executes configuration directives on ${dev} matching the task objectives and network topology requirements.`
-              }
-            ],
-            verify: {
-              device: dev,
-              code: 'display ip interface brief',
-              expected: 'Interfaces and protocol states report Up and Normal.'
-            }
-          });
-        });
-      }
-      return steps;
     }
 
     function renderLab(id) {
@@ -937,7 +923,7 @@
 
       const wb = document.getElementById('ensp-workbench');
 
-      // 1. Table rows
+      // 1. Table rows (Tab 2)
       let tableRows = '';
       if (lab.table && lab.table.length > 0) {
         tableRows = lab.table.map(r => `
@@ -951,7 +937,7 @@
         `).join('');
       }
 
-      // 2. Tasks
+      // 2. Tasks (Tab 3)
       let taskRows = '';
       if (lab.tasks && lab.tasks.length > 0) {
         taskRows = lab.tasks.map((t, idx) => `
@@ -962,66 +948,65 @@
         `).join('');
       }
 
-      // 3. CCNA-Style Guided Solution Walkthrough
-      const walkthroughData = (lab.guided_walkthrough && lab.guided_walkthrough.length > 0) 
-        ? lab.guided_walkthrough 
-        : buildFallbackWalkthrough(lab);
-
-      let walkthroughHtml = walkthroughData.map(step => {
-        let substepsHtml = (step.substeps || []).map(sub => `
-          <div class="ccna-step-block">
-            <div class="ensp-terminal-box">
-              <div class="ensp-terminal-header">
-                <span class="ensp-terminal-node">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-                  @${sub.device}
-                </span>
-                <button class="ensp-copy-btn" onclick="copyCliFromPre(this)">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  Copy Block
-                </button>
-              </div>
-              <pre class="ensp-terminal-code">${escapeHtml(sub.code)}</pre>
-            </div>
-            <div class="ccna-expl-text">${sub.explanation}</div>
-          </div>
-        `).join('');
-
-        let verifyBlock = '';
-        if (step.verify) {
-          verifyBlock = `
-            <div class="ccna-verify-section">
-              <div class="ccna-verify-label">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                VERIFICATION &amp; CHECK COMMANDS:
-              </div>
-              <div class="ensp-terminal-box" style="margin-bottom: 6px;">
+      // 3. CCNA-Style Guided Solution Walkthrough (Tab 4)
+      let walkthroughHtml = '';
+      if (lab.guided_walkthrough && lab.guided_walkthrough.length > 0) {
+        walkthroughHtml = lab.guided_walkthrough.map(step => {
+          let substepsHtml = (step.substeps || []).map(sub => `
+            <div class="ccna-step-block">
+              <div class="ensp-terminal-box">
                 <div class="ensp-terminal-header">
-                  <span class="ensp-terminal-node">@${step.verify.device || 'Verification'}</span>
-                  <button class="ensp-copy-btn" onclick="copyCliFromPre(this)">Copy Verification</button>
+                  <span class="ensp-terminal-node">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                    @${sub.device}
+                  </span>
+                  <button class="ensp-copy-btn" onclick="copyCliFromPre(this)">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copy Block
+                  </button>
                 </div>
-                <pre class="ensp-terminal-code">${escapeHtml(step.verify.code)}</pre>
+                <pre class="ensp-terminal-code">${escapeHtml(sub.code)}</pre>
               </div>
-              <div style="font-size: 12px; color: var(--hw-text-secondary); line-height: 1.5;"><b>Expected Behavior:</b> ${step.verify.expected}</div>
+              <div class="ccna-expl-text">${sub.explanation}</div>
+            </div>
+          `).join('');
+
+          let verifyBlock = '';
+          if (step.verify) {
+            verifyBlock = `
+              <div class="ccna-verify-section">
+                <div class="ccna-verify-label">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  VERIFICATION &amp; CHECK COMMANDS:
+                </div>
+                <div class="ensp-terminal-box" style="margin-bottom: 6px;">
+                  <div class="ensp-terminal-header">
+                    <span class="ensp-terminal-node">@${step.verify.device || 'Verification'}</span>
+                    <button class="ensp-copy-btn" onclick="copyCliFromPre(this)">Copy Verification</button>
+                  </div>
+                  <pre class="ensp-terminal-code">${escapeHtml(step.verify.code)}</pre>
+                </div>
+                <div style="font-size: 12px; color: var(--hw-text-secondary); line-height: 1.5;"><b>Expected Behavior:</b> ${step.verify.expected}</div>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="ccna-task-card">
+              <div class="ccna-task-header">
+                <span>Task ${step.task_num}: ${step.title}</span>
+              </div>
+              <div class="ccna-task-body">
+                <div class="ccna-theory-box">${step.theory}</div>
+                ${substepsHtml}
+                ${verifyBlock}
+              </div>
             </div>
           `;
-        }
+        }).join('');
+      }
 
-        return `
-          <div class="ccna-task-card">
-            <div class="ccna-task-header">
-              <span>Task ${step.task_num}: ${step.title}</span>
-            </div>
-            <div class="ccna-task-body">
-              <div class="ccna-theory-box">${step.theory}</div>
-              ${substepsHtml}
-              ${verifyBlock}
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      // 4. Raw Full-Device CLI Blocks
+      // 4. Raw Full Scripts (Alternative in Tab 4)
       let rawCliBlocks = '';
       if (lab.cli) {
         for (const [dev, cmds] of Object.entries(lab.cli)) {
@@ -1045,7 +1030,25 @@
         }
       }
 
-      // 5. Verification
+      // 5. Line-by-Line Command Syntax Breakdown Table (Tab 5)
+      let syntaxTableRows = '';
+      if (lab.syntax_breakdown && lab.syntax_breakdown.length > 0) {
+        syntaxTableRows = lab.syntax_breakdown.map(s => `
+          <tr>
+            <td class="col-cmd"><code>${escapeHtml(s.cmd)}</code></td>
+            <td class="col-expl">
+              <div style="font-weight:600; color:var(--hw-text-title); margin-bottom:3px;">${s.desc}</div>
+              <div style="font-size:11px; color:var(--hw-text-secondary);"><span style="color:var(--ensp-blue); font-weight:600;">Parameters &amp; Mechanism:</span> ${s.param}</div>
+            </td>
+            <td style="font-family:var(--hw-mono); font-size:11.5px; color:#c026d3;"><code>${escapeHtml(s.cisco_eq || 'N/A')}</code></td>
+            <td style="font-weight:600; color:var(--hw-text-secondary);">${s.device || 'VRP'}</td>
+          </tr>
+        `).join('');
+      } else {
+        syntaxTableRows = `<tr><td colspan="4" style="padding:12px;">Syntax breakdown loaded.</td></tr>`;
+      }
+
+      // 6. Verification Runbook (Tab 6)
       let verifRows = '';
       if (lab.verif && lab.verif.length > 0) {
         verifRows = lab.verif.map(v => `
@@ -1067,6 +1070,7 @@
           </div>
         </div>
 
+        <!-- 6 Distinct Numbered Tabs -->
         <nav class="ensp-tabs-bar">
           <button class="ensp-tab-btn active" onclick="switchTab(this, 'tab-sec-overview')">
             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -1082,15 +1086,20 @@
           </button>
           <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-cli')">
             <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            4. Step-by-Step Solution & Detailed Syntax Breakdown
+            4. Step-by-Step Solution (CCNA Standard)
+          </button>
+          <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-syntax')">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
+            5. Command Syntax Breakdown Table
           </button>
           <button class="ensp-tab-btn" onclick="switchTab(this, 'tab-sec-verif')">
             <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            5. Verification Runbook
+            6. Verification Runbook
           </button>
         </nav>
 
         <div class="ensp-content-body">
+          <!-- 1. Overview -->
           <div id="tab-sec-overview" class="ensp-tab-view active">
             <div class="ensp-card">
               <div class="ensp-card-header">
@@ -1122,6 +1131,7 @@
             </div>
           </div>
 
+          <!-- 2. Cabling -->
           <div id="tab-sec-cabling" class="ensp-tab-view">
             <div class="ensp-card">
               <div class="ensp-card-header">
@@ -1147,6 +1157,7 @@
             </div>
           </div>
 
+          <!-- 3. Tasks -->
           <div id="tab-sec-tasks" class="ensp-tab-view">
             <div class="ensp-card">
               <div class="ensp-card-header">
@@ -1161,6 +1172,7 @@
             </div>
           </div>
 
+          <!-- 4. CLI: CCNA-Style Guided Solution Walkthrough -->
           <div id="tab-sec-cli" class="ensp-tab-view">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
               <div style="font-size: 13px; font-weight: 700; color: var(--hw-text-title);">
@@ -1182,11 +1194,37 @@
             </div>
           </div>
 
+          <!-- 5. Line-by-Line Command Syntax Breakdown Table -->
+          <div id="tab-sec-syntax" class="ensp-tab-view">
+            <div class="ensp-card">
+              <div class="ensp-card-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
+                <span>Line-by-Line Huawei VRP Command Syntax &amp; Parameter Breakdown Table</span>
+              </div>
+              <div class="ensp-card-body" style="padding: 0;">
+                <table class="ensp-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 28%;">Huawei VRP Command Syntax</th>
+                      <th style="width: 44%;">Operational Description &amp; Parameter Mechanism</th>
+                      <th style="width: 18%;">Cisco IOS Equivalent</th>
+                      <th style="width: 10%;">Device</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${syntaxTableRows}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Verification Runbook -->
           <div id="tab-sec-verif" class="ensp-tab-view">
             <div class="ensp-card">
               <div class="ensp-card-header">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                <span>Verification Commands</span>
+                <span>Verification Commands &amp; Expected Operational Outputs</span>
               </div>
               <div class="ensp-card-body">
                 ${verifRows || '<div class="ensp-verif-step">display ip interface brief</div>'}
