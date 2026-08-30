@@ -11,7 +11,7 @@
 
 Students and instructors can download the complete, pre-configured **Huawei eNSP Lite Virtual Machine (`.ova` format)** using the official link below:
 
-> ### 🚀 [**Click Here to Download Huawei eNSP Pro / Lite VM (.OVA)**](https://ueeduph-my.sharepoint.com/my?id=%2Fpersonal%2Fdelosangeles%5Franilojohn%5Fue%5Fedu%5Fph%2FDocuments%2FENSP%20Pro&viewid=d3e4f1ef%2Dfb3e%2D4ef1%2Db828%2Db1087ebe0b59)
+> ### 🚀 [**Click Here to Download Huawei eNSP Pro / Lite VM (.OVA)**](https://ueeduph-my.sharepoint.com/:f:/g/personal/delosangeles_ranilojohn_ue_edu_ph/IgDyUHenNnhOSJ1DYXTloOwSAYiUrdX7n8HbZy59GnxvU3I?e=WnXtss)
 > * **Hosted on:** UE SharePoint / OneDrive Cloud Storage
 > * **Included:** EulerOS Linux, Huawei eNSP Lite 2026 engine, All 33 Pre-Wired Practice Labs, and Local In-Memory Student Portal.
 > * **Ready-to-Use:** Single-file import into VMware Workstation 17 Pro / Player.
@@ -74,7 +74,7 @@ The VM is pre-configured with a static IP of **`10.10.10.137`**. Your VMware vir
 ---
 
 ### Step 3: Import the `.ova` File into VMware
-1. Download the `eNSP_Pro_EulerOS.ova` file from the [SharePoint link](https://ueeduph-my.sharepoint.com/my?id=%2Fpersonal%2Fdelosangeles%5Franilojohn%5Fue%5Fedu%5Fph%2FDocuments%2FENSP%20Pro&viewid=d3e4f1ef%2Dfb3e%2D4ef1%2Db828%2Db1087ebe0b59).
+1. Download the `eNSP_Pro_EulerOS.ova` file from the [SharePoint link](https://ueeduph-my.sharepoint.com/:f:/g/personal/delosangeles_ranilojohn_ue_edu_ph/IgDyUHenNnhOSJ1DYXTloOwSAYiUrdX7n8HbZy59GnxvU3I?e=WnXtss).
 2. In VMware Workstation, click **File** $\rightarrow$ **Open...** (or press `Ctrl + O`).
 3. Browse and select the `.ova` file.
 4. Set a name for your virtual machine (e.g., `Huawei-eNSP-COESS`).
